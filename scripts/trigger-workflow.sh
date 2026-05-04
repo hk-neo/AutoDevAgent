@@ -5,9 +5,28 @@
 
 set -e
 
-# 설정 (실제 사용 시 환경 변수 또는 별도 설정 파일로 관리)
+# 스크립트 디렉토리 경로
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+
+# .env 파일 로드
+if [ -f "$PROJECT_ROOT/.env" ]; then
+  source "$PROJECT_ROOT/.env"
+  echo "Loaded .env from $PROJECT_ROOT"
+else
+  echo "Warning: .env file not found. Using environment variables or defaults."
+fi
+
+# 설정 (환경 변수 또는 기본값)
 GITHUB_REPO="${GITHUB_REPO:-fotogrammer/AutoDevAgent}"  # 사용자/리포지토리
-GITHUB_TOKEN="${GITHUB_TOKEN}"                          # GitHub Personal Access Token
+
+# 토큰 필수 확인
+if [ -z "$GITHUB_TOKEN" ]; then
+  echo "Error: GITHUB_TOKEN is not set!"
+  echo "Please set it in .env file or as environment variable."
+  echo "Copy .env.example to .env and add your token."
+  exit 1
+fi
 
 # 테스트용 페이로드
 PAYLOAD=$(cat <<EOF
