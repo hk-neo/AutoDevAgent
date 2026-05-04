@@ -14,15 +14,18 @@ jobs:
       - name: Log received payload
         run: |
           echo "Received Jira command payload:"
-          echo "${{ github.event.client_payload }}" | jq '.'
+          echo '${{ toJson(github.event.client_payload) }}' | jq '.'
 
       - name: Parse command
         id: parse
         run: |
+          # 페이로드를 파일로 저장
+          echo '${{ toJson(github.event.client_payload) }}' > /tmp/payload.json
+
           # 페이로드에서 필요한 정보 추출
-          TICKET_ID=$(echo '${{ github.event.client_payload }}' | jq -r '.ticket_id // ""')
-          COMMAND=$(echo '${{ github.event.client_payload }}' | jq -r '.command // ""')
-          COMMENT_ID=$(echo '${{ github.event.client_payload }}' | jq -r '.comment_id // ""')
+          TICKET_ID=$(jq -r '.ticket_id // ""' /tmp/payload.json)
+          COMMAND=$(jq -r '.command // ""' /tmp/payload.json)
+          COMMENT_ID=$(jq -r '.comment_id // ""' /tmp/payload.json)
 
           echo "ticket_id=$TICKET_ID" >> $GITHUB_OUTPUT
           echo "command=$COMMAND" >> $GITHUB_OUTPUT
