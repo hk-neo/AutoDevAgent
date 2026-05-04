@@ -1,0 +1,179 @@
+{
+  "issue_type": "Hazard",
+  "issue_type_id": "10044",
+  "project": "PLAYG",
+  "fields": {
+    "summary": {
+      "required": true,
+      "schema": {
+        "type": "string",
+        "system": "summary"
+      },
+      "name": "Summary",
+      "key": "summary",
+      "hasDefaultValue": false,
+      "operations": [
+        "set"
+      ]
+    },
+    "customfield_10148": {
+      "required": false,
+      "schema": {
+        "type": "string",
+        "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textfield",
+        "customId": 10148
+      },
+      "name": "Harm",
+      "key": "customfield_10148",
+      "hasDefaultValue": false,
+      "operations": [
+        "set"
+      ]
+    },
+    "issuetype": {
+      "required": true,
+      "schema": {
+        "type": "issuetype",
+        "system": "issuetype"
+      },
+      "name": "Issue Type",
+      "key": "issuetype",
+      "hasDefaultValue": false,
+      "operations": [],
+      "allowedValues": [
+        {
+          "self": "https://neobiotech.atlassian.net/rest/api/2/issuetype/10044",
+          "id": "10044",
+          "description": "ISO 14971에 따른 시스템 수준의 환자/사용자 안전성을 평가하며, 임상적 요인과 기술적 요인을 분리하는 P1 * P2 중첩 모델을 적용하기 위한 이슈 유형",
+          "iconUrl": "https://neobiotech.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10308?size=medium",
+          "name": "Hazard",
+          "subtask": false,
+          "avatarId": 10308,
+          "hierarchyLevel": 0
+        }
+      ]
+    },
+    "parent": {
+      "required": false,
+      "schema": {
+        "type": "issuelink",
+        "system": "parent"
+      },
+      "name": "Parent",
+      "key": "parent",
+      "hasDefaultValue": false,
+      "operations": [
+        "set"
+      ]
+    },
+    "duedate": {
+      "required": false,
+      "schema": {
+        "type": "date",
+        "system": "duedate"
+      },
+      "name": "Due date",
+      "key": "duedate",
+      "hasDefaultValue": false,
+      "operations": [
+        "set"
+      ]
+    },
+    "description": {
+      "required": false,
+      "schema": {
+        "type": "string",
+        "system": "description"
+      },
+      "name": "Description",
+      "key": "description",
+      "hasDefaultValue": false,
+      "operations": [
+        "set"
+      ]
+    },
+    "project": {
+      "required": true,
+      "schema": {
+        "type": "project",
+        "system": "project"
+      },
+      "name": "Project",
+      "key": "project",
+      "hasDefaultValue": false,
+      "operations": [
+        "set"
+      ],
+      "allowedValues": [
+        {
+          "self": "https://neobiotech.atlassian.net/rest/api/2/project/10134",
+          "id": "10134",
+          "key": "PLAYG",
+          "name": "PlayGround",
+          "projectTypeKey": "software",
+          "simplified": false,
+          "avatarUrls": {
+            "48x48": "https://neobiotech.atlassian.net/rest/api/2/universal_avatar/view/type/project/avatar/10403",
+            "24x24": "https://neobiotech.atlassian.net/rest/api/2/universal_avatar/view/type/project/avatar/10403?size=small",
+            "16x16": "https://neobiotech.atlassian.net/rest/api/2/universal_avatar/view/type/project/avatar/10403?size=xsmall",
+            "32x32": "https://neobiotech.atlassian.net/rest/api/2/universal_avatar/view/type/project/avatar/10403?size=medium"
+          }
+        }
+      ]
+    },
+    "issuelinks": {
+      "required": false,
+      "schema": {
+        "type": "array",
+        "items": "issuelinks",
+        "system": "issuelinks"
+      },
+      "name": "Linked Issues",
+      "key": "issuelinks",
+      "autoCompleteUrl": "https://neobiotech.atlassian.net/rest/api/2/issue/picker?currentProjectId=&showSubTaskParent=true&showSubTasks=true&currentIssueKey=null&query=",
+      "hasDefaultValue": false,
+      "operations": [
+        "add",
+        "copy"
+      ]
+    },
+    "assignee": {
+      "required": false,
+      "schema": {
+        "type": "user",
+        "system": "assignee"
+      },
+      "name": "Assignee",
+      "key": "assignee",
+      "autoCompleteUrl": "https://neobiotech.atlassian.net/rest/api/2/user/assignable/search?project=PLAYG&query=",
+      "hasDefaultValue": false,
+      "operations": [
+        "set"
+      ]
+    },
+    "customfield_10003": {
+      "required": false,
+      "schema": {
+        "type": "array",
+        "items": "user",
+        "custom": "com.atlassian.jira.plugin.system.customfieldtypes:multiuserpicker",
+        "customId": 10003
+      },
+      "name": "Approvers",
+      "key": "customfield_10003",
+      "autoCompleteUrl": "https://neobiotech.atlassian.net/rest/api/1.0/users/picker?fieldName=customfield_10003&showAvatar=true&query=",
+      "hasDefaultValue": false,
+      "operations": [
+        "add",
+        "set",
+        "remove"
+      ]
+    }
+  },
+  "summary": {
+    "total": 10,
+    "required": 3,
+    "custom": 2,
+    "standard": 5
+  }
+}

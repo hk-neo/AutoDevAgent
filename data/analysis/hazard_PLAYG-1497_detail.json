@@ -1,0 +1,32 @@
+{
+  "key": "PLAYG-1497",
+  "summary": "[HAZ-1.2] 미지원 전송 구문 파일",
+  "description": "JPEG/RLE 압축 전송 구문 포함 DICOM 파일 입력 시 위험\n\n원인: 비압축 3종 외 전송 구문 포함 파일 입력\n심각도: S=3, 발생가능성: P=2, 리스크: R=6 (보통)\n영향: 파일 파싱 불가 및 오류 메시지 표시\n\n완화: SUPPORTED_TRANSFER_SYNTAXES 집합 검증\n근거: validateTransferSyntax.js, dicomDictionary.js",
+  "custom_fields": {
+    "customfield_10002": "[]",
+    "customfield_10019": "0|i0073r:",
+    "customfield_10108": "Functional",
+    "customfield_10112": "validateTransferSyntax 단위 테스트 6개 시나리오 통과",
+    "customfield_10382": "EA"
+  },
+  "linked_issues": [
+    {
+      "key": "PLAYG-1458",
+      "summary": "EA Gate",
+      "link_type": "Relates",
+      "direction": "outward"
+    },
+    {
+      "key": "PLAYG-1459",
+      "summary": "[RMR]",
+      "link_type": "Relates",
+      "direction": "outward"
+    },
+    {
+      "key": "PLAYG-1642",
+      "summary": "[FR-1.2] 전송 구문 검증",
+      "link_type": "Mitigates",
+      "direction": "inward"
+    }
+  ]
+}

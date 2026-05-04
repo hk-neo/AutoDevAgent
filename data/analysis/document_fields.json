@@ -1,0 +1,260 @@
+{
+  "issue_type": "Document",
+  "issue_type_id": "10047",
+  "project": "PLAYG",
+  "fields": {
+    "summary": {
+      "required": true,
+      "schema": {
+        "type": "string",
+        "system": "summary"
+      },
+      "name": "Summary",
+      "key": "summary",
+      "hasDefaultValue": false,
+      "operations": [
+        "set"
+      ]
+    },
+    "issuetype": {
+      "required": true,
+      "schema": {
+        "type": "issuetype",
+        "system": "issuetype"
+      },
+      "name": "Issue Type",
+      "key": "issuetype",
+      "hasDefaultValue": false,
+      "operations": [],
+      "allowedValues": [
+        {
+          "self": "https://neobiotech.atlassian.net/rest/api/2/issuetype/10047",
+          "id": "10047",
+          "description": "문서화 작업",
+          "iconUrl": "https://neobiotech.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10306?size=medium",
+          "name": "Document",
+          "subtask": false,
+          "avatarId": 10306,
+          "hierarchyLevel": 0
+        }
+      ]
+    },
+    "parent": {
+      "required": false,
+      "schema": {
+        "type": "issuelink",
+        "system": "parent"
+      },
+      "name": "Parent",
+      "key": "parent",
+      "hasDefaultValue": false,
+      "operations": [
+        "set"
+      ]
+    },
+    "customfield_10416": {
+      "required": false,
+      "schema": {
+        "type": "option",
+        "custom": "com.atlassian.jira.plugin.system.customfieldtypes:select",
+        "customId": 10416
+      },
+      "name": "Document ID",
+      "key": "customfield_10416",
+      "hasDefaultValue": false,
+      "operations": [
+        "set"
+      ],
+      "allowedValues": [
+        {
+          "self": "https://neobiotech.atlassian.net/rest/api/2/customFieldOption/10217",
+          "value": "DOC-PA-01",
+          "id": "10217"
+        },
+        {
+          "self": "https://neobiotech.atlassian.net/rest/api/2/customFieldOption/10218",
+          "value": "DOC-PA-02",
+          "id": "10218"
+        },
+        {
+          "self": "https://neobiotech.atlassian.net/rest/api/2/customFieldOption/10219",
+          "value": "DOC-PA-03",
+          "id": "10219"
+        },
+        {
+          "self": "https://neobiotech.atlassian.net/rest/api/2/customFieldOption/10220",
+          "value": "DOC-PA-04",
+          "id": "10220"
+        },
+        {
+          "self": "https://neobiotech.atlassian.net/rest/api/2/customFieldOption/10221",
+          "value": "DOC-PA-05",
+          "id": "10221"
+        },
+        {
+          "self": "https://neobiotech.atlassian.net/rest/api/2/customFieldOption/10222",
+          "value": "DOC-PA-06",
+          "id": "10222"
+        },
+        {
+          "self": "https://neobiotech.atlassian.net/rest/api/2/customFieldOption/10223",
+          "value": "DOC-PA-07",
+          "id": "10223"
+        },
+        {
+          "self": "https://neobiotech.atlassian.net/rest/api/2/customFieldOption/10224",
+          "value": "DOC-EA-01",
+          "id": "10224"
+        },
+        {
+          "self": "https://neobiotech.atlassian.net/rest/api/2/customFieldOption/10225",
+          "value": "DOC-EA-02",
+          "id": "10225"
+        },
+        {
+          "self": "https://neobiotech.atlassian.net/rest/api/2/customFieldOption/10226",
+          "value": "DOC-EA-03",
+          "id": "10226"
+        },
+        {
+          "self": "https://neobiotech.atlassian.net/rest/api/2/customFieldOption/10227",
+          "value": "DOC-EA-04",
+          "id": "10227"
+        },
+        {
+          "self": "https://neobiotech.atlassian.net/rest/api/2/customFieldOption/10260",
+          "value": "DOC-EA-05",
+          "id": "10260"
+        },
+        {
+          "self": "https://neobiotech.atlassian.net/rest/api/2/customFieldOption/10293",
+          "value": "DOC-EA-06",
+          "id": "10293"
+        }
+      ]
+    },
+    "customfield_10382": {
+      "required": false,
+      "schema": {
+        "type": "option",
+        "custom": "com.atlassian.jira.plugin.system.customfieldtypes:select",
+        "customId": 10382
+      },
+      "name": "Phase",
+      "key": "customfield_10382",
+      "hasDefaultValue": false,
+      "operations": [
+        "set"
+      ],
+      "allowedValues": [
+        {
+          "self": "https://neobiotech.atlassian.net/rest/api/2/customFieldOption/10180",
+          "value": "PA",
+          "id": "10180"
+        },
+        {
+          "self": "https://neobiotech.atlassian.net/rest/api/2/customFieldOption/10181",
+          "value": "EA",
+          "id": "10181"
+        },
+        {
+          "self": "https://neobiotech.atlassian.net/rest/api/2/customFieldOption/10182",
+          "value": "ER",
+          "id": "10182"
+        },
+        {
+          "self": "https://neobiotech.atlassian.net/rest/api/2/customFieldOption/10183",
+          "value": "CA",
+          "id": "10183"
+        },
+        {
+          "self": "https://neobiotech.atlassian.net/rest/api/2/customFieldOption/10184",
+          "value": "M",
+          "id": "10184"
+        }
+      ]
+    },
+    "description": {
+      "required": false,
+      "schema": {
+        "type": "string",
+        "system": "description"
+      },
+      "name": "Description",
+      "key": "description",
+      "hasDefaultValue": false,
+      "operations": [
+        "set"
+      ]
+    },
+    "project": {
+      "required": true,
+      "schema": {
+        "type": "project",
+        "system": "project"
+      },
+      "name": "Project",
+      "key": "project",
+      "hasDefaultValue": false,
+      "operations": [
+        "set"
+      ],
+      "allowedValues": [
+        {
+          "self": "https://neobiotech.atlassian.net/rest/api/2/project/10134",
+          "id": "10134",
+          "key": "PLAYG",
+          "name": "PlayGround",
+          "projectTypeKey": "software",
+          "simplified": false,
+          "avatarUrls": {
+            "48x48": "https://neobiotech.atlassian.net/rest/api/2/universal_avatar/view/type/project/avatar/10403",
+            "24x24": "https://neobiotech.atlassian.net/rest/api/2/universal_avatar/view/type/project/avatar/10403?size=small",
+            "16x16": "https://neobiotech.atlassian.net/rest/api/2/universal_avatar/view/type/project/avatar/10403?size=xsmall",
+            "32x32": "https://neobiotech.atlassian.net/rest/api/2/universal_avatar/view/type/project/avatar/10403?size=medium"
+          }
+        }
+      ]
+    },
+    "issuelinks": {
+      "required": false,
+      "schema": {
+        "type": "array",
+        "items": "issuelinks",
+        "system": "issuelinks"
+      },
+      "name": "Linked Issues",
+      "key": "issuelinks",
+      "autoCompleteUrl": "https://neobiotech.atlassian.net/rest/api/2/issue/picker?currentProjectId=&showSubTaskParent=true&showSubTasks=true&currentIssueKey=null&query=",
+      "hasDefaultValue": false,
+      "operations": [
+        "add",
+        "copy"
+      ]
+    },
+    "customfield_10003": {
+      "required": false,
+      "schema": {
+        "type": "array",
+        "items": "user",
+        "custom": "com.atlassian.jira.plugin.system.customfieldtypes:multiuserpicker",
+        "customId": 10003
+      },
+      "name": "Approvers",
+      "key": "customfield_10003",
+      "autoCompleteUrl": "https://neobiotech.atlassian.net/rest/api/1.0/users/picker?fieldName=customfield_10003&showAvatar=true&query=",
+      "hasDefaultValue": false,
+      "operations": [
+        "add",
+        "set",
+        "remove"
+      ]
+    }
+  },
+  "summary": {
+    "total": 9,
+    "required": 3,
+    "custom": 3,
+    "standard": 3
+  }
+}

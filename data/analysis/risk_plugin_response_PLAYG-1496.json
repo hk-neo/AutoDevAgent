@@ -1,0 +1,588 @@
+{
+  "expand": "renderedFields,names,schema,operations,editmeta,changelog,versionedRepresentations,customfield_10010.requestTypePractice",
+  "id": "15975",
+  "self": "https://neobiotech.atlassian.net/rest/api/2/issue/15975",
+  "key": "PLAYG-1496",
+  "renderedFields": {
+    "statuscategorychangedate": "21/Apr/26 5:59 PM",
+    "fixVersions": null,
+    "customfield_10111": "",
+    "statusCategory": null,
+    "resolution": null,
+    "customfield_10112": "<p>validateMagicByte 단위 테스트 4개 시나리오 통과</p>",
+    "customfield_10234": "",
+    "customfield_10346": null,
+    "customfield_10104": "",
+    "customfield_10347": "",
+    "customfield_10105": "",
+    "customfield_10348": null,
+    "customfield_10106": "",
+    "customfield_10107": "",
+    "customfield_10349": null,
+    "customfield_10108": null,
+    "lastViewed": "Today 11:20 PM",
+    "customfield_10340": "",
+    "priority": null,
+    "customfield_10342": null,
+    "customfield_10343": "",
+    "customfield_10344": "",
+    "customfield_10345": null,
+    "labels": null,
+    "customfield_10103": "",
+    "customfield_10338": "",
+    "customfield_10339": "",
+    "timeestimate": null,
+    "aggregatetimeoriginalestimate": null,
+    "versions": null,
+    "issuelinks": null,
+    "assignee": null,
+    "status": null,
+    "components": null,
+    "customfield_10449": "",
+    "aggregatetimeestimate": null,
+    "creator": null,
+    "subtasks": null,
+    "customfield_10163": "",
+    "reporter": null,
+    "aggregateprogress": null,
+    "customfield_10166": "",
+    "customfield_10167": "",
+    "customfield_10201": "",
+    "progress": null,
+    "votes": null,
+    "worklog": {
+      "startAt": 0,
+      "maxResults": 20,
+      "total": 0,
+      "worklogs": []
+    },
+    "issuetype": null,
+    "timespent": null,
+    "customfield_10030": null,
+    "project": null,
+    "customfield_10031": null,
+    "customfield_10032": null,
+    "customfield_10033": null,
+    "aggregatetimespent": null,
+    "customfield_10034": null,
+    "customfield_10036": null,
+    "customfield_10037": null,
+    "customfield_10027": null,
+    "customfield_10302": "",
+    "customfield_10148": "",
+    "customfield_10303": "",
+    "customfield_10028": null,
+    "customfield_10304": "",
+    "customfield_10029": null,
+    "customfield_10305": "",
+    "resolutiondate": null,
+    "workratio": null,
+    "watches": null,
+    "created": "21/Apr/26 11:28 AM",
+    "customfield_10382": null,
+    "customfield_10020": null,
+    "customfield_10021": null,
+    "customfield_10022": null,
+    "customfield_10023": null,
+    "customfield_10024": null,
+    "customfield_10025": null,
+    "customfield_10267": null,
+    "customfield_10301": "",
+    "customfield_10147": "",
+    "customfield_10026": null,
+    "customfield_10016": null,
+    "customfield_10017": "",
+    "customfield_10019": null,
+    "customfield_10416": null,
+    "updated": "23/Apr/26 1:26 PM",
+    "timeoriginalestimate": null,
+    "description": "<p>사용자가 비 DICOM 또는 손상된 파일 선택 시 발생 위험</p>\n\n<p>원인: .dcm 확장자가 아닌 파일 또는 손상된 파일 선택<br/>\n심각도: S=2, 발생가능성: P=3, 리스크: R=6 (보통)<br/>\n영향: 파일 로딩 실패 및 오류 메시지 표시</p>\n\n<p>완화: validateMagicByte로 오프셋 128~131 DICM 확인<br/>\n근거: validateMagicByte.js, index.html accept 속성</p>",
+    "customfield_10010": null,
+    "customfield_10014": null,
+    "customfield_10015": null,
+    "timetracking": {},
+    "customfield_10005": null,
+    "customfield_10006": null,
+    "customfield_10007": null,
+    "security": null,
+    "customfield_10008": null,
+    "attachment": [],
+    "customfield_10009": null,
+    "summary": null,
+    "customfield_10001": null,
+    "customfield_10002": null,
+    "customfield_10003": null,
+    "customfield_10004": null,
+    "environment": "",
+    "duedate": null,
+    "comment": {
+      "comments": [],
+      "self": "https://neobiotech.atlassian.net/rest/api/2/issue/15975/comment",
+      "maxResults": 0,
+      "total": 0,
+      "startAt": 0
+    }
+  },
+  "fields": {
+    "statuscategorychangedate": "2026-04-21T17:59:18.473+0900",
+    "fixVersions": [],
+    "customfield_10111": null,
+    "statusCategory": {
+      "self": "https://neobiotech.atlassian.net/rest/api/2/statuscategory/4",
+      "id": 4,
+      "key": "indeterminate",
+      "colorName": "yellow",
+      "name": "In Progress"
+    },
+    "resolution": null,
+    "customfield_10112": "validateMagicByte 단위 테스트 4개 시나리오 통과",
+    "customfield_10234": null,
+    "customfield_10346": null,
+    "customfield_10104": null,
+    "customfield_10347": null,
+    "customfield_10105": null,
+    "customfield_10348": null,
+    "customfield_10106": null,
+    "customfield_10107": null,
+    "customfield_10349": null,
+    "customfield_10108": {
+      "self": "https://neobiotech.atlassian.net/rest/api/2/customFieldOption/10020",
+      "value": "Functional",
+      "id": "10020"
+    },
+    "lastViewed": "2026-05-04T23:20:42.579+0900",
+    "customfield_10340": null,
+    "priority": {
+      "self": "https://neobiotech.atlassian.net/rest/api/2/priority/3",
+      "iconUrl": "https://neobiotech.atlassian.net/images/icons/priorities/medium_new.svg",
+      "name": "Medium",
+      "id": "3"
+    },
+    "customfield_10342": null,
+    "customfield_10343": null,
+    "customfield_10344": null,
+    "customfield_10345": null,
+    "labels": [],
+    "customfield_10103": null,
+    "customfield_10338": null,
+    "customfield_10339": null,
+    "timeestimate": null,
+    "aggregatetimeoriginalestimate": null,
+    "versions": [],
+    "issuelinks": [
+      {
+        "id": "17835",
+        "self": "https://neobiotech.atlassian.net/rest/api/2/issueLink/17835",
+        "type": {
+          "id": "10003",
+          "name": "Relates",
+          "inward": "relates to",
+          "outward": "relates to",
+          "self": "https://neobiotech.atlassian.net/rest/api/2/issueLinkType/10003"
+        },
+        "outwardIssue": {
+          "id": "15901",
+          "key": "PLAYG-1458",
+          "self": "https://neobiotech.atlassian.net/rest/api/2/issue/15901",
+          "fields": {
+            "summary": "EA Gate",
+            "status": {
+              "self": "https://neobiotech.atlassian.net/rest/api/2/status/10217",
+              "description": "",
+              "iconUrl": "https://neobiotech.atlassian.net/",
+              "name": "To Do",
+              "id": "10217",
+              "statusCategory": {
+                "self": "https://neobiotech.atlassian.net/rest/api/2/statuscategory/2",
+                "id": 2,
+                "key": "new",
+                "colorName": "blue-gray",
+                "name": "To Do"
+              }
+            },
+            "priority": {
+              "self": "https://neobiotech.atlassian.net/rest/api/2/priority/3",
+              "iconUrl": "https://neobiotech.atlassian.net/images/icons/priorities/medium_new.svg",
+              "name": "Medium",
+              "id": "3"
+            },
+            "issuetype": {
+              "self": "https://neobiotech.atlassian.net/rest/api/2/issuetype/10048",
+              "id": "10048",
+              "description": "PA/EA/ER/CA/M",
+              "iconUrl": "https://neobiotech.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10616?size=medium",
+              "name": "Gate",
+              "subtask": false,
+              "avatarId": 10616,
+              "hierarchyLevel": 0
+            }
+          }
+        }
+      },
+      {
+        "id": "17836",
+        "self": "https://neobiotech.atlassian.net/rest/api/2/issueLink/17836",
+        "type": {
+          "id": "10003",
+          "name": "Relates",
+          "inward": "relates to",
+          "outward": "relates to",
+          "self": "https://neobiotech.atlassian.net/rest/api/2/issueLinkType/10003"
+        },
+        "outwardIssue": {
+          "id": "15903",
+          "key": "PLAYG-1459",
+          "self": "https://neobiotech.atlassian.net/rest/api/2/issue/15903",
+          "fields": {
+            "summary": "[RMR]",
+            "status": {
+              "self": "https://neobiotech.atlassian.net/rest/api/2/status/10041",
+              "description": "",
+              "iconUrl": "https://neobiotech.atlassian.net/",
+              "name": "Drafting",
+              "id": "10041",
+              "statusCategory": {
+                "self": "https://neobiotech.atlassian.net/rest/api/2/statuscategory/4",
+                "id": 4,
+                "key": "indeterminate",
+                "colorName": "yellow",
+                "name": "In Progress"
+              }
+            },
+            "priority": {
+              "self": "https://neobiotech.atlassian.net/rest/api/2/priority/3",
+              "iconUrl": "https://neobiotech.atlassian.net/images/icons/priorities/medium_new.svg",
+              "name": "Medium",
+              "id": "3"
+            },
+            "issuetype": {
+              "self": "https://neobiotech.atlassian.net/rest/api/2/issuetype/10047",
+              "id": "10047",
+              "description": "문서화 작업",
+              "iconUrl": "https://neobiotech.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10306?size=medium",
+              "name": "Document",
+              "subtask": false,
+              "avatarId": 10306,
+              "hierarchyLevel": 0
+            }
+          }
+        }
+      },
+      {
+        "id": "18063",
+        "self": "https://neobiotech.atlassian.net/rest/api/2/issueLink/18063",
+        "type": {
+          "id": "10039",
+          "name": "Mitigates",
+          "inward": "is mitigated by",
+          "outward": "mitigates",
+          "self": "https://neobiotech.atlassian.net/rest/api/2/issueLinkType/10039"
+        },
+        "inwardIssue": {
+          "id": "16333",
+          "key": "PLAYG-1641",
+          "self": "https://neobiotech.atlassian.net/rest/api/2/issue/16333",
+          "fields": {
+            "summary": "[FR-1.1] DICOM 매직 바이트 검증",
+            "status": {
+              "self": "https://neobiotech.atlassian.net/rest/api/2/status/10039",
+              "description": "",
+              "iconUrl": "https://neobiotech.atlassian.net/",
+              "name": "Review Requested",
+              "id": "10039",
+              "statusCategory": {
+                "self": "https://neobiotech.atlassian.net/rest/api/2/statuscategory/4",
+                "id": 4,
+                "key": "indeterminate",
+                "colorName": "yellow",
+                "name": "In Progress"
+              }
+            },
+            "priority": {
+              "self": "https://neobiotech.atlassian.net/rest/api/2/priority/3",
+              "iconUrl": "https://neobiotech.atlassian.net/images/icons/priorities/medium_new.svg",
+              "name": "Medium",
+              "id": "3"
+            },
+            "issuetype": {
+              "self": "https://neobiotech.atlassian.net/rest/api/2/issuetype/10043",
+              "id": "10043",
+              "description": "기능적/비기능적 요구 사항 - System Requirement 하위 아이템",
+              "iconUrl": "https://neobiotech.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10309?size=medium",
+              "name": "Requirement",
+              "subtask": false,
+              "avatarId": 10309,
+              "hierarchyLevel": 0
+            }
+          }
+        }
+      },
+      {
+        "id": "18098",
+        "self": "https://neobiotech.atlassian.net/rest/api/2/issueLink/18098",
+        "type": {
+          "id": "10039",
+          "name": "Mitigates",
+          "inward": "is mitigated by",
+          "outward": "mitigates",
+          "self": "https://neobiotech.atlassian.net/rest/api/2/issueLinkType/10039"
+        },
+        "inwardIssue": {
+          "id": "16345",
+          "key": "PLAYG-1647",
+          "self": "https://neobiotech.atlassian.net/rest/api/2/issue/16345",
+          "fields": {
+            "summary": "[FR-1.7] 파일 확장자 필터링",
+            "status": {
+              "self": "https://neobiotech.atlassian.net/rest/api/2/status/10039",
+              "description": "",
+              "iconUrl": "https://neobiotech.atlassian.net/",
+              "name": "Review Requested",
+              "id": "10039",
+              "statusCategory": {
+                "self": "https://neobiotech.atlassian.net/rest/api/2/statuscategory/4",
+                "id": 4,
+                "key": "indeterminate",
+                "colorName": "yellow",
+                "name": "In Progress"
+              }
+            },
+            "priority": {
+              "self": "https://neobiotech.atlassian.net/rest/api/2/priority/3",
+              "iconUrl": "https://neobiotech.atlassian.net/images/icons/priorities/medium_new.svg",
+              "name": "Medium",
+              "id": "3"
+            },
+            "issuetype": {
+              "self": "https://neobiotech.atlassian.net/rest/api/2/issuetype/10043",
+              "id": "10043",
+              "description": "기능적/비기능적 요구 사항 - System Requirement 하위 아이템",
+              "iconUrl": "https://neobiotech.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10309?size=medium",
+              "name": "Requirement",
+              "subtask": false,
+              "avatarId": 10309,
+              "hierarchyLevel": 0
+            }
+          }
+        }
+      },
+      {
+        "id": "18259",
+        "self": "https://neobiotech.atlassian.net/rest/api/2/issueLink/18259",
+        "type": {
+          "id": "10039",
+          "name": "Mitigates",
+          "inward": "is mitigated by",
+          "outward": "mitigates",
+          "self": "https://neobiotech.atlassian.net/rest/api/2/issueLinkType/10039"
+        },
+        "inwardIssue": {
+          "id": "16403",
+          "key": "PLAYG-1676",
+          "self": "https://neobiotech.atlassian.net/rest/api/2/issue/16403",
+          "fields": {
+            "summary": "[NFR-3.1] 파싱 오류 복구",
+            "status": {
+              "self": "https://neobiotech.atlassian.net/rest/api/2/status/10039",
+              "description": "",
+              "iconUrl": "https://neobiotech.atlassian.net/",
+              "name": "Review Requested",
+              "id": "10039",
+              "statusCategory": {
+                "self": "https://neobiotech.atlassian.net/rest/api/2/statuscategory/4",
+                "id": 4,
+                "key": "indeterminate",
+                "colorName": "yellow",
+                "name": "In Progress"
+              }
+            },
+            "priority": {
+              "self": "https://neobiotech.atlassian.net/rest/api/2/priority/3",
+              "iconUrl": "https://neobiotech.atlassian.net/images/icons/priorities/medium_new.svg",
+              "name": "Medium",
+              "id": "3"
+            },
+            "issuetype": {
+              "self": "https://neobiotech.atlassian.net/rest/api/2/issuetype/10043",
+              "id": "10043",
+              "description": "기능적/비기능적 요구 사항 - System Requirement 하위 아이템",
+              "iconUrl": "https://neobiotech.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10309?size=medium",
+              "name": "Requirement",
+              "subtask": false,
+              "avatarId": 10309,
+              "hierarchyLevel": 0
+            }
+          }
+        }
+      }
+    ],
+    "assignee": null,
+    "status": {
+      "self": "https://neobiotech.atlassian.net/rest/api/2/status/10039",
+      "description": "",
+      "iconUrl": "https://neobiotech.atlassian.net/",
+      "name": "Review Requested",
+      "id": "10039",
+      "statusCategory": {
+        "self": "https://neobiotech.atlassian.net/rest/api/2/statuscategory/4",
+        "id": 4,
+        "key": "indeterminate",
+        "colorName": "yellow",
+        "name": "In Progress"
+      }
+    },
+    "components": [],
+    "customfield_10449": null,
+    "aggregatetimeestimate": null,
+    "creator": {
+      "self": "https://neobiotech.atlassian.net/rest/api/2/user?accountId=712020%3Abaa962da-2822-4cc7-9659-2d780f703b3e",
+      "accountId": "712020:baa962da-2822-4cc7-9659-2d780f703b3e",
+      "emailAddress": "hk.sim@neobiotech.com",
+      "avatarUrls": {
+        "48x48": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/712020:baa962da-2822-4cc7-9659-2d780f703b3e/c25d4dfa-3413-4a64-8282-36526b8558a5/48",
+        "24x24": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/712020:baa962da-2822-4cc7-9659-2d780f703b3e/c25d4dfa-3413-4a64-8282-36526b8558a5/24",
+        "16x16": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/712020:baa962da-2822-4cc7-9659-2d780f703b3e/c25d4dfa-3413-4a64-8282-36526b8558a5/16",
+        "32x32": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/712020:baa962da-2822-4cc7-9659-2d780f703b3e/c25d4dfa-3413-4a64-8282-36526b8558a5/32"
+      },
+      "displayName": "심호기",
+      "active": true,
+      "timeZone": "Asia/Seoul",
+      "accountType": "atlassian"
+    },
+    "subtasks": [],
+    "customfield_10163": null,
+    "reporter": {
+      "self": "https://neobiotech.atlassian.net/rest/api/2/user?accountId=712020%3Abaa962da-2822-4cc7-9659-2d780f703b3e",
+      "accountId": "712020:baa962da-2822-4cc7-9659-2d780f703b3e",
+      "emailAddress": "hk.sim@neobiotech.com",
+      "avatarUrls": {
+        "48x48": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/712020:baa962da-2822-4cc7-9659-2d780f703b3e/c25d4dfa-3413-4a64-8282-36526b8558a5/48",
+        "24x24": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/712020:baa962da-2822-4cc7-9659-2d780f703b3e/c25d4dfa-3413-4a64-8282-36526b8558a5/24",
+        "16x16": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/712020:baa962da-2822-4cc7-9659-2d780f703b3e/c25d4dfa-3413-4a64-8282-36526b8558a5/16",
+        "32x32": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/712020:baa962da-2822-4cc7-9659-2d780f703b3e/c25d4dfa-3413-4a64-8282-36526b8558a5/32"
+      },
+      "displayName": "심호기",
+      "active": true,
+      "timeZone": "Asia/Seoul",
+      "accountType": "atlassian"
+    },
+    "aggregateprogress": {
+      "progress": 0,
+      "total": 0
+    },
+    "customfield_10166": null,
+    "customfield_10167": null,
+    "customfield_10201": null,
+    "progress": {
+      "progress": 0,
+      "total": 0
+    },
+    "votes": {
+      "self": "https://neobiotech.atlassian.net/rest/api/2/issue/PLAYG-1496/votes",
+      "votes": 0,
+      "hasVoted": false
+    },
+    "worklog": {
+      "startAt": 0,
+      "maxResults": 20,
+      "total": 0,
+      "worklogs": []
+    },
+    "issuetype": {
+      "self": "https://neobiotech.atlassian.net/rest/api/2/issuetype/10044",
+      "id": "10044",
+      "description": "ISO 14971에 따른 시스템 수준의 환자/사용자 안전성을 평가하며, 임상적 요인과 기술적 요인을 분리하는 P1 * P2 중첩 모델을 적용하기 위한 이슈 유형",
+      "iconUrl": "https://neobiotech.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10308?size=medium",
+      "name": "Hazard",
+      "subtask": false,
+      "avatarId": 10308,
+      "hierarchyLevel": 0
+    },
+    "timespent": null,
+    "customfield_10030": null,
+    "project": {
+      "self": "https://neobiotech.atlassian.net/rest/api/2/project/10134",
+      "id": "10134",
+      "key": "PLAYG",
+      "name": "PlayGround",
+      "projectTypeKey": "software",
+      "simplified": false,
+      "avatarUrls": {
+        "48x48": "https://neobiotech.atlassian.net/rest/api/2/universal_avatar/view/type/project/avatar/10403",
+        "24x24": "https://neobiotech.atlassian.net/rest/api/2/universal_avatar/view/type/project/avatar/10403?size=small",
+        "16x16": "https://neobiotech.atlassian.net/rest/api/2/universal_avatar/view/type/project/avatar/10403?size=xsmall",
+        "32x32": "https://neobiotech.atlassian.net/rest/api/2/universal_avatar/view/type/project/avatar/10403?size=medium"
+      }
+    },
+    "customfield_10031": null,
+    "customfield_10032": null,
+    "customfield_10033": null,
+    "aggregatetimespent": null,
+    "customfield_10034": null,
+    "customfield_10036": null,
+    "customfield_10037": null,
+    "customfield_10027": null,
+    "customfield_10302": null,
+    "customfield_10148": null,
+    "customfield_10303": null,
+    "customfield_10028": null,
+    "customfield_10304": null,
+    "customfield_10029": null,
+    "customfield_10305": null,
+    "resolutiondate": null,
+    "workratio": -1,
+    "watches": {
+      "self": "https://neobiotech.atlassian.net/rest/api/2/issue/PLAYG-1496/watchers",
+      "watchCount": 1,
+      "isWatching": true
+    },
+    "created": "2026-04-21T11:28:50.280+0900",
+    "customfield_10382": {
+      "self": "https://neobiotech.atlassian.net/rest/api/2/customFieldOption/10181",
+      "value": "EA",
+      "id": "10181"
+    },
+    "customfield_10020": null,
+    "customfield_10021": null,
+    "customfield_10022": null,
+    "customfield_10023": null,
+    "customfield_10024": null,
+    "customfield_10025": null,
+    "customfield_10267": null,
+    "customfield_10301": null,
+    "customfield_10147": null,
+    "customfield_10026": null,
+    "customfield_10016": null,
+    "customfield_10017": null,
+    "customfield_10019": "0|i0073j:",
+    "customfield_10416": null,
+    "updated": "2026-04-23T13:26:01.969+0900",
+    "timeoriginalestimate": null,
+    "description": "사용자가 비 DICOM 또는 손상된 파일 선택 시 발생 위험\n\n원인: .dcm 확장자가 아닌 파일 또는 손상된 파일 선택\n심각도: S=2, 발생가능성: P=3, 리스크: R=6 (보통)\n영향: 파일 로딩 실패 및 오류 메시지 표시\n\n완화: validateMagicByte로 오프셋 128~131 DICM 확인\n근거: validateMagicByte.js, index.html accept 속성",
+    "customfield_10010": null,
+    "customfield_10014": null,
+    "customfield_10015": null,
+    "timetracking": {},
+    "customfield_10005": null,
+    "customfield_10006": null,
+    "customfield_10007": null,
+    "security": null,
+    "customfield_10008": null,
+    "attachment": [],
+    "customfield_10009": null,
+    "summary": "[HAZ-1.1] 비 DICOM 파일 입력",
+    "customfield_10001": null,
+    "customfield_10002": [],
+    "customfield_10003": null,
+    "customfield_10004": null,
+    "environment": null,
+    "duedate": null,
+    "comment": {
+      "comments": [],
+      "self": "https://neobiotech.atlassian.net/rest/api/2/issue/15975/comment",
+      "maxResults": 0,
+      "total": 0,
+      "startAt": 0
+    }
+  }
+}
