@@ -116,47 +116,26 @@ classifiers:
 
 ## 사용 예시
 
-### Python 코드
+### 전체 스크립트 (초기화 + 값 설정)
 
 ```python
 import requests
-import os
+import time
 
-def set_risk_value(issue_key, severity, probability):
-    """Hazard 티켓에 Risk Value 설정"""
+def set_risk_value(issue_key, risk_set_id, classifier_id, option_id):
+    """단일 Risk 값 설정"""
 
-    # 설정 로드
-    endpoint = os.getenv('RISK_PLUGIN_ENDPOINT')
-    auth_token = os.getenv('RISK_PLUGIN_AUTH_TOKEN')
-
-    # Risk Model 정보
-    risk_model_key = "risk-model-9dc1c741-0858-4a96-65d6-5feaf052da71"
-    risk_set_id = "2f43f135-d043-84bd-4222-46ba4a309738"
-
-    # Classifier/Option 매핑
-    severity_map = {
-        'minor': '70ccea9f-a585-d248-dbd0-e6eefcc683e8',
-        # ...
-    }
-
-    probability_map = {
-        'low': 'option-id-2',
-        # ...
-    }
-
-    # 페이로드 구성
     payload = {
         "issueKey": issue_key,
-        "author": os.getenv('JIRA_ACCOUNT_ID'),
+        "author": "557058:f58131cb-b67d-43c7-b30d-6b58d40bd077",
         "riskModelKey": risk_model_key,
         "riskSetId": risk_set_id,
         "classifierValuePayload": {
-            "classifierId": "120dbe93-8a5c-89d9-398c-6fdefc8fa072",
-            "optionId": severity_map[severity]
+            "classifierId": classifier_id,
+            "optionId": option_id
         }
     }
 
-    # API 호출
     headers = {
         'x-trigger-authentication': auth_token,
         'Content-Type': 'application/json'
@@ -165,6 +144,17 @@ def set_risk_value(issue_key, severity, probability):
     response = requests.post(endpoint, json=payload, headers=headers)
     return response.json()
 ```
+
+### 사용 가능한 스크립트
+
+프로젝트에 포함된 스크립트를 사용하세요:
+
+```bash
+# Risk 값 설정 스크립트
+python scripts/risk-management/set-risk-values.py PLAYG-1497
+```
+
+자세한 사용법은 [scripts/risk-management/README.md](../scripts/risk-management/README.md)를 참고하세요.
 
 ## 주의사항
 
