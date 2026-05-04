@@ -1,0 +1,833 @@
+{
+  "analyzed_at": "2026-05-04T22:15:35.066121",
+  "ticket": {
+    "id": "PLAYG-1446",
+    "summary": "LocalViewer - 로컬 파일 렌더링 전용 웹페이지",
+    "status": "Confirmed",
+    "issuetype": "Intended Use"
+  },
+  "fields": {
+    "statuscategorychangedate": {
+      "id": "statuscategorychangedate",
+      "name": "Status Category Changed",
+      "is_custom": false,
+      "type": "datetime",
+      "value": "2026-04-21T08:33:52.783+0900",
+      "has_value": true
+    },
+    "customfield_10070": {
+      "id": "customfield_10070",
+      "name": "Story Points",
+      "is_custom": true,
+      "type": "number",
+      "value": null,
+      "has_value": false
+    },
+    "fixVersions": {
+      "id": "fixVersions",
+      "name": "Fix versions",
+      "is_custom": false,
+      "type": "array",
+      "value": "[]",
+      "has_value": true
+    },
+    "statusCategory": {
+      "id": "statusCategory",
+      "name": "Status Category",
+      "is_custom": false,
+      "type": "statusCategory",
+      "value": "done",
+      "has_value": true
+    },
+    "customfield_10111": {
+      "id": "customfield_10111",
+      "name": "User Constraint",
+      "is_custom": true,
+      "type": "string",
+      "value": "로컬 환경에서만 동작하며 인터넷 연결이 필요하지 않음. 최신 버전의 웹 브라우저(Chrome, Firefox, Edge 등) 필요. 로컬 파일 시스템 접근 권한이 있어야 함.",
+      "has_value": true
+    },
+    "customfield_10112": {
+      "id": "customfield_10112",
+      "name": "Verification Criteria",
+      "is_custom": true,
+      "type": "string",
+      "value": null,
+      "has_value": false
+    },
+    "customfield_10234": {
+      "id": "customfield_10234",
+      "name": "Effect",
+      "is_custom": true,
+      "type": "string",
+      "value": null,
+      "has_value": false
+    },
+    "customfield_10346": {
+      "id": "customfield_10346",
+      "name": "Rules",
+      "is_custom": true,
+      "type": "array",
+      "value": null,
+      "has_value": false
+    },
+    "customfield_10104": {
+      "id": "customfield_10104",
+      "name": "Indication",
+      "is_custom": true,
+      "type": "string",
+      "value": "로컬에 저장된 다양한 형식의 파일(텍스트, 이미지, 문서 등)을 웹 브라우저 상에서 시각적으로 렌더링하여 확인하는 용도. 파일 내용의 빠른 미리보기 및 간단한 확인 목적으로 사용.",
+      "has_value": true
+    },
+    "customfield_10347": {
+      "id": "customfield_10347",
+      "name": "Rationale",
+      "is_custom": true,
+      "type": "string",
+      "value": null,
+      "has_value": false
+    },
+    "customfield_10105": {
+      "id": "customfield_10105",
+      "name": "Intended Patient Population",
+      "is_custom": true,
+      "type": "string",
+      "value": "해당 없음. 의료기기가 아닌 일반 로컬 웹페이지 도구이므로 특정 환자 집단이 아닌 일반 사용자를 대상으로 함.",
+      "has_value": true
+    },
+    "customfield_10348": {
+      "id": "customfield_10348",
+      "name": "Final Class",
+      "is_custom": true,
+      "type": "option",
+      "value": null,
+      "has_value": false
+    },
+    "customfield_10106": {
+      "id": "customfield_10106",
+      "name": "Intended User",
+      "is_custom": true,
+      "type": "string",
+      "value": "로컬 컴퓨터에서 파일을 확인하고 싶은 모든 일반 사용자. 특별한 전문 지식이나 면허가 필요하지 않음. 기본적인 웹 브라우저 사용이 가능한자.",
+      "has_value": true
+    },
+    "customfield_10349": {
+      "id": "customfield_10349",
+      "name": "Software Safety Class",
+      "is_custom": true,
+      "type": "option",
+      "value": null,
+      "has_value": false
+    },
+    "customfield_10107": {
+      "id": "customfield_10107",
+      "name": "Clinical Benefit",
+      "is_custom": true,
+      "type": "string",
+      "value": "해당 없음. 의료기기가 아닌 일반 목적의 로컬 파일 렌더링 도구임. 로컬 파일을 빠르고 간편하게 웹 브라우저에서 확인할 수 있는 편의성 제공.",
+      "has_value": true
+    },
+    "customfield_10108": {
+      "id": "customfield_10108",
+      "name": "Requirement Type",
+      "is_custom": true,
+      "type": "option",
+      "value": null,
+      "has_value": false
+    },
+    "lastViewed": {
+      "id": "lastViewed",
+      "name": "Last Viewed",
+      "is_custom": false,
+      "type": "datetime",
+      "value": "2026-05-04T21:43:33.763+0900",
+      "has_value": true
+    },
+    "customfield_10340": {
+      "id": "customfield_10340",
+      "name": "Hardware Constraints",
+      "is_custom": true,
+      "type": "string",
+      "value": null,
+      "has_value": false
+    },
+    "priority": {
+      "id": "priority",
+      "name": "Priority",
+      "is_custom": false,
+      "type": "priority",
+      "value": "Medium",
+      "has_value": true
+    },
+    "customfield_10342": {
+      "id": "customfield_10342",
+      "name": "OS Specifications",
+      "is_custom": true,
+      "type": "option",
+      "value": null,
+      "has_value": false
+    },
+    "customfield_10343": {
+      "id": "customfield_10343",
+      "name": "Functional Description",
+      "is_custom": true,
+      "type": "string",
+      "value": null,
+      "has_value": false
+    },
+    "customfield_10344": {
+      "id": "customfield_10344",
+      "name": "Performance Metrics",
+      "is_custom": true,
+      "type": "string",
+      "value": null,
+      "has_value": false
+    },
+    "customfield_10103": {
+      "id": "customfield_10103",
+      "name": "Intended Purpose",
+      "is_custom": true,
+      "type": "string",
+      "value": "로컬 환경에서만 동작하는 웹페이지로, 사용자의 로컬 파일 시스템에 저장된 파일을 읽어 웹 브라우저에 렌더링하는 기능을 제공한다. 서버 통신이나 외부 네트워크 연결은 필요하지 않으며, 오직 로컬 파일만을 대상으로 동작한다.",
+      "has_value": true
+    },
+    "labels": {
+      "id": "labels",
+      "name": "Labels",
+      "is_custom": false,
+      "type": "array",
+      "value": "[]",
+      "has_value": true
+    },
+    "customfield_10345": {
+      "id": "customfield_10345",
+      "name": "Data Standards",
+      "is_custom": true,
+      "type": "array",
+      "value": null,
+      "has_value": false
+    },
+    "customfield_10338": {
+      "id": "customfield_10338",
+      "name": "System ID",
+      "is_custom": true,
+      "type": "string",
+      "value": null,
+      "has_value": false
+    },
+    "customfield_10339": {
+      "id": "customfield_10339",
+      "name": "Requirement Name",
+      "is_custom": true,
+      "type": "string",
+      "value": null,
+      "has_value": false
+    },
+    "versions": {
+      "id": "versions",
+      "name": "Affects versions",
+      "is_custom": false,
+      "type": "array",
+      "value": "[]",
+      "has_value": true
+    },
+    "issuelinks": {
+      "id": "issuelinks",
+      "name": "Linked Issues",
+      "is_custom": false,
+      "type": "array",
+      "value": "[<JIRA IssueLink: id='17738'>, <JIRA IssueLink: id='17739'>, <JIRA IssueLink: id='17741'>, <JIRA IssueLink: id='17743'>, <JIRA IssueLink: id='17745'>, <JIRA IssueLink: id='17747'>, <JIRA IssueLink: id",
+      "has_value": true
+    },
+    "status": {
+      "id": "status",
+      "name": "Status",
+      "is_custom": false,
+      "type": "status",
+      "value": "Confirmed",
+      "has_value": true
+    },
+    "components": {
+      "id": "components",
+      "name": "Components",
+      "is_custom": false,
+      "type": "array",
+      "value": "[]",
+      "has_value": true
+    },
+    "customfield_10449": {
+      "id": "customfield_10449",
+      "name": "Gate Checklist",
+      "is_custom": true,
+      "type": "string",
+      "value": null,
+      "has_value": false
+    },
+    "creator": {
+      "id": "creator",
+      "name": "Creator",
+      "is_custom": false,
+      "type": "user",
+      "value": "심호기",
+      "has_value": true
+    },
+    "subtasks": {
+      "id": "subtasks",
+      "name": "Sub-tasks",
+      "is_custom": false,
+      "type": "array",
+      "value": "[]",
+      "has_value": true
+    },
+    "customfield_10163": {
+      "id": "customfield_10163",
+      "name": "Revision",
+      "is_custom": true,
+      "type": "string",
+      "value": null,
+      "has_value": false
+    },
+    "reporter": {
+      "id": "reporter",
+      "name": "Reporter",
+      "is_custom": false,
+      "type": "user",
+      "value": "심호기",
+      "has_value": true
+    },
+    "aggregateprogress": {
+      "id": "aggregateprogress",
+      "name": "Σ Progress",
+      "is_custom": false,
+      "type": "progress",
+      "value": "<jira.resources.PropertyHolder object at 0x104fecf50>",
+      "has_value": true
+    },
+    "customfield_10166": {
+      "id": "customfield_10166",
+      "name": "CVSS vector",
+      "is_custom": true,
+      "type": "string",
+      "value": null,
+      "has_value": false
+    },
+    "customfield_10167": {
+      "id": "customfield_10167",
+      "name": "CVSS score",
+      "is_custom": true,
+      "type": "string",
+      "value": null,
+      "has_value": false
+    },
+    "customfield_10201": {
+      "id": "customfield_10201",
+      "name": "Root Cause",
+      "is_custom": true,
+      "type": "string",
+      "value": null,
+      "has_value": false
+    },
+    "progress": {
+      "id": "progress",
+      "name": "Progress",
+      "is_custom": false,
+      "type": "progress",
+      "value": "<jira.resources.PropertyHolder object at 0x104fed090>",
+      "has_value": true
+    },
+    "votes": {
+      "id": "votes",
+      "name": "Votes",
+      "is_custom": false,
+      "type": "votes",
+      "value": "0",
+      "has_value": true
+    },
+    "worklog": {
+      "id": "worklog",
+      "name": "Log Work",
+      "is_custom": false,
+      "type": "array",
+      "value": "<jira.resources.PropertyHolder object at 0x104fed1d0>",
+      "has_value": true
+    },
+    "issuetype": {
+      "id": "issuetype",
+      "name": "Issue Type",
+      "is_custom": false,
+      "type": "issuetype",
+      "value": "Intended Use",
+      "has_value": true
+    },
+    "customfield_10030": {
+      "id": "customfield_10030",
+      "name": "Submitted forms",
+      "is_custom": true,
+      "type": "number",
+      "value": null,
+      "has_value": false
+    },
+    "project": {
+      "id": "project",
+      "name": "Project",
+      "is_custom": false,
+      "type": "project",
+      "value": "PLAYG",
+      "has_value": true
+    },
+    "customfield_10031": {
+      "id": "customfield_10031",
+      "name": "Open forms",
+      "is_custom": true,
+      "type": "number",
+      "value": null,
+      "has_value": false
+    },
+    "customfield_10032": {
+      "id": "customfield_10032",
+      "name": "Total forms",
+      "is_custom": true,
+      "type": "number",
+      "value": null,
+      "has_value": false
+    },
+    "customfield_10033": {
+      "id": "customfield_10033",
+      "name": "Design",
+      "is_custom": true,
+      "type": "array",
+      "value": null,
+      "has_value": false
+    },
+    "customfield_10034": {
+      "id": "customfield_10034",
+      "name": "Focus Areas",
+      "is_custom": true,
+      "type": "array",
+      "value": null,
+      "has_value": false
+    },
+    "customfield_10035": {
+      "id": "customfield_10035",
+      "name": "Vulnerability",
+      "is_custom": true,
+      "type": "any",
+      "value": null,
+      "has_value": false
+    },
+    "customfield_10036": {
+      "id": "customfield_10036",
+      "name": "Project overview key",
+      "is_custom": true,
+      "type": "string",
+      "value": null,
+      "has_value": false
+    },
+    "customfield_10037": {
+      "id": "customfield_10037",
+      "name": "Project overview status",
+      "is_custom": true,
+      "type": "string",
+      "value": null,
+      "has_value": false
+    },
+    "customfield_10027": {
+      "id": "customfield_10027",
+      "name": "[CHART] Time in Status",
+      "is_custom": true,
+      "type": "any",
+      "value": null,
+      "has_value": false
+    },
+    "customfield_10302": {
+      "id": "customfield_10302",
+      "name": "Use Environment",
+      "is_custom": true,
+      "type": "string",
+      "value": "치과의원, 치과병원, 종합병원 치과진료실, 영상의학과 판독실. 실내 온도 15~35도, 습도 30~75%. 인터넷 연결 필수. HTML5/WebGL 지원 브라우저(Chrome/Edge/Firefox 최신), 8GB+ RAM, 1920x1080+ 모니터.",
+      "has_value": true
+    },
+    "customfield_10148": {
+      "id": "customfield_10148",
+      "name": "Harm",
+      "is_custom": true,
+      "type": "string",
+      "value": null,
+      "has_value": false
+    },
+    "customfield_10303": {
+      "id": "customfield_10303",
+      "name": "Principle of Operation",
+      "is_custom": true,
+      "type": "string",
+      "value": "DICOM 볼륨 데이터를 웹 서버에서 WebGL 호환 형식으로 변환. MPR은 3D 체적에서 Axial/Coronal/Sagittal 단면을 실시간 계산. 3D Volume Rendering은 Ray Casting 기반으로 WebGL 2.0 GPU 가속 구현. 전송 함수로 조직 밀도별 색상/투명도 설정.",
+      "has_value": true
+    },
+    "customfield_10028": {
+      "id": "customfield_10028",
+      "name": "Goals",
+      "is_custom": true,
+      "type": "array",
+      "value": null,
+      "has_value": false
+    },
+    "customfield_10029": {
+      "id": "customfield_10029",
+      "name": "Locked forms",
+      "is_custom": true,
+      "type": "number",
+      "value": null,
+      "has_value": false
+    },
+    "customfield_10304": {
+      "id": "customfield_10304",
+      "name": "Key Performance Spec",
+      "is_custom": true,
+      "type": "string",
+      "value": "MPR 갱신 100ms 이내, 3D 렌더링 최소 30FPS, 최대 512^3 voxel 지원, 거리 측정 오차 ±0.1mm 이내, 동시 50명 접속, DICOM 3.0 지원, Chrome/Edge/Firefox 90+ 호환.",
+      "has_value": true
+    },
+    "customfield_10305": {
+      "id": "customfield_10305",
+      "name": "Warnings and Precautions",
+      "is_custom": true,
+      "type": "string",
+      "value": "진단 보조용이므로 최종 진단은 반드시 전문의 판단 필요. 영상 품질 불량시 정확도 저하 가능. 네트워크 장애시 사용 불가. HTTPS 및 사용자 인증 필수. 환자 정보 캡처/공유시 개인정보보호 규정 준수. 브라우저/서버 최신 유지 권장.",
+      "has_value": true
+    },
+    "workratio": {
+      "id": "workratio",
+      "name": "Work Ratio",
+      "is_custom": false,
+      "type": "number",
+      "value": "-1",
+      "has_value": true
+    },
+    "watches": {
+      "id": "watches",
+      "name": "Watchers",
+      "is_custom": false,
+      "type": "watches",
+      "value": "<JIRA Watchers at 4378146000>",
+      "has_value": true
+    },
+    "created": {
+      "id": "created",
+      "name": "Created",
+      "is_custom": false,
+      "type": "datetime",
+      "value": "2026-04-20T18:26:05.994+0900",
+      "has_value": true
+    },
+    "customfield_10382": {
+      "id": "customfield_10382",
+      "name": "Phase",
+      "is_custom": true,
+      "type": "option",
+      "value": "PA",
+      "has_value": true
+    },
+    "customfield_10020": {
+      "id": "customfield_10020",
+      "name": "Sprint",
+      "is_custom": true,
+      "type": "array",
+      "value": null,
+      "has_value": false
+    },
+    "customfield_10021": {
+      "id": "customfield_10021",
+      "name": "Flagged",
+      "is_custom": true,
+      "type": "array",
+      "value": null,
+      "has_value": false
+    },
+    "customfield_10022": {
+      "id": "customfield_10022",
+      "name": "Target start",
+      "is_custom": true,
+      "type": "date",
+      "value": null,
+      "has_value": false
+    },
+    "customfield_10023": {
+      "id": "customfield_10023",
+      "name": "Target end",
+      "is_custom": true,
+      "type": "date",
+      "value": null,
+      "has_value": false
+    },
+    "customfield_10024": {
+      "id": "customfield_10024",
+      "name": "Sentiment",
+      "is_custom": true,
+      "type": "array",
+      "value": null,
+      "has_value": false
+    },
+    "customfield_10267": {
+      "id": "customfield_10267",
+      "name": "Category",
+      "is_custom": true,
+      "type": "option",
+      "value": null,
+      "has_value": false
+    },
+    "customfield_10025": {
+      "id": "customfield_10025",
+      "name": "Approvals",
+      "is_custom": true,
+      "type": "sd-approvals",
+      "value": null,
+      "has_value": false
+    },
+    "customfield_10147": {
+      "id": "customfield_10147",
+      "name": "Hazardous Situation",
+      "is_custom": true,
+      "type": "string",
+      "value": null,
+      "has_value": false
+    },
+    "customfield_10301": {
+      "id": "customfield_10301",
+      "name": "Part of Body",
+      "is_custom": true,
+      "type": "string",
+      "value": "본 제품은 웹 기반 소프트웨어로 환자 신체에 직접 접촉하지 않음. CBCT 장비에서 획득한 두경부 및 치과 영역의 DICOM 영상 데이터를 입력받아 화면에 시각화하는 방식으로 동작함.",
+      "has_value": true
+    },
+    "customfield_10026": {
+      "id": "customfield_10026",
+      "name": "[CHART] Date of First Response",
+      "is_custom": true,
+      "type": "datetime",
+      "value": null,
+      "has_value": false
+    },
+    "customfield_10016": {
+      "id": "customfield_10016",
+      "name": "Story point estimate",
+      "is_custom": true,
+      "type": "number",
+      "value": null,
+      "has_value": false
+    },
+    "customfield_10017": {
+      "id": "customfield_10017",
+      "name": "Issue color",
+      "is_custom": true,
+      "type": "string",
+      "value": null,
+      "has_value": false
+    },
+    "customfield_10018": {
+      "id": "customfield_10018",
+      "name": "Parent Link",
+      "is_custom": true,
+      "type": "any",
+      "value": null,
+      "has_value": false
+    },
+    "customfield_10019": {
+      "id": "customfield_10019",
+      "name": "Rank",
+      "is_custom": true,
+      "type": "any",
+      "value": "0|i006vr:",
+      "has_value": true
+    },
+    "customfield_10416": {
+      "id": "customfield_10416",
+      "name": "Document ID",
+      "is_custom": true,
+      "type": "option",
+      "value": null,
+      "has_value": false
+    },
+    "updated": {
+      "id": "updated",
+      "name": "Updated",
+      "is_custom": false,
+      "type": "datetime",
+      "value": "2026-04-21T08:39:52.871+0900",
+      "has_value": true
+    },
+    "description": {
+      "id": "description",
+      "name": "Description",
+      "is_custom": false,
+      "type": "string",
+      "value": "Generated from parent ticket: PLAYG-1439",
+      "has_value": true
+    },
+    "customfield_10010": {
+      "id": "customfield_10010",
+      "name": "Request Type",
+      "is_custom": true,
+      "type": "sd-customerrequesttype",
+      "value": null,
+      "has_value": false
+    },
+    "customfield_10011": {
+      "id": "customfield_10011",
+      "name": "Epic Name",
+      "is_custom": true,
+      "type": "string",
+      "value": null,
+      "has_value": false
+    },
+    "customfield_10012": {
+      "id": "customfield_10012",
+      "name": "Epic Status",
+      "is_custom": true,
+      "type": "option",
+      "value": null,
+      "has_value": false
+    },
+    "customfield_10013": {
+      "id": "customfield_10013",
+      "name": "Epic Color",
+      "is_custom": true,
+      "type": "string",
+      "value": null,
+      "has_value": false
+    },
+    "customfield_10014": {
+      "id": "customfield_10014",
+      "name": "Epic Link",
+      "is_custom": true,
+      "type": "any",
+      "value": null,
+      "has_value": false
+    },
+    "timetracking": {
+      "id": "timetracking",
+      "name": "Time tracking",
+      "is_custom": false,
+      "type": "timetracking",
+      "value": "<JIRA TimeTracking at 4378146672>",
+      "has_value": true
+    },
+    "customfield_10015": {
+      "id": "customfield_10015",
+      "name": "Start date",
+      "is_custom": true,
+      "type": "date",
+      "value": null,
+      "has_value": false
+    },
+    "customfield_10005": {
+      "id": "customfield_10005",
+      "name": "Change type",
+      "is_custom": true,
+      "type": "option",
+      "value": null,
+      "has_value": false
+    },
+    "customfield_10006": {
+      "id": "customfield_10006",
+      "name": "Change risk",
+      "is_custom": true,
+      "type": "option",
+      "value": null,
+      "has_value": false
+    },
+    "customfield_10007": {
+      "id": "customfield_10007",
+      "name": "Change reason",
+      "is_custom": true,
+      "type": "option",
+      "value": null,
+      "has_value": false
+    },
+    "customfield_10008": {
+      "id": "customfield_10008",
+      "name": "Actual start",
+      "is_custom": true,
+      "type": "datetime",
+      "value": null,
+      "has_value": false
+    },
+    "attachment": {
+      "id": "attachment",
+      "name": "Attachment",
+      "is_custom": false,
+      "type": "array",
+      "value": "[]",
+      "has_value": true
+    },
+    "customfield_10009": {
+      "id": "customfield_10009",
+      "name": "Actual end",
+      "is_custom": true,
+      "type": "datetime",
+      "value": null,
+      "has_value": false
+    },
+    "summary": {
+      "id": "summary",
+      "name": "Summary",
+      "is_custom": false,
+      "type": "string",
+      "value": "LocalViewer - 로컬 파일 렌더링 전용 웹페이지",
+      "has_value": true
+    },
+    "customfield_10000": {
+      "id": "customfield_10000",
+      "name": "Development",
+      "is_custom": true,
+      "type": "any",
+      "value": null,
+      "has_value": false
+    },
+    "customfield_10001": {
+      "id": "customfield_10001",
+      "name": "Team",
+      "is_custom": true,
+      "type": "team",
+      "value": null,
+      "has_value": false
+    },
+    "customfield_10002": {
+      "id": "customfield_10002",
+      "name": "Organizations",
+      "is_custom": true,
+      "type": "array",
+      "value": "[]",
+      "has_value": true
+    },
+    "customfield_10003": {
+      "id": "customfield_10003",
+      "name": "Approvers",
+      "is_custom": true,
+      "type": "array",
+      "value": null,
+      "has_value": false
+    },
+    "customfield_10004": {
+      "id": "customfield_10004",
+      "name": "Impact",
+      "is_custom": true,
+      "type": "option",
+      "value": null,
+      "has_value": false
+    },
+    "comment": {
+      "id": "comment",
+      "name": "Comment",
+      "is_custom": false,
+      "type": "comments-page",
+      "value": "<JIRA UnknownResource at 4378147008>",
+      "has_value": true
+    }
+  },
+  "field_definitions": {},
+  "summary": {
+    "total_fields": 102,
+    "custom_fields": 74,
+    "fields_with_values": 42
+  }
+}

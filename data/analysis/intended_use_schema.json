@@ -1,0 +1,29 @@
+{
+  "expand": "projects",
+  "projects": [
+    {
+      "self": "https://neobiotech.atlassian.net/rest/api/2/project/10134",
+      "id": "10134",
+      "key": "PLAYG",
+      "name": "PlayGround",
+      "avatarUrls": {
+        "48x48": "https://neobiotech.atlassian.net/rest/api/2/universal_avatar/view/type/project/avatar/10403",
+        "24x24": "https://neobiotech.atlassian.net/rest/api/2/universal_avatar/view/type/project/avatar/10403?size=small",
+        "16x16": "https://neobiotech.atlassian.net/rest/api/2/universal_avatar/view/type/project/avatar/10403?size=xsmall",
+        "32x32": "https://neobiotech.atlassian.net/rest/api/2/universal_avatar/view/type/project/avatar/10403?size=medium"
+      },
+      "issuetypes": [
+        {
+          "self": "https://neobiotech.atlassian.net/rest/api/2/issuetype/10041",
+          "id": "10041",
+          "description": "의도된 사용 목적",
+          "iconUrl": "https://neobiotech.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10322?size=medium",
+          "name": "Intended Use",
+          "untranslatedName": "Intended Use",
+          "subtask": false,
+          "hierarchyLevel": 0
+        }
+      ]
+    }
+  ]
+}
