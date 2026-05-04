@@ -1,0 +1,379 @@
+{
+  "issue_type": "Detailed Design",
+  "issue_type_id": "10046",
+  "project": "PLAYG",
+  "fields": {
+    "summary": {
+      "required": true,
+      "schema": {
+        "type": "string",
+        "system": "summary"
+      },
+      "name": "Summary",
+      "key": "summary",
+      "hasDefaultValue": false,
+      "operations": [
+        "set"
+      ]
+    },
+    "issuetype": {
+      "required": true,
+      "schema": {
+        "type": "issuetype",
+        "system": "issuetype"
+      },
+      "name": "Issue Type",
+      "key": "issuetype",
+      "hasDefaultValue": false,
+      "operations": [],
+      "allowedValues": [
+        {
+          "self": "https://neobiotech.atlassian.net/rest/api/2/issuetype/10046",
+          "id": "10046",
+          "description": "상세 설계",
+          "iconUrl": "https://neobiotech.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10622?size=medium",
+          "name": "Detailed Design",
+          "subtask": false,
+          "avatarId": 10622,
+          "hierarchyLevel": 0
+        }
+      ]
+    },
+    "parent": {
+      "required": false,
+      "schema": {
+        "type": "issuelink",
+        "system": "parent"
+      },
+      "name": "Parent",
+      "key": "parent",
+      "hasDefaultValue": false,
+      "operations": [
+        "set"
+      ]
+    },
+    "components": {
+      "required": false,
+      "schema": {
+        "type": "array",
+        "items": "component",
+        "system": "components"
+      },
+      "name": "Components",
+      "key": "components",
+      "hasDefaultValue": false,
+      "operations": [
+        "add",
+        "set",
+        "remove"
+      ],
+      "allowedValues": []
+    },
+    "customfield_10382": {
+      "required": false,
+      "schema": {
+        "type": "option",
+        "custom": "com.atlassian.jira.plugin.system.customfieldtypes:select",
+        "customId": 10382
+      },
+      "name": "Phase",
+      "key": "customfield_10382",
+      "hasDefaultValue": false,
+      "operations": [
+        "set"
+      ],
+      "allowedValues": [
+        {
+          "self": "https://neobiotech.atlassian.net/rest/api/2/customFieldOption/10180",
+          "value": "PA",
+          "id": "10180"
+        },
+        {
+          "self": "https://neobiotech.atlassian.net/rest/api/2/customFieldOption/10181",
+          "value": "EA",
+          "id": "10181"
+        },
+        {
+          "self": "https://neobiotech.atlassian.net/rest/api/2/customFieldOption/10182",
+          "value": "ER",
+          "id": "10182"
+        },
+        {
+          "self": "https://neobiotech.atlassian.net/rest/api/2/customFieldOption/10183",
+          "value": "CA",
+          "id": "10183"
+        },
+        {
+          "self": "https://neobiotech.atlassian.net/rest/api/2/customFieldOption/10184",
+          "value": "M",
+          "id": "10184"
+        }
+      ]
+    },
+    "description": {
+      "required": false,
+      "schema": {
+        "type": "string",
+        "system": "description"
+      },
+      "name": "Description",
+      "key": "description",
+      "hasDefaultValue": false,
+      "operations": [
+        "set"
+      ]
+    },
+    "customfield_10163": {
+      "required": false,
+      "schema": {
+        "type": "string",
+        "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textfield",
+        "customId": 10163
+      },
+      "name": "Revision",
+      "key": "customfield_10163",
+      "hasDefaultValue": false,
+      "operations": [
+        "set"
+      ]
+    },
+    "project": {
+      "required": true,
+      "schema": {
+        "type": "project",
+        "system": "project"
+      },
+      "name": "Project",
+      "key": "project",
+      "hasDefaultValue": false,
+      "operations": [
+        "set"
+      ],
+      "allowedValues": [
+        {
+          "self": "https://neobiotech.atlassian.net/rest/api/2/project/10134",
+          "id": "10134",
+          "key": "PLAYG",
+          "name": "PlayGround",
+          "projectTypeKey": "software",
+          "simplified": false,
+          "avatarUrls": {
+            "48x48": "https://neobiotech.atlassian.net/rest/api/2/universal_avatar/view/type/project/avatar/10403",
+            "24x24": "https://neobiotech.atlassian.net/rest/api/2/universal_avatar/view/type/project/avatar/10403?size=small",
+            "16x16": "https://neobiotech.atlassian.net/rest/api/2/universal_avatar/view/type/project/avatar/10403?size=xsmall",
+            "32x32": "https://neobiotech.atlassian.net/rest/api/2/universal_avatar/view/type/project/avatar/10403?size=medium"
+          }
+        }
+      ]
+    },
+    "reporter": {
+      "required": true,
+      "schema": {
+        "type": "user",
+        "system": "reporter"
+      },
+      "name": "Reporter",
+      "key": "reporter",
+      "autoCompleteUrl": "https://neobiotech.atlassian.net/rest/api/2/user/recommend?context=Reporter&issueKey=",
+      "hasDefaultValue": true,
+      "operations": [
+        "set"
+      ]
+    },
+    "fixVersions": {
+      "required": false,
+      "schema": {
+        "type": "array",
+        "items": "version",
+        "system": "fixVersions"
+      },
+      "name": "Fix versions",
+      "key": "fixVersions",
+      "hasDefaultValue": false,
+      "operations": [
+        "set",
+        "add",
+        "remove"
+      ],
+      "allowedValues": []
+    },
+    "priority": {
+      "required": false,
+      "schema": {
+        "type": "priority",
+        "system": "priority"
+      },
+      "name": "Priority",
+      "key": "priority",
+      "hasDefaultValue": true,
+      "operations": [
+        "set"
+      ],
+      "allowedValues": [
+        {
+          "self": "https://neobiotech.atlassian.net/rest/api/2/priority/1",
+          "iconUrl": "https://neobiotech.atlassian.net/images/icons/priorities/highest_new.svg",
+          "name": "Highest",
+          "id": "1"
+        },
+        {
+          "self": "https://neobiotech.atlassian.net/rest/api/2/priority/2",
+          "iconUrl": "https://neobiotech.atlassian.net/images/icons/priorities/high_new.svg",
+          "name": "High",
+          "id": "2"
+        },
+        {
+          "self": "https://neobiotech.atlassian.net/rest/api/2/priority/3",
+          "iconUrl": "https://neobiotech.atlassian.net/images/icons/priorities/medium_new.svg",
+          "name": "Medium",
+          "id": "3"
+        },
+        {
+          "self": "https://neobiotech.atlassian.net/rest/api/2/priority/4",
+          "iconUrl": "https://neobiotech.atlassian.net/images/icons/priorities/low_new.svg",
+          "name": "Low",
+          "id": "4"
+        },
+        {
+          "self": "https://neobiotech.atlassian.net/rest/api/2/priority/5",
+          "iconUrl": "https://neobiotech.atlassian.net/images/icons/priorities/lowest_new.svg",
+          "name": "Lowest",
+          "id": "5"
+        }
+      ],
+      "defaultValue": {
+        "self": "https://neobiotech.atlassian.net/rest/api/2/priority/3",
+        "iconUrl": "https://neobiotech.atlassian.net/images/icons/priorities/medium_new.svg",
+        "name": "Medium",
+        "id": "3"
+      }
+    },
+    "customfield_10003": {
+      "required": false,
+      "schema": {
+        "type": "array",
+        "items": "user",
+        "custom": "com.atlassian.jira.plugin.system.customfieldtypes:multiuserpicker",
+        "customId": 10003
+      },
+      "name": "Approvers",
+      "key": "customfield_10003",
+      "autoCompleteUrl": "https://neobiotech.atlassian.net/rest/api/1.0/users/picker?fieldName=customfield_10003&showAvatar=true&query=",
+      "hasDefaultValue": false,
+      "operations": [
+        "add",
+        "set",
+        "remove"
+      ]
+    },
+    "timetracking": {
+      "required": false,
+      "schema": {
+        "type": "timetracking",
+        "system": "timetracking"
+      },
+      "name": "Time tracking",
+      "key": "timetracking",
+      "hasDefaultValue": false,
+      "operations": [
+        "set",
+        "edit"
+      ]
+    },
+    "labels": {
+      "required": false,
+      "schema": {
+        "type": "array",
+        "items": "string",
+        "system": "labels"
+      },
+      "name": "Labels",
+      "key": "labels",
+      "autoCompleteUrl": "https://neobiotech.atlassian.net/rest/api/1.0/labels/suggest?query=",
+      "hasDefaultValue": false,
+      "operations": [
+        "add",
+        "set",
+        "remove"
+      ]
+    },
+    "environment": {
+      "required": false,
+      "schema": {
+        "type": "string",
+        "system": "environment"
+      },
+      "name": "Environment",
+      "key": "environment",
+      "hasDefaultValue": false,
+      "operations": [
+        "set"
+      ]
+    },
+    "attachment": {
+      "required": false,
+      "schema": {
+        "type": "array",
+        "items": "attachment",
+        "system": "attachment"
+      },
+      "name": "Attachment",
+      "key": "attachment",
+      "hasDefaultValue": false,
+      "operations": [
+        "set",
+        "copy"
+      ]
+    },
+    "versions": {
+      "required": false,
+      "schema": {
+        "type": "array",
+        "items": "version",
+        "system": "versions"
+      },
+      "name": "Affects versions",
+      "key": "versions",
+      "hasDefaultValue": false,
+      "operations": [
+        "set",
+        "add",
+        "remove"
+      ],
+      "allowedValues": []
+    },
+    "duedate": {
+      "required": false,
+      "schema": {
+        "type": "date",
+        "system": "duedate"
+      },
+      "name": "Due date",
+      "key": "duedate",
+      "hasDefaultValue": false,
+      "operations": [
+        "set"
+      ]
+    },
+    "assignee": {
+      "required": false,
+      "schema": {
+        "type": "user",
+        "system": "assignee"
+      },
+      "name": "Assignee",
+      "key": "assignee",
+      "autoCompleteUrl": "https://neobiotech.atlassian.net/rest/api/2/user/assignable/search?project=PLAYG&query=",
+      "hasDefaultValue": false,
+      "operations": [
+        "set"
+      ]
+    }
+  },
+  "summary": {
+    "total": 19,
+    "required": 4,
+    "custom": 3,
+    "standard": 12
+  }
+}

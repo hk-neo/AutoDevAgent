@@ -1,0 +1,160 @@
+{
+  "issue_type": "Gate",
+  "issue_type_id": "10048",
+  "project": "PLAYG",
+  "fields": {
+    "summary": {
+      "required": true,
+      "schema": {
+        "type": "string",
+        "system": "summary"
+      },
+      "name": "Summary",
+      "key": "summary",
+      "hasDefaultValue": false,
+      "operations": [
+        "set"
+      ]
+    },
+    "issuetype": {
+      "required": true,
+      "schema": {
+        "type": "issuetype",
+        "system": "issuetype"
+      },
+      "name": "Issue Type",
+      "key": "issuetype",
+      "hasDefaultValue": false,
+      "operations": [],
+      "allowedValues": [
+        {
+          "self": "https://neobiotech.atlassian.net/rest/api/2/issuetype/10048",
+          "id": "10048",
+          "description": "PA/EA/ER/CA/M",
+          "iconUrl": "https://neobiotech.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10616?size=medium",
+          "name": "Gate",
+          "subtask": false,
+          "avatarId": 10616,
+          "hierarchyLevel": 0
+        }
+      ]
+    },
+    "parent": {
+      "required": false,
+      "schema": {
+        "type": "issuelink",
+        "system": "parent"
+      },
+      "name": "Parent",
+      "key": "parent",
+      "hasDefaultValue": false,
+      "operations": [
+        "set"
+      ]
+    },
+    "customfield_10449": {
+      "required": false,
+      "schema": {
+        "type": "string",
+        "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textarea",
+        "customId": 10449
+      },
+      "name": "Gate Checklist",
+      "key": "customfield_10449",
+      "hasDefaultValue": false,
+      "operations": [
+        "set"
+      ]
+    },
+    "customfield_10382": {
+      "required": false,
+      "schema": {
+        "type": "option",
+        "custom": "com.atlassian.jira.plugin.system.customfieldtypes:select",
+        "customId": 10382
+      },
+      "name": "Phase",
+      "key": "customfield_10382",
+      "hasDefaultValue": false,
+      "operations": [
+        "set"
+      ],
+      "allowedValues": [
+        {
+          "self": "https://neobiotech.atlassian.net/rest/api/2/customFieldOption/10180",
+          "value": "PA",
+          "id": "10180"
+        },
+        {
+          "self": "https://neobiotech.atlassian.net/rest/api/2/customFieldOption/10181",
+          "value": "EA",
+          "id": "10181"
+        },
+        {
+          "self": "https://neobiotech.atlassian.net/rest/api/2/customFieldOption/10182",
+          "value": "ER",
+          "id": "10182"
+        },
+        {
+          "self": "https://neobiotech.atlassian.net/rest/api/2/customFieldOption/10183",
+          "value": "CA",
+          "id": "10183"
+        },
+        {
+          "self": "https://neobiotech.atlassian.net/rest/api/2/customFieldOption/10184",
+          "value": "M",
+          "id": "10184"
+        }
+      ]
+    },
+    "project": {
+      "required": true,
+      "schema": {
+        "type": "project",
+        "system": "project"
+      },
+      "name": "Project",
+      "key": "project",
+      "hasDefaultValue": false,
+      "operations": [
+        "set"
+      ],
+      "allowedValues": [
+        {
+          "self": "https://neobiotech.atlassian.net/rest/api/2/project/10134",
+          "id": "10134",
+          "key": "PLAYG",
+          "name": "PlayGround",
+          "projectTypeKey": "software",
+          "simplified": false,
+          "avatarUrls": {
+            "48x48": "https://neobiotech.atlassian.net/rest/api/2/universal_avatar/view/type/project/avatar/10403",
+            "24x24": "https://neobiotech.atlassian.net/rest/api/2/universal_avatar/view/type/project/avatar/10403?size=small",
+            "16x16": "https://neobiotech.atlassian.net/rest/api/2/universal_avatar/view/type/project/avatar/10403?size=xsmall",
+            "32x32": "https://neobiotech.atlassian.net/rest/api/2/universal_avatar/view/type/project/avatar/10403?size=medium"
+          }
+        }
+      ]
+    },
+    "assignee": {
+      "required": false,
+      "schema": {
+        "type": "user",
+        "system": "assignee"
+      },
+      "name": "Assignee",
+      "key": "assignee",
+      "autoCompleteUrl": "https://neobiotech.atlassian.net/rest/api/2/user/assignable/search?project=PLAYG&query=",
+      "hasDefaultValue": false,
+      "operations": [
+        "set"
+      ]
+    }
+  },
+  "summary": {
+    "total": 7,
+    "required": 3,
+    "custom": 2,
+    "standard": 2
+  }
+}
