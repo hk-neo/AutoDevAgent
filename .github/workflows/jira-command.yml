@@ -1,0 +1,47 @@
+name: Jira Command Handler
+
+on:
+  repository_dispatch:
+    types: [jira-command]
+
+jobs:
+  handle-command:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Log received payload
+        run: |
+          echo "Received Jira command payload:"
+          echo "${{ github.event.client_payload }}" | jq '.'
+
+      - name: Parse command
+        id: parse
+        run: |
+          # 페이로드에서 필요한 정보 추출
+          TICKET_ID=$(echo '${{ github.event.client_payload }}' | jq -r '.ticket_id // ""')
+          COMMAND=$(echo '${{ github.event.client_payload }}' | jq -r '.command // ""')
+          COMMENT_ID=$(echo '${{ github.event.client_payload }}' | jq -r '.comment_id // ""')
+
+          echo "ticket_id=$TICKET_ID" >> $GITHUB_OUTPUT
+          echo "command=$COMMAND" >> $GITHUB_OUTPUT
+          echo "comment_id=$COMMENT_ID" >> $GITHUB_OUTPUT
+
+          echo "Parsed values:"
+          echo "  Ticket: $TICKET_ID"
+          echo "  Command: $COMMAND"
+          echo "  Comment: $COMMENT_ID"
+
+      - name: Execute command (placeholder)
+        run: |
+          echo "Executing command: ${{ steps.parse.outputs.command }}"
+          echo "TODO: Implement actual command logic here"
+          echo "  - ticket_id: ${{ steps.parse.outputs.ticket_id }}"
+          echo "  - command: ${{ steps.parse.outputs.command }}"
+          echo "  - comment_id: ${{ steps.parse.outputs.comment_id }}"
+
+      - name: Send acknowledgment (placeholder)
+        run: |
+          echo "TODO: Send acknowledgment back to Jira"
+          echo "Comment on ticket ${{ steps.parse.outputs.ticket_id }}"
