@@ -141,6 +141,23 @@ jobs:
 
           goose run -t "$(cat goose_prompt.txt)" > goose_output.txt 2>&1 || true
           cat goose_output.txt | sed 's/\x1b\[[0-9;]*m//g' > goose_clean.txt
+
+          # 결과 요약 출력 (첫 20줄)
+          echo "=== Goose Output (first 20 lines) ==="
+          head -20 goose_clean.txt || echo "No output"
+
           RESULT="${COMMAND}: Successfully executed. See output."
 
           echo "result_message=${RESULT}" >> $GITHUB_OUTPUT
+
+      - name: Upload Goose output
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: goose-output-${{ steps.parse.outputs.command }}
+          path: |
+            goose_output.txt
+            goose_clean.txt
+            goose_prompt.txt
+            context.json
+          retention-days: 7
