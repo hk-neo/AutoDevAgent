@@ -157,21 +157,12 @@ jobs:
           JIRA_EMAIL: ${{ secrets.JIRA_EMAIL }}
           JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
         run: |
-          TICKET_KEY="${{ steps.parse.outputs.ticket_key }}"
-          COMMAND="${{ steps.parse.outputs.command }}"
-          ARGS="${{ steps.parse.outputs.args }}"
-
-          # Goose 출력에서 핵심 내용 추출 (헤더 제거)
-          COMMENT_BODY=$(tail -n +10 goose_clean.txt | head -n 50 | sed 's/^/  /')
-
-          # 코멘트 작성
-          python3 goose_assets/runner/jira_toolkit.py comment "$TICKET_KEY" "🦆 **Goose ${COMMAND}** 실행 완료
-
-${COMMENT_BODY}
-
----
-*명령어: !${COMMAND} ${ARGS}*
-*워크플로우: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}*"
+          ./scripts/post-jira-comment.sh \
+            "${{ steps.parse.outputs.ticket_key }}" \
+            "${{ steps.parse.outputs.command }}" \
+            "${{ steps.parse.outputs.args }}" \
+            goose_clean.txt \
+            "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
 
       - name: Upload Goose output
         if: always()
