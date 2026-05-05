@@ -10,11 +10,14 @@ WORKFLOW_URL="$5"
 # 출력 파일에서 핵심 내용 추출 (헤더 제거)
 COMMENT_BODY=$(tail -n +10 "$OUTPUT_FILE" | head -n 50 | sed 's/^/  /')
 
-# 코멘트 작성
-python3 goose_assets/runner/jira_toolkit.py comment "$TICKET_KEY" "🦆 **Goose ${COMMAND}** 실행 완료
+# 코멘트 텍스트 구성
+COMMENT_TEXT="🦆 **Goose ${COMMAND}** 실행 완료
 
 ${COMMENT_BODY}
 
 ---
 *명령어: !${COMMAND} ${ARGS}*
 *워크플로우: ${WORKFLOW_URL}*"
+
+# 코멘트 작성
+python3 goose_assets/runner/jira_toolkit.py comment "$TICKET_KEY" "$COMMENT_TEXT"
