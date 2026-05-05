@@ -44,14 +44,8 @@ jobs:
             echo "comment_body=${{ github.event.inputs.comment_body }}" >> $GITHUB_OUTPUT
           else
             echo "source=repository_dispatch" >> $GITHUB_OUTPUT
-            echo "ticket_key=$(jq -r '.ticket_key // ""' << 'EOF'
-            ${{ toJson(github.event.client_payload) }}
-            EOF
-            )" >> $GITHUB_OUTPUT
-            echo "comment_body=$(jq -r '.comment // ""' << 'EOF'
-            ${{ toJson(github.event.client_payload) }}
-            EOF
-            )" >> $GITHUB_OUTPUT
+            echo "ticket_key=$(echo '${{ toJson(github.event.client_payload) }}' | jq -r '.ticket_key // ""')" >> $GITHUB_OUTPUT
+            echo "comment_body=$(echo '${{ toJson(github.event.client_payload) }}' | jq -r '.comment // ""')" >> $GITHUB_OUTPUT
           fi
 
       - name: Parse command from comment
