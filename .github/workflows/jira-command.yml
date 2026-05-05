@@ -111,27 +111,21 @@ jobs:
           case "$COMMAND" in
             help)
               echo "Running Goose help skill..."
-              RESULT="help: Showing help information"
-              # TODO: Goose 호출로 대체
-              # goose run --skill help --context context.json --assets goose_assets
-              echo "Available commands:"
-              echo "  !generate - Generate artifacts/code"
-              echo "  !create-subs - Create sub-tickets"
-              echo "  !create-tasks - Create tasks"
-              echo "  !traceability - Check traceability"
-              echo "  !update - Update ticket"
-              echo "  !plan - Create implementation plan"
-              echo "  !implement - Implement based on plan"
-              echo "  !help - Show help"
+              export GOOSE_SKILLS_PATH="$GITHUB_WORKSPACE/goose_assets/skills"
+              export GOOSE_HINTS_PATH="$GITHUB_WORKSPACE/goose_assets/.goosehints"
+              RESULT=$(goose run -t "!help" 2>&1 || echo "Goose execution failed")
               ;;
             generate|create-subs|create-tasks|traceability|update|plan|implement)
-              RESULT="${COMMAND}: Processing ${TICKET_KEY}..."
-              echo "Goose will handle: ${COMMAND} command"
-              # TODO: 나머지 스킬도 Goose로 처리
+              echo "Running Goose ${COMMAND} skill..."
+              export GOOSE_SKILLS_PATH="$GITHUB_WORKSPACE/goose_assets/skills"
+              export GOOSE_HINTS_PATH="$GITHUB_WORKSPACE/goose_assets/.goosehints"
+              RESULT=$(goose run -t "!${COMMAND} ${ARGS}" 2>&1 || echo "Goose execution failed")
               ;;
             natural)
-              RESULT="natural: Processing natural language: $ARGS"
-              echo "Goose will handle: natural language processing"
+              echo "Running Goose with natural language..."
+              export GOOSE_SKILLS_PATH="$GITHUB_WORKSPACE/goose_assets/skills"
+              export GOOSE_HINTS_PATH="$GITHUB_WORKSPACE/goose_assets/.goosehints"
+              RESULT=$(goose run -t "${ARGS}" 2>&1 || echo "Goose execution failed")
               ;;
             *)
               RESULT="error: Unknown command: $COMMAND"
