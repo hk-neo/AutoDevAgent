@@ -40,6 +40,11 @@ jobs:
       - name: Install Goose CLI
         run: curl -fsSL https://github.com/aaif-goose/goose/releases/download/stable/download_cli.sh | bash
 
+      - name: Setup Goose config
+        run: |
+          mkdir -p ~/.config/goose
+          cp goose_assets/config/config.yaml ~/.config/goose/
+
       - name: Determine trigger source
         id: source
         run: |
