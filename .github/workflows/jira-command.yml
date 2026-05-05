@@ -56,8 +56,57 @@ jobs:
           else
             echo "source=repository_dispatch" >> $GITHUB_OUTPUT
             echo "ticket_key=$(echo '${{ toJson(github.event.client_payload) }}' | jq -r '.ticket_key // ""')" >> $GITHUB_OUTPUT
-            echo "comment_body=$(echo '${{ toJson(github.event.client_payload) }}' | jq -r '.comment // ""')" >> $GITHUB_OUTPUT
+            echo "comment_body=$(echo '${{ toJson(github.event.client_payload) }}' | jq -r '.comment_body // ""')" >> $GITHUB_OUTPUT
           fi
+
+      - name: Load project mapping
+        id: mapping
+        run: |
+          TICKET_KEY="${{ steps.source.outputs.ticket_key }}"
+          PROJECT_KEY=$(echo "$TICKET_KEY" | cut -d'-' -f1)
+
+          echo "project_key=$PROJECT_KEY" >> $GITHUB_OUTPUT
+
+          # 매핑에서 해당 프로젝트 찾기
+          MAPPING=$(jq -r --arg key "$PROJECT_KEY" '.mappings[] | select(.project_key == $key)' config/project-mapping.json)
+
+          if [ -z "$MAPPING" ] || [ "$MAPPING" = "null" ]; then
+            echo "Error: Project mapping not found for $PROJECT_KEY"
+            exit 1
+          fi
+
+          GITHUB_REPO=$(echo "$MAPPING" | jq -r '.github_repo')
+          DEFAULT_BRANCH=$(echo "$MAPPING" | jq -r '.default_branch')
+          DOC_PATH=$(echo "$MAPPING" | jq -r '.settings.document_path')
+
+          echo "github_repo=$GITHUB_REPO" >> $GITHUB_OUTPUT
+          echo "default_branch=$DEFAULT_BRANCH" >> $GITHUB_OUTPUT
+          echo "doc_path=$DOC_PATH" >> $GITHUB_OUTPUT
+
+          echo "Found mapping for $PROJECT_KEY:"
+          echo "  Repo: $GITHUB_REPO"
+          echo "  Branch: $DEFAULT_BRANCH"
+
+      - name: Clone target repository
+        run: |
+          GITHUB_REPO="${{ steps.mapping.outputs.github_repo }}"
+          DEFAULT_BRANCH="${{ steps.mapping.outputs.default_branch }}"
+          TOKEN="${{ secrets.GITHUB_TOKEN }}"
+
+          echo "Cloning $GITHUB_REPO..."
+
+          # 타겟 저장소 클론
+          git clone "https://x-access-token:${TOKEN}@github.com/${GITHUB_REPO}.git" target-repo
+          cd target-repo
+          git checkout "$DEFAULT_BRANCH" || git checkout main
+          git pull origin "$DEFAULT_BRANCH" || git pull origin main
+
+          echo "Repository cloned to $(pwd)"
+
+      - name: Copy Goose assets to target
+        run: |
+          cp -r goose_assets target-repo/
+          echo "Goose assets copied to target-repo/goose_assets"
 
       - name: Parse command from comment
         id: parse
@@ -95,9 +144,13 @@ jobs:
           COMMAND="${{ steps.parse.outputs.command }}"
           ARGS="${{ steps.parse.outputs.args }}"
           TICKET_KEY="${{ steps.source.outputs.ticket_key }}"
+          DOC_PATH="${{ steps.mapping.outputs.doc_path }}"
 
           echo "Executing: !${COMMAND} ${ARGS}"
           RESULT=""
+
+          # 타겟 저장소로 이동
+          cd target-repo
 
           # context.json 생성
           cat > context.json << EOF
@@ -105,12 +158,13 @@ jobs:
             "ticket_key": "$TICKET_KEY",
             "command": "!${COMMAND}",
             "command_args": "$ARGS",
-            "source": "${{ steps.source.outputs.source }}"
+            "source": "${{ steps.source.outputs.source }}",
+            "doc_path": "$DOC_PATH"
           }
           EOF
 
           # Goose 에이전트 호출
-          SKILL_FILE="$GITHUB_WORKSPACE/goose_assets/skills/$COMMAND/SKILL.md"
+          SKILL_FILE="goose_assets/skills/$COMMAND/SKILL.md"
 
           # 스킬 파일 읽기
           if [ -f "$SKILL_FILE" ]; then
@@ -120,7 +174,7 @@ jobs:
           fi
 
           # .goosehints 읽기
-          HINTS_CONTENT=$(cat "$GITHUB_WORKSPACE/goose_assets/.goosehints" | sed 's/\x1b\[[0-9;]*m//g')
+          HINTS_CONTENT=$(cat "goose_assets/.goosehints" | sed 's/\x1b\[[0-9;]*m//g')
 
           # Goose에 컨텍스트와 함께 실행
           echo "Running Goose with skill: $COMMAND"
@@ -136,6 +190,7 @@ jobs:
           echo "- Ticket: $TICKET_KEY" >> goose_prompt.txt
           echo "- Command: !${COMMAND}" >> goose_prompt.txt
           echo "- Args: $ARGS" >> goose_prompt.txt
+          echo "- Document Path: $DOC_PATH" >> goose_prompt.txt
           echo "" >> goose_prompt.txt
           echo "위 스킬 지시사항에 따라 작업을 수행하고, 한국어로 결과를 보고하세요." >> goose_prompt.txt
 
@@ -150,6 +205,27 @@ jobs:
 
           echo "result_message=${RESULT}" >> $GITHUB_OUTPUT
 
+      - name: Commit and push changes
+        if: success()
+        run: |
+          cd target-repo
+
+          # 변경사항 확인
+          if [ -n "$(git status --porcelain)" ]; then
+            git config user.name "AutoDevAgent Bot"
+            git config user.email "bot@autodevagent.com"
+
+            TICKET_KEY="${{ steps.source.outputs.ticket_key }}"
+            COMMAND="${{ steps.parse.outputs.command }}"
+
+            git add -A
+            git commit -m "[$TICKET_KEY] $COMMAND: Executed via AutoDevAgent" || echo "No changes to commit"
+            git push
+            echo "Changes pushed to target repository"
+          else
+            echo "No changes to commit"
+          fi
+
       - name: Post result to Jira
         if: success()
         env:
@@ -157,12 +233,24 @@ jobs:
           JIRA_EMAIL: ${{ secrets.JIRA_EMAIL }}
           JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
         run: |
-          ./scripts/post-jira-comment.sh \
-            "${{ steps.source.outputs.ticket_key }}" \
-            "${{ steps.parse.outputs.command }}" \
-            "${{ steps.parse.outputs.args }}" \
-            goose_clean.txt \
-            "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          TICKET_KEY="${{ steps.source.outputs.ticket_key }}"
+          COMMAND="${{ steps.parse.outputs.command }}"
+          ARGS="${{ steps.parse.outputs.args }}"
+
+          # Goose 출력에서 핵심 내용 추출 (헤더 제거)
+          COMMENT_BODY=$(tail -n +10 target-repo/goose_clean.txt | head -n 50 | sed 's/^/  /')
+
+          # 코멘트 텍스트 구성
+          COMMENT_TEXT="🦆 **Goose ${COMMAND}** 실행 완료
+
+${COMMENT_BODY}
+
+---
+*명령어: !${COMMAND} ${ARGS}*
+*워크플로우: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}*"
+
+          # 코멘트 작성
+          python3 target-repo/goose_assets/runner/jira_toolkit.py comment "$TICKET_KEY" "$COMMENT_TEXT"
 
       - name: Upload Goose output
         if: always()
@@ -170,8 +258,8 @@ jobs:
         with:
           name: goose-output-${{ steps.parse.outputs.command }}
           path: |
-            goose_output.txt
-            goose_clean.txt
-            goose_prompt.txt
-            context.json
+            target-repo/goose_output.txt
+            target-repo/goose_clean.txt
+            target-repo/goose_prompt.txt
+            target-repo/context.json
           retention-days: 7

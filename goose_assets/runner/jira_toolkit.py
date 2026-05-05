@@ -166,6 +166,21 @@ def cmd_comment(args):
         sys.exit(1)
 
 
+def cmd_delete(args):
+    """티켓 삭제"""
+    ticket_key = args.ticket_key
+
+    url = f"{JIRA_URL}/rest/api/3/issue/{ticket_key}"
+
+    response = requests.delete(url, headers=get_headers(), auth=get_auth())
+
+    if response.status_code == 204:
+        print(f"Success: {ticket_key} deleted")
+    else:
+        print(f"Error: {response.status_code} - {response.text}")
+        sys.exit(1)
+
+
 def main():
     parser = argparse.ArgumentParser(description="Jira Toolkit")
     subparsers = parser.add_subparsers(dest="command", help="Command")
@@ -191,6 +206,10 @@ def main():
     comment_parser.add_argument("ticket_key", help="Ticket key")
     comment_parser.add_argument("comment", help="Comment text")
 
+    # delete
+    delete_parser = subparsers.add_parser("delete", help="Delete ticket")
+    delete_parser.add_argument("ticket_key", help="Ticket key")
+
     args = parser.parse_args()
 
     if not args.command:
@@ -207,6 +226,8 @@ def main():
         cmd_create(args)
     elif args.command == "comment":
         cmd_comment(args)
+    elif args.command == "delete":
+        cmd_delete(args)
 
 
 if __name__ == "__main__":

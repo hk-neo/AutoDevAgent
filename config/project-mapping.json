@@ -1,0 +1,36 @@
+{
+  "mappings": [
+    {
+      "project_key": "PLAYG",
+      "project_name": "Playground - 테스트 환경",
+      "github_repo": "hk-neo/playground2",
+      "default_branch": "main",
+      "document_branch": "docs",
+      "jira_url": "https://neobiotech.atlassian.net",
+      "board_id": 134,
+      "enabled": true,
+      "settings": {
+        "auto_create_branch": true,
+        "commit_prefix_format": "[{ticket_key}]",
+        "document_path": "docs/{ticket_key}",
+        "artifacts_path": "artifacts/{ticket_key}"
+      }
+    },
+    {
+      "project_key": "PROJ",
+      "project_name": "DentiView3D - 실제 프로젝트",
+      "github_repo": "neobiotech/DentiView3D",
+      "default_branch": "main",
+      "document_branch": "docs",
+      "jira_url": "https://neobiotech.atlassian.net",
+      "board_id": null,
+      "enabled": false,
+      "settings": {
+        "auto_create_branch": true,
+        "commit_prefix_format": "[{ticket_key}]",
+        "document_path": "docs/{ticket_key}",
+        "artifacts_path": "artifacts/{ticket_key}"
+      }
+    }
+  ]
+}
