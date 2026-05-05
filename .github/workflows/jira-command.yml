@@ -90,7 +90,7 @@ jobs:
           JIRA_URL: ${{ secrets.JIRA_URL }}
           JIRA_EMAIL: ${{ secrets.JIRA_EMAIL }}
           JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
-          CUSTOM_GLM_API_KEY: ${{ secrets.CUSTOM_GLM_API_TOKEN }}
+          CUSTOM_GLM_API_KEY: ${{ secrets.CUSTOM_GLM_API_KEY }}
         run: |
           COMMAND="${{ steps.parse.outputs.command }}"
           ARGS="${{ steps.parse.outputs.args }}"
