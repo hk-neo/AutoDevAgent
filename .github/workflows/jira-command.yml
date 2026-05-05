@@ -37,6 +37,9 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Install Goose CLI
+        run: curl -fsSL https://github.com/aaif-goose/goose/releases/download/stable/download_cli.sh | bash
+
       - name: Determine trigger source
         id: source
         run: |
@@ -75,8 +78,12 @@ jobs:
           echo "  Command: $COMMAND"
           echo "  Args: $ARGS"
 
-      - name: Execute command
+      - name: Execute command via Goose
         id: execute
+        env:
+          JIRA_URL: ${{ secrets.JIRA_URL }}
+          JIRA_EMAIL: ${{ secrets.JIRA_EMAIL }}
+          JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
         run: |
           COMMAND="${{ steps.parse.outputs.command }}"
           ARGS="${{ steps.parse.outputs.args }}"
@@ -85,40 +92,41 @@ jobs:
           echo "Executing: !${COMMAND} ${ARGS}"
           RESULT=""
 
+          # context.json 생성
+          cat > context.json << EOF
+          {
+            "ticket_key": "$TICKET_KEY",
+            "command": "!${COMMAND}",
+            "command_args": "$ARGS",
+            "source": "${{ steps.source.outputs.source }}"
+          }
+          EOF
+
+          # Goose 에이전트 호출
           case "$COMMAND" in
-            generate)
-              RESULT="generate: Generating artifacts for $TICKET_KEY..."
-              echo "TODO: Implement generate logic"
-              ;;
-            create-subs)
-              RESULT="create-subs: Creating sub-tickets for $TICKET_KEY..."
-              echo "TODO: Implement create-subs logic"
-              ;;
-            create-tasks)
-              RESULT="create-tasks: Creating tasks for $TICKET_KEY..."
-              echo "TODO: Implement create-tasks logic"
-              ;;
-            traceability)
-              RESULT="traceability: Checking traceability for $TICKET_KEY..."
-              echo "TODO: Implement traceability logic"
-              ;;
-            update)
-              RESULT="update: Updating $TICKET_KEY with: $ARGS"
-              echo "TODO: Implement update logic"
-              ;;
             help)
+              echo "Running Goose help skill..."
               RESULT="help: Showing help information"
+              # TODO: Goose 호출로 대체
+              # goose run --skill help --context context.json --assets goose_assets
               echo "Available commands:"
               echo "  !generate - Generate artifacts/code"
               echo "  !create-subs - Create sub-tickets"
               echo "  !create-tasks - Create tasks"
               echo "  !traceability - Check traceability"
               echo "  !update - Update ticket"
+              echo "  !plan - Create implementation plan"
+              echo "  !implement - Implement based on plan"
               echo "  !help - Show help"
+              ;;
+            generate|create-subs|create-tasks|traceability|update|plan|implement)
+              RESULT="${COMMAND}: Processing ${TICKET_KEY}..."
+              echo "Goose will handle: ${COMMAND} command"
+              # TODO: 나머지 스킬도 Goose로 처리
               ;;
             natural)
               RESULT="natural: Processing natural language: $ARGS"
-              echo "TODO: Implement natural language processing"
+              echo "Goose will handle: natural language processing"
               ;;
             *)
               RESULT="error: Unknown command: $COMMAND"
