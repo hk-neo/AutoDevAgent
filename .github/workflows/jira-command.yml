@@ -42,8 +42,9 @@ jobs:
 
       - name: Setup Goose config
         run: |
-          mkdir -p ~/.config/goose
+          mkdir -p ~/.config/goose/custom_providers
           cp goose_assets/config/config.yaml ~/.config/goose/
+          cp -r goose_assets/config/custom_providers ~/.config/goose/
 
       - name: Determine trigger source
         id: source
@@ -89,6 +90,7 @@ jobs:
           JIRA_URL: ${{ secrets.JIRA_URL }}
           JIRA_EMAIL: ${{ secrets.JIRA_EMAIL }}
           JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+          CUSTOM_GLM_API_KEY: ${{ secrets.CUSTOM_GLM_API_KEY }}
         run: |
           COMMAND="${{ steps.parse.outputs.command }}"
           ARGS="${{ steps.parse.outputs.args }}"
