@@ -1,4 +1,5 @@
 name: Jira Command Handler
+# Workflow for handling Jira commands via Goose agent
 
 on:
   repository_dispatch:
