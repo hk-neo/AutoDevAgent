@@ -3,48 +3,132 @@ name: Jira Command Handler
 on:
   repository_dispatch:
     types: [jira-command]
+  workflow_dispatch:
+    inputs:
+      ticket_key:
+        description: Jira ticket key (e.g., PLAYG-123)
+        required: true
+        type: string
+      issue_id:
+        description: Jira issue ID (numeric)
+        required: false
+        type: string
+      comment_id:
+        description: Comment ID that triggered the command
+        required: false
+        type: string
+      comment_body:
+        description: Full comment text
+        required: false
+        type: string
+      user:
+        description: User who triggered the command
+        required: false
+        type: string
 
 jobs:
   handle-command:
     runs-on: ubuntu-latest
+    outputs:
+      result_message: ${{ steps.execute.outputs.result_message }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Log received payload
+      - name: Determine trigger source
+        id: source
         run: |
-          echo "Received Jira command payload:"
-          echo '${{ toJson(github.event.client_payload) }}' | jq '.'
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "source=workflow_dispatch" >> $GITHUB_OUTPUT
+            echo "ticket_key=${{ github.event.inputs.ticket_key }}" >> $GITHUB_OUTPUT
+            echo "comment_body=${{ github.event.inputs.comment_body }}" >> $GITHUB_OUTPUT
+          else
+            echo "source=repository_dispatch" >> $GITHUB_OUTPUT
+            echo "ticket_key=$(jq -r '.ticket_key // ""' << 'EOF'
+            ${{ toJson(github.event.client_payload) }}
+            EOF
+            )" >> $GITHUB_OUTPUT
+            echo "comment_body=$(jq -r '.comment // ""' << 'EOF'
+            ${{ toJson(github.event.client_payload) }}
+            EOF
+            )" >> $GITHUB_OUTPUT
+          fi
 
-      - name: Parse command
+      - name: Parse command from comment
         id: parse
         run: |
-          # 페이로드를 파일로 저장
-          echo '${{ toJson(github.event.client_payload) }}' > /tmp/payload.json
+          COMMENT_BODY="${{ steps.source.outputs.comment_body }}"
+          TICKET_KEY="${{ steps.source.outputs.ticket_key }}"
 
-          # 페이로드에서 필요한 정보 추출
-          TICKET_ID=$(jq -r '.ticket_id // ""' /tmp/payload.json)
-          COMMAND=$(jq -r '.command // ""' /tmp/payload.json)
-          COMMENT_ID=$(jq -r '.comment_id // ""' /tmp/payload.json)
+          echo "Ticket: $TICKET_KEY"
+          echo "Comment: $COMMENT_BODY"
 
-          echo "ticket_id=$TICKET_ID" >> $GITHUB_OUTPUT
+          # 명령어 파싱 (!로 시작하는지 확인)
+          if echo "$COMMENT_BODY" | grep -q '^\!'; then
+            COMMAND=$(echo "$COMMENT_BODY" | sed 's/^\![[:space:]]*//' | cut -d' ' -f1)
+            ARGS=$(echo "$COMMENT_BODY" | sed 's/^\![[:space:]]*//' | cut -d' ' -f2-)
+          else
+            COMMAND="natural"
+            ARGS="$COMMENT_BODY"
+          fi
+
           echo "command=$COMMAND" >> $GITHUB_OUTPUT
-          echo "comment_id=$COMMENT_ID" >> $GITHUB_OUTPUT
+          echo "args=$ARGS" >> $GITHUB_OUTPUT
 
-          echo "Parsed values:"
-          echo "  Ticket: $TICKET_ID"
+          echo "Parsed:"
           echo "  Command: $COMMAND"
-          echo "  Comment: $COMMENT_ID"
+          echo "  Args: $ARGS"
 
-      - name: Execute command (placeholder)
+      - name: Execute command
+        id: execute
         run: |
-          echo "Executing command: ${{ steps.parse.outputs.command }}"
-          echo "TODO: Implement actual command logic here"
-          echo "  - ticket_id: ${{ steps.parse.outputs.ticket_id }}"
-          echo "  - command: ${{ steps.parse.outputs.command }}"
-          echo "  - comment_id: ${{ steps.parse.outputs.comment_id }}"
+          COMMAND="${{ steps.parse.outputs.command }}"
+          ARGS="${{ steps.parse.outputs.args }}"
+          TICKET_KEY="${{ steps.source.outputs.ticket_key }}"
 
-      - name: Send acknowledgment (placeholder)
-        run: |
-          echo "TODO: Send acknowledgment back to Jira"
-          echo "Comment on ticket ${{ steps.parse.outputs.ticket_id }}"
+          echo "Executing: !${COMMAND} ${ARGS}"
+          RESULT=""
+
+          case "$COMMAND" in
+            generate)
+              RESULT="generate: Generating artifacts for $TICKET_KEY..."
+              echo "TODO: Implement generate logic"
+              ;;
+            create-subs)
+              RESULT="create-subs: Creating sub-tickets for $TICKET_KEY..."
+              echo "TODO: Implement create-subs logic"
+              ;;
+            create-tasks)
+              RESULT="create-tasks: Creating tasks for $TICKET_KEY..."
+              echo "TODO: Implement create-tasks logic"
+              ;;
+            traceability)
+              RESULT="traceability: Checking traceability for $TICKET_KEY..."
+              echo "TODO: Implement traceability logic"
+              ;;
+            update)
+              RESULT="update: Updating $TICKET_KEY with: $ARGS"
+              echo "TODO: Implement update logic"
+              ;;
+            help)
+              RESULT="help: Showing help information"
+              echo "Available commands:"
+              echo "  !generate - Generate artifacts/code"
+              echo "  !create-subs - Create sub-tickets"
+              echo "  !create-tasks - Create tasks"
+              echo "  !traceability - Check traceability"
+              echo "  !update - Update ticket"
+              echo "  !help - Show help"
+              ;;
+            natural)
+              RESULT="natural: Processing natural language: $ARGS"
+              echo "TODO: Implement natural language processing"
+              ;;
+            *)
+              RESULT="error: Unknown command: $COMMAND"
+              echo "Error: Unknown command. Use !help for available commands."
+              exit 1
+              ;;
+          esac
+
+          echo "result_message=$RESULT" >> $GITHUB_OUTPUT

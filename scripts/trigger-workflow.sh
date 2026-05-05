@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # GitHub Workflow 트리거 스크립트
-# Jira에서 이와 비슷한 방식으로 GitHub API를 호출할 수 있음
+# 테스트용으로 Jira 코멘트 이벤트를 시뮬레이션
 
 set -e
 
@@ -17,39 +17,35 @@ else
   echo "Warning: .env file not found. Using environment variables or defaults."
 fi
 
-# 설정 (환경 변수 또는 기본값)
-GITHUB_REPO="${GITHUB_REPO:-fotogrammer/AutoDevAgent}"  # 사용자/리포지토리
+# 설정
+GITHUB_REPO="${GITHUB_REPO:-fotogrammer/AutoDevAgent}"
 
 # 토큰 필수 확인
 if [ -z "$GITHUB_TOKEN" ]; then
   echo "Error: GITHUB_TOKEN is not set!"
-  echo "Please set it in .env file or as environment variable."
-  echo "Copy .env.example to .env and add your token."
   exit 1
 fi
 
-# 테스트용 페이로드
-PAYLOAD=$(cat <<EOF
-{
-  "ticket_id": "PROJ-123",
-  "command": "trace",
-  "comment_id": "45678",
-  "user": "developer@example.com"
-}
-EOF
-)
+# 테스트용 설정 (인자 또는 기본값)
+TICKET_KEY="${1:-PLAYG-123}"
+COMMAND="${2:-help}"
+COMMENT_BODY="!${COMMAND}"
 
-# 워크플로우 트리거
-echo "Triggering workflow for $GITHUB_REPO..."
-echo "Payload: $PAYLOAD"
-
+# workflow_dispatch 페이로드
 curl -X POST \
   -H "Accept: application/vnd.github.v3+json" \
   -H "Authorization: token $GITHUB_TOKEN" \
-  "https://api.github.com/repos/$GITHUB_REPO/dispatches" \
+  "https://api.github.com/repos/$GITHUB_REPO/actions/workflows/jira-command.yml/dispatches" \
   -d "{
-    \"event_type\": \"jira-command\",
-    \"client_payload\": $PAYLOAD
+    \"ref\": \"main\",
+    \"inputs\": {
+      \"ticket_key\": \"$TICKET_KEY\",
+      \"comment_body\": \"$COMMENT_BODY\"
+    }
   }"
 
-echo -e "\n\nWorkflow triggered! Check: https://github.com/$GITHUB_REPO/actions"
+echo -e "\n\nWorkflow triggered!"
+echo "  Ticket: $TICKET_KEY"
+echo "  Command: !${COMMAND}"
+echo "  Comment: $COMMENT_BODY"
+echo "\nCheck: https://github.com/$GITHUB_REPO/actions"
