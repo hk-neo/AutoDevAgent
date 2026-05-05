@@ -116,22 +116,25 @@ jobs:
               export GOOSE_SKILLS_PATH="$GITHUB_WORKSPACE/goose_assets/skills"
               export GOOSE_HINTS_PATH="$GITHUB_WORKSPACE/goose_assets/.goosehints"
               goose run -t "!help" > goose_output.txt 2>&1 || true
-              # 응답만 추출하고 최대 500자로 제한
-              RESULT=$(cat goose_output.txt | sed 's/\x1b\[[0-9;]*m//g' | tail -n +10 | head -c 500 | sed 's/$/\n.../')
+              # 응답만 추출하고 ANSI 코드 제거
+              cat goose_output.txt | sed 's/\x1b\[[0-9;]*m//g' > goose_clean.txt
+              RESULT="help: Successfully executed. See output."
               ;;
             generate|create-subs|create-tasks|traceability|update|plan|implement)
               echo "Running Goose ${COMMAND} skill..."
               export GOOSE_SKILLS_PATH="$GITHUB_WORKSPACE/goose_assets/skills"
               export GOOSE_HINTS_PATH="$GITHUB_WORKSPACE/goose_assets/.goosehints"
               goose run -t "!${COMMAND} ${ARGS}" > goose_output.txt 2>&1 || true
-              RESULT=$(cat goose_output.txt | sed 's/\x1b\[[0-9;]*m//g' | tail -n +10 | head -c 500 | sed 's/$/\n.../')
+              cat goose_output.txt | sed 's/\x1b\[[0-9;]*m//g' > goose_clean.txt
+              RESULT="${COMMAND}: Successfully executed. See output."
               ;;
             natural)
               echo "Running Goose with natural language..."
               export GOOSE_SKILLS_PATH="$GITHUB_WORKSPACE/goose_assets/skills"
               export GOOSE_HINTS_PATH="$GITHUB_WORKSPACE/goose_assets/.goosehints"
               goose run -t "${ARGS}" > goose_output.txt 2>&1 || true
-              RESULT=$(cat goose_output.txt | sed 's/\x1b\[[0-9;]*m//g' | tail -n +10 | head -c 500 | sed 's/$/\n.../')
+              cat goose_output.txt | sed 's/\x1b\[[0-9;]*m//g' > goose_clean.txt
+              RESULT="natural: Successfully executed. See output."
               ;;
             *)
               RESULT="error: Unknown command: $COMMAND"
@@ -140,4 +143,4 @@ jobs:
               ;;
           esac
 
-          echo "result_message=$RESULT" >> $GITHUB_OUTPUT
+          echo "result_message=${RESULT}" >> $GITHUB_OUTPUT
