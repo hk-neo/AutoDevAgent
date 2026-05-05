@@ -124,22 +124,20 @@ jobs:
 
           # Goose에 컨텍스트와 함께 실행
           echo "Running Goose with skill: $COMMAND"
-          cat > goose_prompt.txt << EOF
-$HINTS_CONTENT
-
-## 현재 명령어
-!${COMMAND} ${ARGS}
-
-## 스킬 지시사항
-$SKILL_CONTENT
-
-## 티켓 컨텍스트
-- Ticket: $TICKET_KEY
-- Command: !${COMMAND}
-- Args: $ARGS
-
-위 스킬 지시사항에 따라 작업을 수행하고, 한국어로 결과를 보고하세요.
-EOF
+          echo "$HINTS_CONTENT" > goose_prompt.txt
+          echo "" >> goose_prompt.txt
+          echo "## 현재 명령어" >> goose_prompt.txt
+          echo "!${COMMAND} ${ARGS}" >> goose_prompt.txt
+          echo "" >> goose_prompt.txt
+          echo "## 스킬 지시사항" >> goose_prompt.txt
+          echo "$SKILL_CONTENT" >> goose_prompt.txt
+          echo "" >> goose_prompt.txt
+          echo "## 티켓 컨텍스트" >> goose_prompt.txt
+          echo "- Ticket: $TICKET_KEY" >> goose_prompt.txt
+          echo "- Command: !${COMMAND}" >> goose_prompt.txt
+          echo "- Args: $ARGS" >> goose_prompt.txt
+          echo "" >> goose_prompt.txt
+          echo "위 스킬 지시사항에 따라 작업을 수행하고, 한국어로 결과를 보고하세요." >> goose_prompt.txt
 
           goose run -t "$(cat goose_prompt.txt)" > goose_output.txt 2>&1 || true
           cat goose_output.txt | sed 's/\x1b\[[0-9;]*m//g' > goose_clean.txt
