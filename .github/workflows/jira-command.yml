@@ -38,7 +38,7 @@ jobs:
           fetch-depth: 0
 
       - name: Install Goose CLI
-        run: curl -fsSL https://github.com/aaif-goose/goose/releases/download/stable/download_cli.sh | bash
+        run: curl -fsSL https://github.com/aaif-goose/goose/releases/download/stable/download_cli.sh | CONFIGURE=false bash
 
       - name: Setup Goose config
         run: |
