@@ -93,7 +93,7 @@ command_args는 제품명이나 기능 설명입니다 (예: "로컬 CBCT 웹 �
 }
 ```
 
-- "Blocks" 링크로 Intended Use Document와 연결
+- "Relates" 링크로 Intended Use Document와 연결
 
 ---
 
@@ -115,13 +115,26 @@ python3 goose_assets/runner/jira_toolkit.py create temp_issue.json
 
 ### 링크 연결
 ```bash
+# Gate → Document: "Blocks" 링크 사용
 curl -s -X POST \
   -H "Accept: application/json" \
   -H "Content-Type: application/json" \
   -u "$JIRA_EMAIL:$JIRA_API_TOKEN" \
   "$JIRA_URL/rest/api/3/issueLink" \
   -d '{"type": {"name": "Blocks"}, "inwardIssue": {"key": "PARENT_KEY"}, "outwardIssue": {"key": "NEW_KEY"}}'
+
+# Document → 하위 티켓: "Relates" 링크 사용
+curl -s -X POST \
+  -H "Accept: application/json" \
+  -H "Content-Type: application/json" \
+  -u "$JIRA_EMAIL:$JIRA_API_TOKEN" \
+  "$JIRA_URL/rest/api/3/issueLink" \
+  -d '{"type": {"name": "Relates"}, "inwardIssue": {"key": "PARENT_KEY"}, "outwardIssue": {"key": "NEW_KEY"}}'
 ```
+
+**링크 타입 규칙:**
+- Gate → Document: **Blocks** 링크
+- Document → 하위 티켓(Intended Use 등): **Relates** 링크
 
 ## 결과 보고
 
