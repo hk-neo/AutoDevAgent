@@ -212,6 +212,10 @@ jobs:
           echo "- Document Path: $DOC_PATH" >> goose_prompt.txt
           echo "" >> goose_prompt.txt
           echo "위 스킬 지시사항에 따라 작업을 수행하고, 한국어로 결과를 보고하세요." >> goose_prompt.txt
+          echo "" >> goose_prompt.txt
+          echo "## 필수: Jira 코멘트 게시" >> goose_prompt.txt
+          echo "작업 완료 후 반드시 jira_toolkit.py를 사용하여 티켓에 결과 코멘트를 게시하세요." >> goose_prompt.txt
+          echo "코멘트에는 실행한 작업 요약과 결과만 포함하세요. 디버그 정보는 포함하지 마세요." >> goose_prompt.txt
 
           goose run -t "$(cat goose_prompt.txt)" > goose_output.txt 2>&1 || true
           cat goose_output.txt | sed 's/\x1b\[[0-9;]*m//g' > goose_clean.txt
@@ -246,25 +250,6 @@ jobs:
           else
             echo "No changes to commit"
           fi
-
-      - name: Post result to Jira
-        if: success()
-        env:
-          JIRA_URL: ${{ secrets.JIRA_URL }}
-          JIRA_EMAIL: ${{ secrets.JIRA_EMAIL }}
-          JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
-        run: |
-          TICKET_KEY="${{ steps.source.outputs.ticket_key }}"
-          COMMAND="${{ steps.parse.outputs.command }}"
-          ARGS="${{ steps.parse.outputs.args }}"
-
-          # 스크립트 사용하여 코멘트 게시
-          ./scripts/post-jira-comment.sh \
-            "$TICKET_KEY" \
-            "$COMMAND" \
-            "$ARGS" \
-            target-repo/goose_clean.txt \
-            "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
 
       - name: Upload Goose output
         if: always()
