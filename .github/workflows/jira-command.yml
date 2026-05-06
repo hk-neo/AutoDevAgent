@@ -214,9 +214,22 @@ jobs:
           echo "" >> goose_prompt.txt
           echo "위 스킬 지시사항에 따라 작업을 수행하고, 한국어로 결과를 보고하세요." >> goose_prompt.txt
           echo "" >> goose_prompt.txt
-          echo "## 필수: Jira 코멘트 게시" >> goose_prompt.txt
-          echo "작업 완료 후 반드시 jira_toolkit.py를 사용하여 티켓에 결과 코멘트를 게시하세요." >> goose_prompt.txt
-          echo "코멘트에는 실행한 작업 요약과 결과만 포함하세요. 디버그 정보는 포함하지 마세요." >> goose_prompt.txt
+          echo "## Jira 코멘트 규칙 (매우 중요)" >> goose_prompt.txt
+          echo "작업 완료 후 jira_toolkit.py를 사용하여 티켓에 코멘트를 정확히 1개만 게시하세요." >> goose_prompt.txt
+          echo "" >> goose_prompt.txt
+          echo "코멘트에 포함할 내용:" >> goose_prompt.txt
+          echo "- 실행한 작업 요약 (한국어)" >> goose_prompt.txt
+          echo "- 생성/수정된 티켓 목록이나 문서 요약" >> goose_prompt.txt
+          echo "" >> goose_prompt.txt
+          echo "코멘트에 절대 포함하지 마세요:" >> goose_prompt.txt
+          echo "- 파일 경로 (temp_*.json, /tmp/*, goose_output.txt 등)" >> goose_prompt.txt
+          echo "- 명령어 출력이나 에러 메시지" >> goose_prompt.txt
+          echo "- 중간 작업 결과나 디버그 정보" >> goose_prompt.txt
+          echo "- shell 명령어 (get, cat, ls 등)" >> goose_prompt.txt
+          echo "- JSON 파일 내용" >> goose_prompt.txt
+          echo "- 작업 진행 상태나 todo 항목" >> goose_prompt.txt
+          echo "" >> goose_prompt.txt
+          echo "코멘트는 1개만 게시하세요. 중간에 코멘트를 달지 마세요. 모든 작업이 끝난 후 마지막에 1개만 게시하세요." >> goose_prompt.txt
 
           goose run -t "$(cat goose_prompt.txt)" 2>&1 | tee goose_output.txt || true
           cat goose_output.txt | sed 's/\x1b\[[0-9;]*m//g' > goose_clean.txt
