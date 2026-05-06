@@ -217,7 +217,7 @@ jobs:
       - name: Commit and push changes
         if: success()
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
           cd target-repo
 
@@ -230,11 +230,8 @@ jobs:
             git add -A
             git commit -m "[$TICKET_KEY] $COMMAND: Executed via AutoDevAgent" || echo "No changes to commit"
 
-            # .netrc로 인증 설정
-            echo "machine github.com login autodevagent-bot password ${GITHUB_TOKEN}" > ~/.netrc
-            chmod 600 ~/.netrc
-
-            git push
+            # PAT로 push
+            git push "https://${PAT_TOKEN}@github.com/${GITHUB_REPO}.git"
             echo "Changes pushed to target repository"
           else
             echo "No changes to commit"
