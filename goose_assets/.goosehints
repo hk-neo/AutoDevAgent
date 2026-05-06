@@ -107,15 +107,37 @@ python3 goose_assets/runner/jira_toolkit.py create issue.json
 
 파일 읽기/쓰기는 반드시 Python 스크립트를 사용하세요. Goose 내장 `text_editor`는 사용하지 마세요.
 
+### 짧은 파일 (1~2줄)
 ```python
-# 파일 읽기
 python3 -c "import pathlib; print(pathlib.Path('파일.md').read_text(encoding='utf-8'))"
-
-# 파일 쓰기 (리스트 스킬 활용)
-import pathlib
-lines = ["# 제목", "", "- 내용"]
-pathlib.Path("파일.md").write_text("\n".join(lines), encoding="utf-8")
 ```
+
+### 긴 파일 작성 (문서 등) — 반드시 write_file.py 사용
+**python -c나 heredoc으로 긴 내용을 쓰지 마세요. 쉘 한계로 잘립니다.**
+
+대신 두 단계로 작성:
+1. Python 스크립트 파일로 내용을 임시 파일에 저장
+2. write_file.py로 최종 위치에 저장
+
+```python
+# Step 1: 임시 파일에 내용 작성
+python3 << 'PYEOF'
+import pathlib
+content = """# 제목
+
+긴 문서 내용...
+여러 섹션...
+"""
+pathlib.Path("/tmp/doc_content.md").write_text(content, encoding="utf-8")
+PYEOF
+
+# Step 2: write_file.py로 최종 위치에 저장
+python3 goose_assets/runner/write_file.py docs/PLAYG-XXX/document.md < /tmp/doc_content.md
+```
+
+**write_file.py 경로**: `goose_assets/runner/write_file.py`
+- stdin에서 내용을 읽어 지정한 경로에 저장
+- 디렉토리 자동 생성
 
 ---
 
