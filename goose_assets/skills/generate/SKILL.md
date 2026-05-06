@@ -27,6 +27,10 @@ description: 티켓 타입에 따라 완성된 문서를 생성합니다.
 | Document | [System Requirement Specification] | `templates/srs.md` | SRS 문서 |
 | Document | [SW Architecture Document] | `templates/sad.md` | SAD 문서 |
 | Document | [SW Detailed Design Document] | `templates/sds.md` | SDS 문서 |
+| Document | [SW Development Plan] | `templates/sw-dev-plan.md` | SW Development Plan |
+| Document | [Risk Management Plan] | `templates/risk-management-plan.md` | Risk Management Plan |
+| Document | [Security Maintenance Plan] | `templates/security-maintenance-plan.md` | Security Maintenance Plan |
+| Document | [Configuration Management Plan] | `templates/configuration-management-plan.md` | Configuration Management Plan |
 
    template 파일 경로: `goose_assets/skills/generate/templates/`
 
@@ -46,6 +50,12 @@ IU → SyRS 순서이므로:
 - SRS 문서는 IU + SyRS 참조 가능
 - SAD 문서는 SRS 참조 가능
 - SDS 문서는 SRS + SAD 참조 가능
+
+PA Plan 문서들은 같은 Gate의 IU + SyRS + Classification 참조:
+- SW Development Plan: IU + Classification + SyRS
+- Risk Management Plan: IU + Classification + SyRS
+- Security Maintenance Plan: SyRS (Security) + IU
+- Configuration Management Plan: IU + SyRS
 ```
 
 ## 문서 생성 위치
