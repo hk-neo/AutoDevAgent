@@ -1,1 +1,9 @@
 .env
+.env.local
+*.pem
+*.key
+temp_*.json
+goose_output.txt
+goose_clean.txt
+goose_prompt.txt
+context.json
