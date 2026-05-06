@@ -241,6 +241,8 @@ jobs:
             git add -A
             git commit -m "[$TICKET_KEY] $COMMAND: Executed via AutoDevAgent" || echo "No changes to commit"
 
+            # 원격 변경사항 먼저 반영 후 push
+            git pull --rebase "https://${PAT_TOKEN}@github.com/${GITHUB_REPO}.git" "${{ steps.mapping.outputs.default_branch }}" || true
             # PAT로 push
             git push "https://${PAT_TOKEN}@github.com/${GITHUB_REPO}.git"
             echo "Changes pushed to target repository"
