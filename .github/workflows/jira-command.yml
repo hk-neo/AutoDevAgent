@@ -125,6 +125,7 @@ jobs:
           echo "goose_clean.txt" >> .gitignore
           echo "goose_prompt.txt" >> .gitignore
           echo "context.json" >> .gitignore
+          echo "temp_*.json" >> .gitignore
           echo "goose_assets/" >> .gitignore
 
       - name: Parse command from comment
