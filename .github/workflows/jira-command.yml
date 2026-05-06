@@ -220,9 +220,14 @@ jobs:
           goose run -t "$(cat goose_prompt.txt)" > goose_output.txt 2>&1 || true
           cat goose_output.txt | sed 's/\x1b\[[0-9;]*m//g' > goose_clean.txt
 
-          # 결과 요약 출력 (첫 20줄)
-          echo "=== Goose Output (first 20 lines) ==="
-          head -20 goose_clean.txt || echo "No output"
+          # Goose 실행 결과 출력
+          TOTAL_LINES=$(wc -l < goose_clean.txt)
+          echo "=== Goose Output (${TOTAL_LINES} lines total) ==="
+          echo "--- First 10 lines ---"
+          head -10 goose_clean.txt || echo "No output"
+          echo ""
+          echo "--- Last 30 lines ---"
+          tail -30 goose_clean.txt || echo "No output"
 
           RESULT="${COMMAND}: Successfully executed. See output."
 
