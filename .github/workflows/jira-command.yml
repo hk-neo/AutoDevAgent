@@ -160,6 +160,7 @@ jobs:
           JIRA_EMAIL: ${{ secrets.JIRA_EMAIL }}
           JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
           CUSTOM_GLM_API_KEY: ${{ secrets.CUSTOM_GLM_API_KEY }}
+          RISK_PLUGIN_AUTH_TOKEN: ${{ secrets.RISK_PLUGIN_AUTH_TOKEN }}
         run: |
           COMMAND="${{ steps.parse.outputs.command }}"
           ARGS="${{ steps.parse.outputs.args }}"

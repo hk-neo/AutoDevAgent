@@ -20,6 +20,7 @@ description: 하위 티켓들을 생성합니다. 현재 티켓 타입과 제목
 | Document | [Intended Use] | `templates/intended-use.md` | 1개 |
 | Document | [System Requirement Specification] | `templates/system-requirement.md` | 여러 개 |
 | Document | [Classification] | `templates/classification.md` | **1개만** |
+| Document | [Risk Management Report] | `templates/risk-management-report.md` | 여러 개 (Hazard) |
 
    template 파일 경로: `goose_assets/skills/create-subs/templates/`
 
