@@ -102,6 +102,13 @@ jobs:
           git checkout "$DEFAULT_BRANCH" || git checkout main
           git pull origin "$DEFAULT_BRANCH" || git pull origin main
 
+          # Git 설정 (토큰으로 push 가능하도록)
+          git config user.name "AutoDevAgent Bot"
+          git config user.email "bot@autodevagent.com"
+
+          # 원격 URL에 토큰 포함
+          git remote set-url origin "https://x-access-token:${TOKEN}@github.com/${GITHUB_REPO}.git"
+
           echo "Repository cloned to $(pwd)"
 
       - name: Copy Goose assets to target
@@ -213,9 +220,6 @@ jobs:
 
           # 변경사항 확인
           if [ -n "$(git status --porcelain)" ]; then
-            git config user.name "AutoDevAgent Bot"
-            git config user.email "bot@autodevagent.com"
-
             TICKET_KEY="${{ steps.source.outputs.ticket_key }}"
             COMMAND="${{ steps.parse.outputs.command }}"
 
