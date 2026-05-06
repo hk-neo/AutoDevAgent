@@ -229,7 +229,18 @@ jobs:
 
             git add -A
             git commit -m "[$TICKET_KEY] $COMMAND: Executed via AutoDevAgent" || echo "No changes to commit"
-            git push "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPO}.git"
+
+            # Git credential을 사용하여 push
+            git config credential.helper store
+            git credential approve << EOF
+protocol=https
+host=github.com
+path=${GITHUB_REPO}
+username=autodevagent-bot
+password=${GITHUB_TOKEN}
+EOF
+
+            git push
             echo "Changes pushed to target repository"
           else
             echo "No changes to commit"
