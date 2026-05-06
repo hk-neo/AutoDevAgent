@@ -96,18 +96,19 @@ jobs:
 
           echo "Cloning $GITHUB_REPO..."
 
-          # 타겟 저장소 클론
-          git clone "https://x-access-token:${TOKEN}@github.com/${GITHUB_REPO}.git" target-repo
+          # 타겟 저장소 클론 (토큰 없이)
+          git clone "https://github.com/${GITHUB_REPO}.git" target-repo
           cd target-repo
           git checkout "$DEFAULT_BRANCH" || git checkout main
           git pull origin "$DEFAULT_BRANCH" || git pull origin main
 
-          # Git 설정 (토큰으로 push 가능하도록)
+          # Git 설정
           git config user.name "AutoDevAgent Bot"
           git config user.email "bot@autodevagent.com"
 
-          # 원격 URL에 토큰 포함
-          git remote set-url origin "https://x-access-token:${TOKEN}@github.com/${GITHUB_REPO}.git"
+          # 환경변수로 토큰 저장 (push 단계에서 사용)
+          echo "REPO_TOKEN=$TOKEN" >> $GITHUB_ENV
+          echo "REPO_OWNER=$(echo '$GITHUB_REPO' | cut -d'/' -f1)" >> $GITHUB_ENV
 
           echo "Repository cloned to $(pwd)"
 
@@ -215,6 +216,8 @@ jobs:
 
       - name: Commit and push changes
         if: success()
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           cd target-repo
 
@@ -222,10 +225,11 @@ jobs:
           if [ -n "$(git status --porcelain)" ]; then
             TICKET_KEY="${{ steps.source.outputs.ticket_key }}"
             COMMAND="${{ steps.parse.outputs.command }}"
+            GITHUB_REPO="${{ steps.mapping.outputs.github_repo }}"
 
             git add -A
             git commit -m "[$TICKET_KEY] $COMMAND: Executed via AutoDevAgent" || echo "No changes to commit"
-            git push
+            git push "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPO}.git"
             echo "Changes pushed to target repository"
           else
             echo "No changes to commit"
