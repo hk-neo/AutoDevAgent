@@ -15,7 +15,7 @@
 1. Jira API로 현재 SyRS 티켓의 모든 필드값 조회
 2. Jira API로 관련 IU 티켓 조회 (Relates 링크된 티켓)
 3. 필드값을 바탕으로 SyRS 상세 문서 작성
-4. docs/{ticket_key}/system-requirement.md 로 저장
+4. docs/system-requirement.md 로 저장
 5. Git 커밋
 6. Jira 코멘트로 결과 보고
 

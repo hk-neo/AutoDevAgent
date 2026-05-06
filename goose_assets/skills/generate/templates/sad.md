@@ -11,10 +11,10 @@
 
 ## 수행 단계
 
-1. GitHub에서 SRS 문서 조회 (docs/{관련 티켓}/srs.md)
+1. GitHub에서 SRS 문서 조회 (docs/srs.md)
 2. IU, SyRS 티켓의 필드값 참조
 3. SAD 문서 작성
-4. docs/{ticket_key}/sad.md 로 저장
+4. docs/sad.md 로 저장
 5. Git 커밋
 6. Jira 코멘트로 결과 보고
 

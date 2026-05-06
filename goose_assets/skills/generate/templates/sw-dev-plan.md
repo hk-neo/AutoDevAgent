@@ -21,7 +21,7 @@
    python3 goose_assets/runner/jira_toolkit.py update {TICKET_KEY} temp_desc.json
    ```
    이 단계를 건너뛰지 마세요. Jira 티켓에 문서가 보여야 합니다.
-4. docs/{ticket_key}/sw-dev-plan.md 로도 저장
+4. docs/sw-dev-plan.md 로도 저장
 5. Git 커밋
 6. Jira 코멘트로 결과 보고
 

@@ -16,7 +16,7 @@
 2. 각 SyRS 티켓의 필드값 수집
 3. IU 티켓 조회 (제품 컨텍스트용)
 4. 수집된 데이터로 SRS 문서 통합 작성
-5. docs/{ticket_key}/srs.md 로 저장
+5. docs/srs.md 로 저장
 6. Git 커밋
 7. Jira 코멘트로 결과 보고
 

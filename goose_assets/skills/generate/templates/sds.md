@@ -8,10 +8,10 @@
 
 ## 수행 단계
 
-1. GitHub에서 SRS 문서 조회 (docs/{관련 티켓}/srs.md)
-2. GitHub에서 SAD 문서 조회 (docs/{관련 티켓}/sad.md)
+1. GitHub에서 SRS 문서 조회 (docs/srs.md)
+2. GitHub에서 SAD 문서 조회 (docs/sad.md)
 3. 두 문서를 바탕으로 SDS 작성
-4. docs/{ticket_key}/sds.md 로 저장
+4. docs/sds.md 로 저장
 5. Git 커밋
 6. Jira 코멘트로 결과 보고
 

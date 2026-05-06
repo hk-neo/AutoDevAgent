@@ -12,8 +12,8 @@
       "settings": {
         "auto_create_branch": true,
         "commit_prefix_format": "[{ticket_key}]",
-        "document_path": "docs/{ticket_key}",
-        "artifacts_path": "artifacts/{ticket_key}"
+        "document_path": "docs",
+        "artifacts_path": "artifacts"
       }
     },
     {
@@ -28,8 +28,8 @@
       "settings": {
         "auto_create_branch": true,
         "commit_prefix_format": "[{ticket_key}]",
-        "document_path": "docs/{ticket_key}",
-        "artifacts_path": "artifacts/{ticket_key}"
+        "document_path": "docs",
+        "artifacts_path": "artifacts"
       }
     }
   ]

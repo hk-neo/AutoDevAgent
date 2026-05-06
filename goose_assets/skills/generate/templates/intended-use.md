@@ -14,7 +14,7 @@
 
 1. Jira API로 현재 IU 티켓의 모든 필드값 조회
 2. 필드값을 바탕으로 IU 문서 작성
-3. docs/{ticket_key}/intended-use.md 로 저장
+3. docs/intended-use.md 로 저장
 4. Git 커밋
 5. Jira 코멘트로 결과 보고
 

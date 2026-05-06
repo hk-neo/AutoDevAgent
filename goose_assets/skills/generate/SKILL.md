@@ -60,8 +60,8 @@ PA Plan 문서들은 같은 Gate의 IU + SyRS + Classification 참조:
 
 ## 문서 생성 위치
 
-- `docs/{ticket_key}/` 디렉토리에 마크다운 파일로 생성
-- 파일명: `{문서타입}.md` (예: `intended-use.md`, `srs.md`)
+- `docs/` 디렉토리에 마크다운 파일로 직접 생성
+- 파일명: `{문서타입}.md` (예: `docs/intended-use.md`, `docs/srs.md`)
 - 커밋 메시지: `[{TICKET_KEY}] Generate: {문서 타입}`
 
 ## 결과 보고
