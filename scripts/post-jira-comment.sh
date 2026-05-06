@@ -7,8 +7,22 @@ ARGS="$3"
 OUTPUT_FILE="$4"
 WORKFLOW_URL="$5"
 
-# 출력 파일에서 핵심 내용 추출 (헤더 제거)
-COMMENT_BODY=$(tail -n +10 "$OUTPUT_FILE" | head -n 50 | sed 's/^/  /')
+# 출력 파일에서 실제 응답만 추출
+# 1. 헤더 제거 (처음 6줄)
+# 2. 디버그 구분선 제거
+# 3. shell 명령어 출력 제거
+# 4. 빈 줄 정리
+COMMENT_BODY=$(cat "$OUTPUT_FILE" | \
+  tail -n +7 | \
+  grep -v "^  ──" | \
+  grep -v "^    ▸" | \
+  grep -v "^      command:" | \
+  grep -v "^  ●" | \
+  grep -v "^   \\\\____)" | \
+  grep -v "^     L L" | \
+  grep -v "goose is ready" | \
+  sed '/^$/N;/^\n$/d' | \
+  head -n 40)
 
 # 코멘트 텍스트 구성
 COMMENT_TEXT="🦆 **Goose ${COMMAND}** 실행 완료
