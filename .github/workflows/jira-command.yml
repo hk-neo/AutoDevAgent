@@ -232,13 +232,11 @@ jobs:
 
             # Git credential을 사용하여 push
             git config credential.helper store
-            git credential approve << EOF
-protocol=https
-host=github.com
-path=${GITHUB_REPO}
-username=autodevagent-bot
-password=${GITHUB_TOKEN}
-EOF
+            echo "protocol=https" | git credential approve
+            echo "host=github.com" | git credential approve
+            echo "path=${GITHUB_REPO}" | git credential approve
+            echo "username=autodevagent-bot" | git credential approve
+            echo "password=${GITHUB_TOKEN}" | git credential approve
 
             git push
             echo "Changes pushed to target repository"
