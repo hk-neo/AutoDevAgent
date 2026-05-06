@@ -115,26 +115,26 @@ python3 goose_assets/runner/jira_toolkit.py create temp_issue.json
 
 ### 링크 연결
 ```bash
-# Gate → Document: "Blocks" 링크 사용
+# Gate "is blocked by" Document → Gate이 Document에 의해 차단됨
 curl -s -X POST \
   -H "Accept: application/json" \
   -H "Content-Type: application/json" \
   -u "$JIRA_EMAIL:$JIRA_API_TOKEN" \
   "$JIRA_URL/rest/api/3/issueLink" \
-  -d '{"type": {"name": "Blocks"}, "inwardIssue": {"key": "PARENT_KEY"}, "outwardIssue": {"key": "NEW_KEY"}}'
+  -d '{"type": {"name": "Blocks"}, "inwardIssue": {"key": "GATE_KEY"}, "outwardIssue": {"key": "DOCUMENT_KEY"}}'
 
-# Document → 하위 티켓: "Relates" 링크 사용
+# Document "relates to" sub-ticket
 curl -s -X POST \
   -H "Accept: application/json" \
   -H "Content-Type: application/json" \
   -u "$JIRA_EMAIL:$JIRA_API_TOKEN" \
   "$JIRA_URL/rest/api/3/issueLink" \
-  -d '{"type": {"name": "Relates"}, "inwardIssue": {"key": "PARENT_KEY"}, "outwardIssue": {"key": "NEW_KEY"}}'
+  -d '{"type": {"name": "Relates"}, "inwardIssue": {"key": "DOCUMENT_KEY"}, "outwardIssue": {"key": "SUB_TICKET_KEY"}}'
 ```
 
-**링크 타입 규칙:**
-- Gate → Document: **Blocks** 링크
-- Document → 하위 티켓(Intended Use 등): **Relates** 링크
+**링크 방향:**
+- Gate **is blocked by** Document (inwardIssue: Gate, outwardIssue: Document)
+- Document **relates to** sub-ticket (Relates는 양방향)
 
 ## 결과 보고
 
