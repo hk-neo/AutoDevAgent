@@ -217,17 +217,8 @@ jobs:
           echo "작업 완료 후 반드시 jira_toolkit.py를 사용하여 티켓에 결과 코멘트를 게시하세요." >> goose_prompt.txt
           echo "코멘트에는 실행한 작업 요약과 결과만 포함하세요. 디버그 정보는 포함하지 마세요." >> goose_prompt.txt
 
-          goose run -t "$(cat goose_prompt.txt)" > goose_output.txt 2>&1 || true
+          goose run -t "$(cat goose_prompt.txt)" 2>&1 | tee goose_output.txt || true
           cat goose_output.txt | sed 's/\x1b\[[0-9;]*m//g' > goose_clean.txt
-
-          # Goose 실행 결과 출력
-          TOTAL_LINES=$(wc -l < goose_clean.txt)
-          echo "=== Goose Output (${TOTAL_LINES} lines total) ==="
-          echo "--- First 10 lines ---"
-          head -10 goose_clean.txt || echo "No output"
-          echo ""
-          echo "--- Last 30 lines ---"
-          tail -30 goose_clean.txt || echo "No output"
 
           RESULT="${COMMAND}: Successfully executed. See output."
 
