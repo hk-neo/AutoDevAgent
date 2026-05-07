@@ -45,7 +45,9 @@ jobs:
         run: |
           mkdir -p ~/.config/goose/custom_providers
           cp goose_assets/config/config.yaml ~/.config/goose/
+          echo "config/" >> .gitignore
           cp -r goose_assets/config/custom_providers ~/.config/goose/
+          echo "config/" >> .gitignore
 
       - name: Determine trigger source
         id: source
@@ -115,7 +117,9 @@ jobs:
       - name: Copy Goose assets to target
         run: |
           cp -r goose_assets target-repo/
-          echo "Goose assets copied to target-repo/goose_assets"
+          mkdir -p target-repo/config
+          cp config/project-mapping.json target-repo/config/
+          echo "Goose assets and config copied to target-repo"
 
           # .gitignore에 임시 파일 추가
           cd target-repo
@@ -127,6 +131,7 @@ jobs:
           echo "context.json" >> .gitignore
           echo "temp_*.json" >> .gitignore
           echo "goose_assets/" >> .gitignore
+          echo "config/" >> .gitignore
 
       - name: Parse command from comment
         id: parse
@@ -186,6 +191,7 @@ jobs:
 
           # Goose 에이전트 호출
           SKILL_FILE="goose_assets/skills/$COMMAND/SKILL.md"
+          echo "config/" >> .gitignore
 
           # 스킬 파일 읽기
           if [ -f "$SKILL_FILE" ]; then
@@ -196,6 +202,7 @@ jobs:
 
           # .goosehints 읽기
           HINTS_CONTENT=$(cat "goose_assets/.goosehints" | sed 's/\x1b\[[0-9;]*m//g')
+          echo "config/" >> .gitignore
 
           # Goose에 컨텍스트와 함께 실행
           echo "Running Goose with skill: $COMMAND"
