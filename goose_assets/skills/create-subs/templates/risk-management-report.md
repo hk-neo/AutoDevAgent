@@ -112,9 +112,11 @@ curl -s -X POST \
   -H "Content-Type: application/json" \
   -u "$JIRA_EMAIL:$JIRA_API_TOKEN" \
   "$JIRA_URL/rest/api/3/issueLink" \
-  -d '{"type": {"name": "arises from"}, "inwardIssue": {"key": "HAZARD_KEY"}, "outwardIssue": {"key": "SYRS_KEY"}}'
+  -d '{"type": {"name": "arises from"}, "outwardIssue": {"key": "HAZARD_KEY"}, "inwardIssue": {"key": "SYRS_KEY"}}'
 ```
-방향: Hazard가 IU/SyRS에서 도출됨 (inwardIssue: Hazard, outwardIssue: IU/SyRS)
+방향: outwardIssue(Hazard)가 inwardIssue(SyRS)에서 도출됨
+- Hazard 티켓에 "arises from" 표시
+- SyRS 티켓에 "gives rise to" 표시
 
 ### 2. Hazard → "Relates" → RMR Document (문서 매핑)
 Hazard가 어느 RMR 문서에 포함되는지 표시합니다.

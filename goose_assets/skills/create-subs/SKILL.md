@@ -67,7 +67,7 @@ ISO 14971에 따라 위해 상황(Hazard)을 식별하고, 각각 Hazard 티켓�
 Hazard 티켓 생성 후 다음 2가지 링크를 연결합니다:
 
 1. **Hazard → "arises from" → IU/SyRS** (위험 출처)
-   - inwardIssue: Hazard, outwardIssue: IU/SyRS
+   - outwardIssue: Hazard (arises from 표시), inwardIssue: IU/SyRS (gives rise to 표시)
    - Hazard가 어떤 요구사항에서 도출되었는지 표시
 
 2. **Hazard → "Relates" → RMR Document** (문서 매핑)
@@ -80,7 +80,7 @@ curl -s -X POST \
   -H "Accept: application/json" -H "Content-Type: application/json" \
   -u "$JIRA_EMAIL:$JIRA_API_TOKEN" \
   "$JIRA_URL/rest/api/3/issueLink" \
-  -d '{"type": {"name": "arises from"}, "inwardIssue": {"key": "HAZARD_KEY"}, "outwardIssue": {"key": "SYRS_KEY"}}'
+  -d '{"type": {"name": "arises from"}, "outwardIssue": {"key": "HAZARD_KEY"}, "inwardIssue": {"key": "SYRS_KEY"}}'
 
 # 2. Relates 링크 (Hazard → RMR)
 curl -s -X POST \
