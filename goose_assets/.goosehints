@@ -86,8 +86,8 @@ python3 goose_assets/runner/jira_toolkit.py comment PLAYG-123 "코멘트 내용�
 ```
 
 ### 코멘트 작성 규칙
-- `jira_toolkit.py comment`에는 **파일 경로가 아닌 텍스트를 직접 전달**하세요
-- `temp_comment.json` 같은 파일을 만들지 마세요
+- `jira_toolkit.py comment`에는 **텍스트를 직접 전달**하세요. 파일 경로를 전달하면 파일 경로가 그대로 코멘트로 올라갑니다
+- 긴 내용은 임시 파일에 작성해도 되지만, **임시 파일 이름이나 경로를 코멘트에 포함하지 마세요**
 - 코멘트 내용에 파일 경로, 명령어 출력, 디버그 정보를 포함하지 마세요
 
 ---
