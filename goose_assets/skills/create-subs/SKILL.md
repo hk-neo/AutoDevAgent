@@ -5,17 +5,16 @@ description: 하위 티켓들을 생성합니다. 현재 티켓 타입과 제목
 
 하위 티켓들을 생성합니다. 현재 티켓의 이슈 타입과 제목에 따라 동작이 다릅니다.
 
-## 필수 작업
+## 1단계: 현재 티켓 정보 확인
 
-1. **현재 티켓 정보 확인**
-   - context.json에서 ticket_key 확인
-   - Jira API로 티켓의 summary(제목)과 issuetype 확인
+- context.json에서 ticket_key 확인
+- Jira API로 티켓의 summary(제목)과 issuetype 확인
 
-2. **티켓 타입에 따라 아래 지시사항을 따르세요**
+## 2단계: 아래 분기표에 따라 해당 Case만 수행
 
 ---
 
-## Case A: Gate 티켓 (issuetype = Gate)
+## Case A: issuetype이 "Gate"인 경우
 
 summary에서 PA/EA 확인 후 Document 티켓들을 생성합니다.
 
@@ -34,65 +33,65 @@ summary에서 PA/EA 확인 후 Document 티켓들을 생성합니다.
 3. [SW Architecture Document]
 4. [SW Detailed Design Document]
 
-생성 방법: jira_toolkit.py create, "Blocks" 링크로 Gate와 연결
+### 생성 방법
+```bash
+# JSON 파일 작성 (issuetype은 반드시 "Document")
+python3 -c "
+import pathlib, json
+fields = {
+    'project': {'key': '{PROJECT_KEY}'},
+    'summary': '[문서명]',
+    'issuetype': {'name': 'Document'}
+}
+pathlib.Path('temp_issue.json').write_text(json.dumps(fields, ensure_ascii=False))
+"
+python3 goose_assets/runner/jira_toolkit.py create temp_issue.json
+
+# Blocks 링크로 Gate와 연결
+curl -s -X POST \
+  -H "Accept: application/json" -H "Content-Type: application/json" \
+  -u "$JIRA_EMAIL:$JIRA_API_TOKEN" \
+  "$JIRA_URL/rest/api/3/issueLink" \
+  -d '{"type": {"name": "Blocks"}, "inwardIssue": {"key": "GATE_KEY"}, "outwardIssue": {"key": "DOCUMENT_KEY"}}'
+```
 
 ---
 
-## Case B: Document [Classification] (1개만 생성)
+## Case B: summary에 "[Classification]"이 포함된 Document
 
 Classification 티켓(이슈 타입: "Classification")을 **정확히 1개**만 생성합니다.
-같은 Gate의 IU, SyRS 티켓을 분석하여 MDR 분류를 자동 판정합니다.
-
 **자세한 지시사항**: `templates/classification.md` 파일을 읽으세요.
 
 ---
 
-## Case C: Document [Risk Management Report] — Hazard 티켓 생성
+## Case C: summary에 "[Risk Management Report]"이 포함된 Document
 
-**경고: Document나 Sub-task를 만들지 마세요. Hazard 타입 티켓을 만들어야 합니다.**
+### ⚠️ 경고: 이 Case에서는 오직 Hazard 타입 티켓만 생성합니다
 
-ISO 14971에 따라 위해 상황(Hazard)을 식별하고, 각각 Hazard 티켓을 생성합니다.
+```
+============================================================
+절대로 하지 말아야 할 것:
+- Document 티켓 생성 금지
+- Sub-task 티켓 생성 금지
+- jira_toolkit.py create 사용 금지
+- Blocks 링크 사용 금지
+- 기존 티켓/문서 삭제 금지
+============================================================
+```
 
-### 절대 금지
-- **기존 티켓/문서를 삭제하지 마세요**
-- **Document나 Sub-task를 만들지 마세요. 이슈 타입은 반드시 "Hazard"여야 합니다.**
+ISO 14971에 따라 위해 상황(Hazard)을 식별하고, **Hazard 티켓**을 생성합니다.
+**오직 risk_helper.py만 사용**하여 티켓을 생성합니다.
 
 ### 수행 단계
 1. 같은 Gate의 IU, SyRS 티켓 조회
-2. 각 SyRS 요구사항별로 잠재적 Hazard 식별
-3. **각 Hazard를 1개씩 순차적으로 생성** (아래 명령어 사용)
-4. 올바른 추적성 링크로 연결 (아래 링크 규칙 참고)
+2. 기존에 연결된 Hazard 티켓이 있는지 `fetch_linked`로 확인 (있으면 건드리지 않음)
+3. 각 SyRS 요구사항별로 잠재적 Hazard 식별
+4. **각 Hazard를 1개씩 순차적으로 생성** (아래 명령어만 사용)
+5. 올바른 추적성 링크로 연결
 
-### 링크 규칙 (매우 중요)
-Hazard 티켓 생성 후 다음 2가지 링크를 연결합니다:
-
-1. **Hazard → "arises from" → IU/SyRS** (위험 출처)
-   - outwardIssue: Hazard (arises from 표시), inwardIssue: IU/SyRS (gives rise to 표시)
-   - Hazard가 어떤 요구사항에서 도출되었는지 표시
-
-2. **Hazard → "Relates" → RMR Document** (문서 매핑)
-   - inwardIssue: Hazard, outwardIssue: RMR 티켓
-   - Hazard가 어느 RMR 문서에 포함되는지 표시
-
+### Hazard 생성 — 반드시 이 명령어만 사용
 ```bash
-# 1. arises from 링크 (Hazard가 IU/SyRS에서 도출됨)
-curl -s -X POST \
-  -H "Accept: application/json" -H "Content-Type: application/json" \
-  -u "$JIRA_EMAIL:$JIRA_API_TOKEN" \
-  "$JIRA_URL/rest/api/3/issueLink" \
-  -d '{"type": {"name": "arises from"}, "outwardIssue": {"key": "HAZARD_KEY"}, "inwardIssue": {"key": "SYRS_KEY"}}'
-
-# 2. Relates 링크 (Hazard → RMR)
-curl -s -X POST \
-  -H "Accept: application/json" -H "Content-Type: application/json" \
-  -u "$JIRA_EMAIL:$JIRA_API_TOKEN" \
-  "$JIRA_URL/rest/api/3/issueLink" \
-  -d '{"type": {"name": "Relates"}, "inwardIssue": {"key": "HAZARD_KEY"}, "outwardIssue": {"key": "RMR_KEY"}}'
-```
-
-### Hazard 생성 명령어 (반드시 사용)
-```bash
-# 1. Hazard JSON 작성
+# 1. Hazard JSON 작성 (issuetype이 반드시 "Hazard"여야 함)
 python3 -c "
 import pathlib, json
 fields = {
@@ -106,6 +105,7 @@ pathlib.Path('temp_hazard.json').write_text(json.dumps(fields, ensure_ascii=Fals
 "
 
 # 2. risk_helper.py로 생성 + Plugin 활성화 + Risk 값 설정 (한번에)
+#    jira_toolkit.py create가 아님! risk_helper.py create임!
 python3 goose_assets/runner/risk_helper.py create temp_hazard.json --severity {level} --p1 {level} --p2 {level}
 ```
 
@@ -117,66 +117,51 @@ python3 goose_assets/runner/risk_helper.py create temp_hazard.json --severity {l
 ### Hazard 카테고리
 영상 처리 오류, 측정 오류, 데이터 보안, UI/UX 오류, 성능 저하, 규제 미준수
 
+### 링크 규칙
+Hazard 티켓 생성 후 다음 2가지 링크를 연결합니다:
+
+**1. Hazard → "arises from" → IU/SyRS** (위험 출처)
+```bash
+curl -s -X POST \
+  -H "Accept: application/json" -H "Content-Type: application/json" \
+  -u "$JIRA_EMAIL:$JIRA_API_TOKEN" \
+  "$JIRA_URL/rest/api/3/issueLink" \
+  -d '{"type": {"name": "arises from"}, "outwardIssue": {"key": "HAZARD_KEY"}, "inwardIssue": {"key": "SYRS_KEY"}}'
+```
+outwardIssue: Hazard (arises from 표시), inwardIssue: IU/SyRS (gives rise to 표시)
+
+**2. Hazard → "Relates" → RMR Document** (문서 매핑)
+```bash
+curl -s -X POST \
+  -H "Accept: application/json" -H "Content-Type: application/json" \
+  -u "$JIRA_EMAIL:$JIRA_API_TOKEN" \
+  "$JIRA_URL/rest/api/3/issueLink" \
+  -d '{"type": {"name": "Relates"}, "inwardIssue": {"key": "HAZARD_KEY"}, "outwardIssue": {"key": "RMR_KEY"}}'
+```
+
 **자세한 지시사항**: `templates/risk-management-report.md` 파일도 참고하세요.
 
 ---
 
-## Case D: Document [Intended Use]
+## Case D: summary에 "[Intended Use]"가 포함된 Document
 
 Intended Use 티켓(이슈 타입: "Intended Use")을 1개 생성합니다.
 **자세한 지시사항**: `templates/intended-use.md` 파일을 읽으세요.
 
 ---
 
-## Case E: Document [System Requirement Specification]
+## Case E: summary에 "[System Requirement Specification]"이 포함된 Document
 
 System Requirement 티켓(이슈 타입: "System Requirement")들을 생성합니다.
 **자세한 지시사항**: `templates/system-requirement.md` 파일을 읽으세요.
 
 ---
 
-## 공통: 티켓 생성 방법
-
-### JSON 파일 생성 후 jira_toolkit.py 사용
-```bash
-python3 -c "
-import pathlib, json
-fields = {
-    'project': {'key': '{PROJECT_KEY}'},
-    'summary': '제목',
-    'issuetype': {'name': 'Document'}
-}
-pathlib.Path('temp_issue.json').write_text(json.dumps(fields, ensure_ascii=False))
-"
-python3 goose_assets/runner/jira_toolkit.py create temp_issue.json
-```
-
-### 링크 연결
-```bash
-# Gate "is blocked by" Document
-curl -s -X POST \
-  -H "Accept: application/json" -H "Content-Type: application/json" \
-  -u "$JIRA_EMAIL:$JIRA_API_TOKEN" \
-  "$JIRA_URL/rest/api/3/issueLink" \
-  -d '{"type": {"name": "Blocks"}, "inwardIssue": {"key": "GATE_KEY"}, "outwardIssue": {"key": "DOCUMENT_KEY"}}'
-
-# Document "relates to" sub-ticket
-curl -s -X POST \
-  -H "Accept: application/json" -H "Content-Type: application/json" \
-  -u "$JIRA_EMAIL:$JIRA_API_TOKEN" \
-  "$JIRA_URL/rest/api/3/issueLink" \
-  -d '{"type": {"name": "Relates"}, "inwardIssue": {"key": "DOCUMENT_KEY"}, "outwardIssue": {"key": "SUB_TICKET_KEY"}}'
-```
-
-**링크 방향:**
-- Gate **is blocked by** Document (inwardIssue: Gate, outwardIssue: Document)
-- Document **relates to** sub-ticket (Relates는 양방향)
-
 ## 결과 보고
 
-작업 완료 후 jira_toolkit.py로 현재 티켓에 결과 코멘트를 게시하세요.
+작업 완료 후 jira_toolkit.py로 현재 티켓에 결과 코멘트를 **정확히 1개만** 게시하세요.
 코멘트에는 생성된 티켓 목록(키, 제목, 상태)을 표 형식으로 포함하세요.
-디버그 정보는 포함하지 마세요.
+디버그 정보, 파일 경로, 명령어 출력은 절대 포함하지 마세요.
 
 ## 주의사항
 
