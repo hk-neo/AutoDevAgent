@@ -99,23 +99,35 @@ python3 goose_assets/runner/risk_helper.py create temp_hazard.json --severity {l
 | 파일 파싱 실패 | minor | occasional | remote | 2×1=2 Low |
 | 응답 없음/지연 | negligible | occasional | remote | 1×1=1 Low |
 
-## 링크
+## 링크 (추적성 규칙)
 
-- "Relates" 링크로 Risk Management Report와 연결
-- 관련 SyRS 티켓과 "Mitigates" 링크로 연결 (가능한 경우)
+각 Hazard 티켓에 대해 다음 2가지 링크를 연결합니다:
 
-## Mitigates 링크 예시
+### 1. Hazard → "arises from" → IU/SyRS (위험 출처)
+Hazard가 어떤 요구사항에서 도출되었는지 표시합니다.
 
-Hazard가 SyRS 요구사항에 의해 완화되는 경우:
 ```bash
 curl -s -X POST \
   -H "Accept: application/json" \
   -H "Content-Type: application/json" \
   -u "$JIRA_EMAIL:$JIRA_API_TOKEN" \
   "$JIRA_URL/rest/api/3/issueLink" \
-  -d '{"type": {"name": "Mitigates"}, "inwardIssue": {"key": "HAZARD_KEY"}, "outwardIssue": {"key": "SYRS_KEY"}}'
+  -d '{"type": {"name": "arises from"}, "inwardIssue": {"key": "HAZARD_KEY"}, "outwardIssue": {"key": "SYRS_KEY"}}'
 ```
-방향: SyRS가 Hazard를 완화함 (inwardIssue: Hazard, outwardIssue: SyRS)
+방향: Hazard가 IU/SyRS에서 도출됨 (inwardIssue: Hazard, outwardIssue: IU/SyRS)
+
+### 2. Hazard → "Relates" → RMR Document (문서 매핑)
+Hazard가 어느 RMR 문서에 포함되는지 표시합니다.
+
+```bash
+curl -s -X POST \
+  -H "Accept: application/json" \
+  -H "Content-Type: application/json" \
+  -u "$JIRA_EMAIL:$JIRA_API_TOKEN" \
+  "$JIRA_URL/rest/api/3/issueLink" \
+  -d '{"type": {"name": "Relates"}, "inwardIssue": {"key": "HAZARD_KEY"}, "outwardIssue": {"key": "RMR_KEY"}}'
+```
+방향: Hazard와 RMR 문서 연결 (inwardIssue: Hazard, outwardIssue: RMR)
 
 ## 결과 보고
 

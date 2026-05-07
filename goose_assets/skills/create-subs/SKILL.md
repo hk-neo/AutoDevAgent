@@ -61,7 +61,34 @@ ISO 14971에 따라 위해 상황(Hazard)을 식별하고, 각각 Hazard 티켓�
 1. 같은 Gate의 IU, SyRS 티켓 조회
 2. 각 SyRS 요구사항별로 잠재적 Hazard 식별
 3. **각 Hazard를 1개씩 순차적으로 생성** (아래 명령어 사용)
-4. "Relates" 링크로 RMR과 연결
+4. 올바른 추적성 링크로 연결 (아래 링크 규칙 참고)
+
+### 링크 규칙 (매우 중요)
+Hazard 티켓 생성 후 다음 2가지 링크를 연결합니다:
+
+1. **Hazard → "arises from" → IU/SyRS** (위험 출처)
+   - inwardIssue: Hazard, outwardIssue: IU/SyRS
+   - Hazard가 어떤 요구사항에서 도출되었는지 표시
+
+2. **Hazard → "Relates" → RMR Document** (문서 매핑)
+   - inwardIssue: Hazard, outwardIssue: RMR 티켓
+   - Hazard가 어느 RMR 문서에 포함되는지 표시
+
+```bash
+# 1. arises from 링크 (Hazard가 IU/SyRS에서 도출됨)
+curl -s -X POST \
+  -H "Accept: application/json" -H "Content-Type: application/json" \
+  -u "$JIRA_EMAIL:$JIRA_API_TOKEN" \
+  "$JIRA_URL/rest/api/3/issueLink" \
+  -d '{"type": {"name": "arises from"}, "inwardIssue": {"key": "HAZARD_KEY"}, "outwardIssue": {"key": "SYRS_KEY"}}'
+
+# 2. Relates 링크 (Hazard → RMR)
+curl -s -X POST \
+  -H "Accept: application/json" -H "Content-Type: application/json" \
+  -u "$JIRA_EMAIL:$JIRA_API_TOKEN" \
+  "$JIRA_URL/rest/api/3/issueLink" \
+  -d '{"type": {"name": "Relates"}, "inwardIssue": {"key": "HAZARD_KEY"}, "outwardIssue": {"key": "RMR_KEY"}}'
+```
 
 ### Hazard 생성 명령어 (반드시 사용)
 ```bash
