@@ -2,13 +2,20 @@
 
 Risk Management Report에서 `!create-subs`를 실행하면, IU와 SyRS를 분석하여 **Hazard 티켓들**을 생성합니다.
 
+## 절대 금지 사항
+
+- **기존 Hazard 티켓을 절대 삭제하지 마세요.** 이미 생성된 티켓은 그대로 두세요.
+- **기존 문서(md 파일)를 삭제하지 마세요.** docs/ 폴더의 파일은 건드리지 마세요.
+- **중복 생성을 방지하세요.** 생성 전에 연결된 Hazard 티켓이 이미 있는지 확인하세요.
+
 ## 수행 단계
 
-1. 같은 Gate의 IU 티켓과 SyRS 티켓들을 Jira API로 조회
-2. IU의 사용 환경, 적응증, 경고/주의사항 분석
-3. SyRS의 각 요구사항별로 잠재적 위해(Hazard) 식별
-4. 각 Hazard에 대해 **risk_helper.py로 한번에 생성 + 활성화 + Risk 값 설정**
-5. Risk Management Report와 "Relates" 링크 연결
+1. **기존 Hazard 확인** — fetch_linked로 이미 연결된 Hazard 티켓이 있는지 확인. 있으면 건드리지 않음.
+2. 같은 Gate의 IU 티켓과 SyRS 티켓들을 Jira API로 조회
+3. IU의 사용 환경, 적응증, 경고/주의사항 분석
+4. SyRS의 각 요구사항별로 잠재적 위해(Hazard) 식별
+5. **각 Hazard를 1개씩 순차적으로 생성** (아래 "Hazard 티켓 생성" 섹션 참고)
+6. Risk Management Report와 "Relates" 링크 연결
 
 ## Hazard 식별 방법
 
@@ -33,6 +40,10 @@ ISO 14971에 따라 다음 순서로 Hazard를 식별합니다:
 1. Jira API로 Hazard 티켓 생성
 2. Issue Property API로 Risk Management Plugin 패널 활성화
 3. Risk Management Plugin API로 Initial/Current Risk 값 설정
+
+**중요: Hazard 티켓을 1개씩 순차적으로 생성하세요.** 여러 개를 동시에 만들지 마세요.
+각 티켓마다 JSON 작성 → risk_helper.py create → 다음 티켓 순서로 진행하세요.
+API 호출 간 충분한 시간 간격이 필요합니다.
 
 ### 사용법
 
