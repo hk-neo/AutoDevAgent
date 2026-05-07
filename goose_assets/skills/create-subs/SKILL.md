@@ -59,11 +59,11 @@ ISO 14971에 따라 위해 상황(Hazard)을 식별하고, `rmr_create_hazards.p
 ### 수행 단계
 1. 같은 Gate의 IU, SyRS 티켓 조회
 2. 각 SyRS 요구사항별로 잠재적 Hazard 식별
-3. **hazards.json 파일 작성** (아래 형식 참고)
+3. **temp_hazards.json 파일 작성** (아래 형식 참고)
 4. **rmr_create_hazards.py 실행** (한 번의 명령으로 모든 Hazard 생성 + Risk Plugin + 링크 연결 완료)
 5. 스크립트 출력의 코멘트용 요약을 jira_toolkit.py comment로 게시
 
-### hazards.json 작성
+### temp_hazards.json 작성
 아래 형식으로 파일을 작성하세요. 이것만 하면 됩니다:
 
 ```python
@@ -81,7 +81,7 @@ hazards = [
     },
     # ... 추가 Hazard
 ]
-pathlib.Path('hazards.json').write_text(json.dumps(hazards, ensure_ascii=False, indent=2))
+pathlib.Path('temp_hazards.json').write_text(json.dumps(hazards, ensure_ascii=False, indent=2))
 "
 ```
 
@@ -92,7 +92,7 @@ pathlib.Path('hazards.json').write_text(json.dumps(hazards, ensure_ascii=False, 
 
 ### 스크립트 실행 (이 명령어 하나로 끝)
 ```bash
-python3 goose_assets/runner/rmr_create_hazards.py hazards.json --rmr {RMR_키} --project {PROJECT_KEY}
+python3 goose_assets/runner/rmr_create_hazards.py temp_hazards.json --rmr {RMR_키} --project {PROJECT_KEY}
 ```
 
 스크립트가 자동으로 처리하는 작업:

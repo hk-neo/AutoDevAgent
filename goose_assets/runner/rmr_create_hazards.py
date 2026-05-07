@@ -9,12 +9,12 @@ Goose가 작성한 hazards.json을 읽어서:
 4. 결과 코멘트용 요약 출력
 
 사용법:
-  python3 goose_assets/runner/rmr_create_hazards.py hazards.json --rmr PLAYG-2152 --project PLAYG
+  python3 goose_assets/runner/rmr_create_hazards.py temp_hazards.json --rmr PLAYG-2152 --project PLAYG
 
   # dry-run (실제 생성 없이 검증만)
-  python3 goose_assets/runner/rmr_create_hazards.py hazards.json --rmr PLAYG-2152 --project PLAYG --dry-run
+  python3 goose_assets/runner/rmr_create_hazards.py temp_hazards.json --rmr PLAYG-2152 --project PLAYG --dry-run
 
-hazards.json 형식:
+temp_hazards.json 형식:
 [
   {
     "summary": "[HAZ-1.1] 영상 렌더링 오류",
@@ -188,9 +188,9 @@ def main():
             print(f"- {r['key']}: {r['summary']} ({r['severity']}, {r['p1']}->{r['p2']})")
 
     # 결과 JSON 저장
-    result_path = pathlib.Path('hazard_results.json')
+    result_path = pathlib.Path('temp_hazard_results.json')
     result_path.write_text(json.dumps(results, ensure_ascii=False, indent=2), encoding='utf-8')
-    print(f"\nResults: hazard_results.json")
+    print(f"\nResults: temp_hazard_results.json")
 
 
 if __name__ == '__main__':
