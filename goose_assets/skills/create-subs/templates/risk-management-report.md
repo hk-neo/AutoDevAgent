@@ -7,7 +7,7 @@ Risk Management Report에서 `!create-subs`를 실행하면, IU와 SyRS를 분�
 1. 같은 Gate의 IU 티켓과 SyRS 티켓들을 Jira API로 조회
 2. IU의 사용 환경, 적응증, 경고/주의사항 분석
 3. SyRS의 각 요구사항별로 잠재적 위해(Hazard) 식별
-4. 각 Hazard에 대해 티켓 생성 + Risk 값 설정
+4. 각 Hazard에 대해 **risk_helper.py로 한번에 생성 + 활성화 + Risk 값 설정**
 5. Risk Management Report와 "Relates" 링크 연결
 
 ## Hazard 식별 방법
@@ -27,10 +27,17 @@ ISO 14971에 따라 다음 순서로 Hazard를 식별합니다:
 | 성능 저하 | 렌더링 지연, 응답 없음, 메모리 부족 |
 | 규제/컴플라이언스 | 감사 추적 누락, 형상 관리 위반 |
 
-## Hazard 티켓 생성
+## Hazard 티켓 생성 + Risk Plugin 활성화 + Risk 값 설정
 
-### 1. JSON 파일로 Hazard 티켓 생성
+**반드시 `risk_helper.py`를 사용하세요. 이 스크립트가 3단계를 모두 자동 처리합니다:**
+1. Jira API로 Hazard 티켓 생성
+2. Issue Property API로 Risk Management Plugin 패널 활성화
+3. Risk Management Plugin API로 Initial/Current Risk 값 설정
+
+### 사용법
+
 ```bash
+# Step 1: Hazard JSON 파일 작성
 python3 -c "
 import pathlib, json
 fields = {
@@ -42,33 +49,28 @@ fields = {
 }
 pathlib.Path('temp_hazard.json').write_text(json.dumps(fields, ensure_ascii=False))
 "
-python3 goose_assets/runner/jira_toolkit.py create temp_hazard.json
-```
 
-### 2. Risk Management Plugin으로 Risk 값 설정
-**주의: 일반 Jira API가 아닌 Risk Management Plugin API를 사용합니다.**
-
-```bash
-# risk_helper.py로 Hazard 생성 + Risk 값 설정을 한번에
+# Step 2: risk_helper.py로 생성 + 활성화 + Risk 값 설정 (한번에)
 python3 goose_assets/runner/risk_helper.py create temp_hazard.json --severity {level} --p1 {level} --p2 {level}
 ```
 
-**Severity 옵션:** negligible, minor, moderate, major, catastrophic
-**P1/P2 옵션:** remote, low, reasonably_probable, probable, frequent
+### Risk 값 옵션
+
+**Severity:** negligible, minor, serious, critical, catastrophic
+**P1/P2:** improvable, remote, occasional, probable, frequent
 
 ### Risk 값 판정 기준
 
 #### Severity (심각도)
 - **negligible:** 불편함만, 임상적 영향 없음
 - **minor:** 경미한 재처리 필요
-- **moderate:** 일시적 증상, 추가 진료 필요
-- **major:** 심각한 상해, 수술 필요
+- **serious:** 일시적 증상, 추가 진료 필요
+- **critical:** 심각한 상해, 수술 필요
 - **catastrophic:** 사망 또는 중대한 영구 장애
 
 #### P1 (발생 확률 - 초기)
-- **remote:** 극히 드묾 (거의 발생 안 함)
-- **low:** 낮음
-- **reasonably_probable:** 합리적으로 예상 가능
+- **remote:** 극히 드묾
+- **occasional:** 가끔 발생
 - **probable:** 발생 가능성 높음
 - **frequent:** 빈번히 발생
 
@@ -76,25 +78,39 @@ python3 goose_assets/runner/risk_helper.py create temp_hazard.json --severity {l
 - 완화 조치(Mitigation) 적용 후의 예상 확률
 - 일반적으로 P1보다 낮거나 같음
 
-### Risk 값 판정 예시
+### 판정 예시 (치과 CBCT 웹 뷰어)
 
-치과 CBCT 웹 뷰어의 경우:
-- **영상 렌더링 오류:** severity=minor, p1=low, p2=remote
-  - 의사가 이상 발견 시 재확인 가능
-- **측정 오류:** severity=moderate, p1=low, p2=remote
-  - 수술 계획에 영향 가능
-- **환자 데이터 유출:** severity=moderate, p1=remote, p2=remote
-  - 로컬 전용이라 유출 가능성 낮음
+| Hazard | Severity | P1 | P2 | Risk Score |
+|--------|----------|----|----|-----------|
+| 영상 렌더링 오류 | minor | occasional | remote | 2×1=2 Low |
+| 측정 오류 | serious | remote | remote | 3×1=3 Low |
+| 환자 데이터 유출 | serious | remote | remote | 3×1=3 Low |
+| 파일 파싱 실패 | minor | occasional | remote | 2×1=2 Low |
+| 응답 없음/지연 | negligible | occasional | remote | 1×1=1 Low |
 
 ## 링크
 
 - "Relates" 링크로 Risk Management Report와 연결
 - 관련 SyRS 티켓과 "Mitigates" 링크로 연결 (가능한 경우)
 
+## Mitigates 링크 예시
+
+Hazard가 SyRS 요구사항에 의해 완화되는 경우:
+```bash
+curl -s -X POST \
+  -H "Accept: application/json" \
+  -H "Content-Type: application/json" \
+  -u "$JIRA_EMAIL:$JIRA_API_TOKEN" \
+  "$JIRA_URL/rest/api/3/issueLink" \
+  -d '{"type": {"name": "Mitigates"}, "inwardIssue": {"key": "HAZARD_KEY"}, "outwardIssue": {"key": "SYRS_KEY"}}'
+```
+방향: SyRS가 Hazard를 완화함 (inwardIssue: Hazard, outwardIssue: SyRS)
+
 ## 결과 보고
 
 코멘트에 생성된 Hazard 목록을 표로 작성:
 
-| Hazard ID | 제목 | Severity | P1×P2 | Risk Level |
+| Hazard ID | 제목 | Severity | P1→P2 | Risk Level |
 |-----------|------|----------|-------|------------|
-| HAZ-1.1 | ... | minor | 2×1=2 | Low |
+| HAZ-1.1 | 영상 렌더링 오류 | minor | 2→1 | Low |
+| HAZ-1.2 | 측정 오류 | serious | 1→1 | Low |
