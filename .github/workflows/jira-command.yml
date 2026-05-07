@@ -266,8 +266,15 @@ jobs:
             git add -A
             git commit -m "[$TICKET_KEY] $COMMAND: Executed via AutoDevAgent" || echo "No changes to commit"
 
-            # 원격 변경사항 먼저 반영 후 push
-            git pull --rebase "https://${PAT_TOKEN}@github.com/${GITHUB_REPO}.git" "${{ steps.mapping.outputs.default_branch }}" || true
+            # 원격 변경사항 먼저 반영 후 push (충돌 시 .gitignore는 원격 것으로 자동 해결)
+            git pull --rebase --strategy-option=theirs "https://${PAT_TOKEN}@github.com/${GITHUB_REPO}.git" "${{ steps.mapping.outputs.default_branch }}" || {
+              # rebase 충돌 발생 시 .gitignore를 원격 버전으로 해결하고 계속
+              if git rebase --show-current-patch &>/dev/null; then
+                git checkout --theirs .gitignore 2>/dev/null || true
+                git add .gitignore
+                git rebase --continue --no-edit || true
+              fi
+            }
             # PAT로 push
             git push "https://${PAT_TOKEN}@github.com/${GITHUB_REPO}.git"
             echo "Changes pushed to target repository"
