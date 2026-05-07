@@ -3,8 +3,8 @@
 RMR Hazard 일괄 생성 스크립트
 
 Goose가 작성한 hazards.json을 읽어서:
-1. risk_helper.py로 Hazard 티켓 생성 + Risk Plugin 활성화 + Risk 값 설정
-2. Risk Source 링크 (Hazard → IU/SyRS)
+1. risk_helper 함수 직접 호출로 Hazard 티켓 생성 + Risk Plugin + Risk 값
+2. Risk Source 링크 (Hazard arises from IU/SyRS)
 3. Relates 링크 (Hazard → RMR Document)
 4. 결과 코멘트용 요약 출력
 
@@ -36,12 +36,17 @@ import time
 import pathlib
 import requests
 
+# flush 즉시 출력
+import functools
+print = functools.partial(print, flush=True)
+
 JIRA_URL = os.getenv('JIRA_URL')
 JIRA_EMAIL = os.getenv('JIRA_EMAIL')
 JIRA_API_TOKEN = os.getenv('JIRA_API_TOKEN')
 
-# risk_helper.py 경로
-RISK_HELPER = pathlib.Path(__file__).parent / "risk_helper.py"
+# risk_helper 함수 직접 임포트
+sys.path.insert(0, str(pathlib.Path(__file__).parent))
+from risk_helper import create_hazard, set_all_risk_values, activate_risk_panel
 
 
 def load_hazards(json_path):
@@ -60,54 +65,7 @@ def load_hazards(json_path):
     return data
 
 
-def create_hazard_ticket(project_key, hazard, dry_run=False):
-    if dry_run:
-        print(f"  [DRY-RUN] Would create: {hazard['summary']}")
-        return f"DRY-{i+1:03d}"
-
-    fields = {
-        'project': {'key': project_key},
-        'summary': hazard['summary'],
-        'issuetype': {'name': 'Hazard'},
-        'description': hazard['description'],
-        'customfield_10148': hazard['harm']
-    }
-
-    # JSON 파일 작성
-    tmp_path = pathlib.Path('temp_hazard_auto.json')
-    tmp_path.write_text(json.dumps(fields, ensure_ascii=False), encoding='utf-8')
-
-    # risk_helper.py로 생성 + Plugin 활성화 + Risk 값 설정
-    import subprocess
-    cmd = [
-        sys.executable, str(RISK_HELPER), 'create', str(tmp_path),
-        '--severity', hazard['severity'],
-        '--p1', hazard['p1'],
-        '--p2', hazard['p2']
-    ]
-
-    result = subprocess.run(cmd, capture_output=True, text=True)
-    print(result.stdout)
-    if result.stderr:
-        print(result.stderr, file=sys.stderr)
-
-    # 생성된 티켓 키 파싱 (마지막 "Result: KEY-XXX" 라인에서)
-    issue_key = None
-    for line in result.stdout.strip().split('\n'):
-        if line.startswith('Result:'):
-            issue_key = line.split(':', 1)[1].strip()
-
-    if not issue_key:
-        print(f"  Warning: Could not parse ticket key from output")
-
-    return issue_key
-
-
-def create_link(link_type, inward_key, outward_key, dry_run=False):
-    if dry_run:
-        print(f"  [DRY-RUN] Link: {inward_key} <--{link_type}--> {outward_key}")
-        return True
-
+def create_link(link_type, inward_key, outward_key):
     auth = (JIRA_EMAIL, JIRA_API_TOKEN)
     headers = {'Content-Type': 'application/json', 'Accept': 'application/json'}
 
@@ -123,38 +81,11 @@ def create_link(link_type, inward_key, outward_key, dry_run=False):
     )
 
     if resp.status_code in (200, 201, 204):
+        print(f"  Linked: {inward_key} <-{link_type}-> {outward_key}")
         return True
     else:
-        print(f"  Link failed ({link_type} {inward_key}<->{outward_key}): {resp.status_code} {resp.text[:100]}")
+        print(f"  Link failed: {resp.status_code} {resp.text[:80]}")
         return False
-
-
-def check_existing_hazards(rmr_key):
-    """RMR에 이미 연결된 Hazard 티켓이 있는지 확인"""
-    auth = (JIRA_EMAIL, JIRA_API_TOKEN)
-    headers = {'Content-Type': 'application/json', 'Accept': 'application/json'}
-
-    resp = requests.get(
-        f"{JIRA_URL}/rest/api/2/issue/{rmr_key}?fields=issuelinks",
-        auth=auth, headers=headers
-    )
-
-    if resp.status_code != 200:
-        return []
-
-    existing = []
-    for link in resp.json().get('fields', {}).get('issuelinks', []):
-        if link.get('type', {}).get('name') == 'Relates':
-            if link.get('inwardIssue', {}).get('key') == rmr_key:
-                existing.append(link['outwardIssue']['key'])
-            elif link.get('outwardIssue', {}).get('key') == rmr_key:
-                existing.append(link['inwardIssue']['key'])
-        # Blocks 링크도 확인 (이전에 잘못 생성된 경우)
-        if link.get('type', {}).get('name') == 'Blocks':
-            if link.get('inwardIssue', {}).get('key') == rmr_key:
-                existing.append(link['outwardIssue']['key'])
-
-    return existing
 
 
 def main():
@@ -187,44 +118,53 @@ def main():
 
     if not project_key:
         project_key = rmr_key.split('-')[0]
-        print(f"Project key inferred from RMR: {project_key}")
-
-    # 기존 Hazard 확인
-    if not dry_run:
-        existing = check_existing_hazards(rmr_key)
-        if existing:
-            print(f"Warning: RMR already has linked tickets: {existing}")
-            print("Skipping to prevent duplicates. Delete existing tickets first if you want to recreate.")
-            sys.exit(0)
+        print(f"Project key: {project_key}")
 
     # hazards.json 로드
     hazards = load_hazards(json_path)
-    print(f"Loaded {len(hazards)} hazards from {json_path}")
+    print(f"Loaded {len(hazards)} hazards")
+
+    if dry_run:
+        for i, h in enumerate(hazards):
+            print(f"  [{i+1}/{len(hazards)}] {h['summary']} (severity={h['severity']}, p1={h['p1']}, p2={h['p2']}, sources={h.get('source_keys', [])})")
+        print(f"\nDry run complete. {len(hazards)} hazards validated.")
+        return
 
     # 순차 생성
     results = []
     for i, hazard in enumerate(hazards):
-        print(f"\n--- Hazard {i+1}/{len(hazards)}: {hazard['summary']} ---")
+        print(f"\n[{i+1}/{len(hazards)}] {hazard['summary']}")
 
-        # 1. 티켓 생성
-        issue_key = create_hazard_ticket(project_key, hazard, dry_run)
+        # 1. Hazard 티켓 생성 (risk_helper 직접 호출)
+        fields = {
+            'project': {'key': project_key},
+            'summary': hazard['summary'],
+            'issuetype': {'name': 'Hazard'},
+            'description': hazard['description'],
+            'customfield_10148': hazard['harm']
+        }
+        tmp_path = pathlib.Path('temp_hazard_auto.json')
+        tmp_path.write_text(json.dumps(fields, ensure_ascii=False), encoding='utf-8')
+
+        issue_key = create_hazard(str(tmp_path))
         if not issue_key:
-            print(f"  Skipping links for failed ticket")
+            print(f"  FAILED - skipping")
             continue
 
-        print(f"  Created: {issue_key}")
-        time.sleep(1)
-
-        # 2. Risk Source 링크 (Hazard → IU/SyRS)
-        # SyRS가 outwardIssue("gives rise to"), Hazard가 inwardIssue("arises from")
-        source_keys = hazard.get('source_keys', [])
-        for src_key in source_keys:
-            create_link('Risk Source', src_key, issue_key, dry_run)
-            time.sleep(0.5)
-
-        # 3. Relates 링크 (Hazard → RMR)
-        create_link('Relates', issue_key, rmr_key, dry_run)
+        # 2. Risk Plugin 활성화 (이미 create_hazard에서 처리됨)
+        # 3. Risk 값 설정
+        print(f"  Setting risk values...")
+        set_all_risk_values(issue_key, project_key, hazard['severity'], hazard['p1'], hazard['p2'])
         time.sleep(0.5)
+
+        # 4. Risk Source 링크 (SyRS gives rise to → Hazard arises from)
+        for src_key in hazard.get('source_keys', []):
+            create_link('Risk Source', src_key, issue_key)
+            time.sleep(0.3)
+
+        # 5. Relates 링크 (Hazard → RMR)
+        create_link('Relates', issue_key, rmr_key)
+        time.sleep(0.3)
 
         results.append({
             'key': issue_key,
@@ -234,26 +174,23 @@ def main():
             'p2': hazard['p2']
         })
 
+        print(f"  Done: {issue_key}")
+
     # 결과 요약
     print(f"\n{'='*50}")
-    print(f"총 {len(results)}/{len(hazards)}개 Hazard 생성 완료")
+    print(f"Completed: {len(results)}/{len(hazards)} hazards created")
     print(f"{'='*50}")
 
-    # 코멘트용 텍스트 출력
     if results:
-        print("\n## 코멘트용 요약 (복사해서 jira_toolkit.py comment에 사용)")
-        print(f"!create_subs 완료")
-        print(f"Risk Management Report({rmr_key})의 하위 Hazard 티켓 {len(results)}건을 생성하였습니다.")
-        print(f"")
+        print(f"\n## Comment summary")
+        print(f"Risk Management Report({rmr_key}) - {len(results)} Hazard tickets created:")
         for r in results:
-            print(f"- {r['key']}: {r['summary']} (Severity: {r['severity']}, P1: {r['p1']} → P2: {r['p2']})")
-        print(f"")
-        print(f"모든 티켓은 Risk Source 링크로 관련 요구사항과 연결되었으며, Relates 링크로 RMR과 연결되었습니다.")
+            print(f"- {r['key']}: {r['summary']} ({r['severity']}, {r['p1']}->{r['p2']})")
 
-    # 결과를 JSON으로도 저장
+    # 결과 JSON 저장
     result_path = pathlib.Path('hazard_results.json')
     result_path.write_text(json.dumps(results, ensure_ascii=False, indent=2), encoding='utf-8')
-    print(f"\nResults saved to hazard_results.json")
+    print(f"\nResults: hazard_results.json")
 
 
 if __name__ == '__main__':
