@@ -216,9 +216,10 @@ def main():
         time.sleep(1)
 
         # 2. Risk Source 링크 (Hazard → IU/SyRS)
+        # SyRS가 outwardIssue("gives rise to"), Hazard가 inwardIssue("arises from")
         source_keys = hazard.get('source_keys', [])
         for src_key in source_keys:
-            create_link('Risk Source', issue_key, src_key, dry_run)
+            create_link('Risk Source', src_key, issue_key, dry_run)
             time.sleep(0.5)
 
         # 3. Relates 링크 (Hazard → RMR)
