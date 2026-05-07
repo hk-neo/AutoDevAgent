@@ -80,7 +80,15 @@ python3 goose_assets/runner/jira_toolkit.py update PLAYG-123 fields.json
 
 # 티켓 생성
 python3 goose_assets/runner/jira_toolkit.py create issue.json
+
+# 코멘트 추가 (반드시 텍스트를 직접 전달, 파일 경로 전달 금지)
+python3 goose_assets/runner/jira_toolkit.py comment PLAYG-123 "코멘트 내용을 여기에 직접 작성"
 ```
+
+### 코멘트 작성 규칙
+- `jira_toolkit.py comment`에는 **파일 경로가 아닌 텍스트를 직접 전달**하세요
+- `temp_comment.json` 같은 파일을 만들지 마세요
+- 코멘트 내용에 파일 경로, 명령어 출력, 디버그 정보를 포함하지 마세요
 
 ---
 
