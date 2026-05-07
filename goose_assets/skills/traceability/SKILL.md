@@ -24,7 +24,7 @@ description: 추적성을 확인하고 관리합니다. --find-missing으로 누
 |------|-----------|------|----------|------|
 | Document | Blocks | Gate | inwardIssue: Gate, outwardIssue: Document | Gate가 Document에 의해 차단됨 |
 | System Requirement 티켓 | Relates | SyRS Document | 양방향 | 요구사항과 문서 연결 |
-| Hazard | arises from | IU / System Requirement | outwardIssue: Hazard, inwardIssue: IU/SyRS | Hazard가 요구사항에서 도출됨 |
+| Hazard | arises from | IU / System Requirement | inwardIssue: Hazard, outwardIssue: IU/SyRS | Hazard가 요구사항에서 도출됨 |
 | Hazard | Relates | RMR Document | inwardIssue: Hazard, outwardIssue: RMR | Hazard와 RMR 문서 매핑 |
 
 ### PA Phase 구조
@@ -132,7 +132,7 @@ curl -s -X POST \
   -H "Accept: application/json" -H "Content-Type: application/json" \
   -u "$JIRA_EMAIL:$JIRA_API_TOKEN" \
   "$JIRA_URL/rest/api/3/issueLink" \
-  -d '{"type": {"name": "arises from"}, "outwardIssue": {"key": "HAZARD_KEY"}, "inwardIssue": {"key": "SYRS_KEY"}}'
+  -d '{"type": {"name": "arises from"}, "inwardIssue": {"key": "HAZARD_KEY"}, "outwardIssue": {"key": "SYRS_KEY"}}'
 
 # Relates 링크 (Hazard → RMR)
 curl -s -X POST \
