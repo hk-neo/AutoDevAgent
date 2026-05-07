@@ -147,8 +147,10 @@ jobs:
             COMMAND=$(echo "$COMMENT_BODY" | sed 's/^\![[:space:]]*//' | cut -d' ' -f1)
             ARGS=$(echo "$COMMENT_BODY" | sed 's/^\![[:space:]]*//' | cut -d' ' -f2-)
           else
-            COMMAND="natural"
-            ARGS="$COMMENT_BODY"
+            echo "Not a command (no ! prefix). Skipping."
+            echo "command=SKIP" >> $GITHUB_OUTPUT
+            echo "args=" >> $GITHUB_OUTPUT
+            exit 0
           fi
 
           echo "command=$COMMAND" >> $GITHUB_OUTPUT
@@ -160,6 +162,7 @@ jobs:
 
       - name: Execute command via Goose
         id: execute
+        if: steps.parse.outputs.command != 'SKIP'
         env:
           JIRA_URL: ${{ secrets.JIRA_URL }}
           JIRA_EMAIL: ${{ secrets.JIRA_EMAIL }}
@@ -230,12 +233,13 @@ jobs:
           echo "- 생성/수정된 티켓 목록이나 문서 요약" >> goose_prompt.txt
           echo "" >> goose_prompt.txt
           echo "코멘트에 절대 포함하지 마세요:" >> goose_prompt.txt
-          echo "- 파일 경로 (temp_*.json, /tmp/*, goose_output.txt 등)" >> goose_prompt.txt
+          echo "- 파일 이름이나 경로 (temp_*.json, goose_output.txt, goose_prompt.txt 등 어떤 파일명도 안 됨)" >> goose_prompt.txt
           echo "- 명령어 출력이나 에러 메시지" >> goose_prompt.txt
           echo "- 중간 작업 결과나 디버그 정보" >> goose_prompt.txt
           echo "- shell 명령어 (get, cat, ls 등)" >> goose_prompt.txt
           echo "- JSON 파일 내용" >> goose_prompt.txt
           echo "- 작업 진행 상태나 todo 항목" >> goose_prompt.txt
+          echo "- python3 -c, curl 등의 명령어" >> goose_prompt.txt
           echo "" >> goose_prompt.txt
           echo "코멘트는 1개만 게시하세요. 중간에 코멘트를 달지 마세요. 모든 작업이 끝난 후 마지막에 1개만 게시하세요." >> goose_prompt.txt
 
