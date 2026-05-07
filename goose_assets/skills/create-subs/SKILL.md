@@ -49,71 +49,59 @@ Classification 티켓(이슈 타입: "Classification")을 **정확히 1개**만 
 
 ## Case C: Document [Risk Management Report] — Hazard 티켓 생성
 
-**경고: Document나 Sub-task를 만들지 마세요. Hazard 타입 티켓을 만들어야 합니다.**
-
-ISO 14971에 따라 위해 상황(Hazard)을 식별하고, 각각 Hazard 티켓을 생성합니다.
+ISO 14971에 따라 위해 상황(Hazard)을 식별하고, `rmr_create_hazards.py` 스크립트로 일괄 생성합니다.
 
 ### 절대 금지
 - **기존 티켓/문서를 삭제하지 마세요**
-- **Document나 Sub-task를 만들지 마세요. 이슈 타입은 반드시 "Hazard"여야 합니다.**
+- **jira_toolkit.py create를 사용하지 마세요** (스크립트가 대신 생성합니다)
+- **직접 curl로 링크를 만들지 마세요** (스크립트가 대신 연결합니다)
 
 ### 수행 단계
 1. 같은 Gate의 IU, SyRS 티켓 조회
 2. 각 SyRS 요구사항별로 잠재적 Hazard 식별
-3. **각 Hazard를 1개씩 순차적으로 생성** (아래 명령어 사용)
-4. 올바른 추적성 링크로 연결 (아래 링크 규칙 참고)
+3. **hazards.json 파일 작성** (아래 형식 참고)
+4. **rmr_create_hazards.py 실행** (한 번의 명령으로 모든 Hazard 생성 + Risk Plugin + 링크 연결 완료)
+5. 스크립트 출력의 코멘트용 요약을 jira_toolkit.py comment로 게시
 
-### 링크 규칙 (매우 중요)
-Hazard 티켓 생성 후 다음 2가지 링크를 연결합니다:
+### hazards.json 작성
+아래 형식으로 파일을 작성하세요. 이것만 하면 됩니다:
 
-1. **Hazard → "arises from" → IU/SyRS** (위험 출처)
-   - 링크 타입 이름: **"Risk Source"** (Jira에 등록된 이름)
-   - inward: "arises from" → inwardIssue: Hazard에 표시
-   - outward: "give rise to" → outwardIssue: IU/SyRS에 표시
-
-2. **Hazard → "Relates" → RMR Document** (문서 매핑)
-   - inwardIssue: Hazard, outwardIssue: RMR 티켓
-   - Hazard가 어느 RMR 문서에 포함되는지 표시
-
-```bash
-# 1. arises from 링크 (Hazard가 IU/SyRS에서 도출됨)
-curl -s -X POST \
-  -H "Accept: application/json" -H "Content-Type: application/json" \
-  -u "$JIRA_EMAIL:$JIRA_API_TOKEN" \
-  "$JIRA_URL/rest/api/3/issueLink" \
-  -d '{"type": {"name": "Risk Source"}, "inwardIssue": {"key": "HAZARD_KEY"}, "outwardIssue": {"key": "SYRS_KEY"}}'
-
-# 2. Relates 링크 (Hazard → RMR)
-curl -s -X POST \
-  -H "Accept: application/json" -H "Content-Type: application/json" \
-  -u "$JIRA_EMAIL:$JIRA_API_TOKEN" \
-  "$JIRA_URL/rest/api/3/issueLink" \
-  -d '{"type": {"name": "Relates"}, "inwardIssue": {"key": "HAZARD_KEY"}, "outwardIssue": {"key": "RMR_KEY"}}'
-```
-
-### Hazard 생성 명령어 (반드시 사용)
-```bash
-# 1. Hazard JSON 작성
+```python
 python3 -c "
 import pathlib, json
-fields = {
-    'project': {'key': '{PROJECT_KEY}'},
-    'summary': '[HAZ-N.N] {제목}',
-    'issuetype': {'name': 'Hazard'},
-    'description': '{설명}',
-    'customfield_10148': '{Harm}'
-}
-pathlib.Path('temp_hazard.json').write_text(json.dumps(fields, ensure_ascii=False))
+hazards = [
+    {
+        'summary': '[HAZ-1.1] 영상 렌더링 오류',
+        'description': '위험 원인 및 상세 설명',
+        'harm': '예상되는 Harm',
+        'severity': 'minor',
+        'p1': 'occasional',
+        'p2': 'remote',
+        'source_keys': ['PLAYG-XXXX']  # 관련 SyRS/IU 티켓 키
+    },
+    # ... 추가 Hazard
+]
+pathlib.Path('hazards.json').write_text(json.dumps(hazards, ensure_ascii=False, indent=2))
 "
-
-# 2. risk_helper.py로 생성 + Plugin 활성화 + Risk 값 설정 (한번에)
-python3 goose_assets/runner/risk_helper.py create temp_hazard.json --severity {level} --p1 {level} --p2 {level}
 ```
 
 ### Risk 값 옵션
 - **Severity**: negligible, minor, serious, critical, catastrophic
 - **P1/P2**: remote, occasional, probable, frequent
 - **P2는 보통 P1보다 낮거나 같음** (완화 조치 후)
+
+### 스크립트 실행 (이 명령어 하나로 끝)
+```bash
+python3 goose_assets/runner/rmr_create_hazards.py hazards.json --rmr {RMR_키} --project {PROJECT_KEY}
+```
+
+스크립트가 자동으로 처리하는 작업:
+- Hazard 티켓 생성 (issuetype: Hazard)
+- Risk Management Plugin 활성화
+- Initial/Current Risk 값 설정 (severity, P1, P2)
+- Risk Source 링크 연결 (Hazard → IU/SyRS)
+- Relates 링크 연결 (Hazard → RMR)
+- 중복 생성 방지 (기존 Hazard 확인)
 
 ### Hazard 카테고리
 영상 처리 오류, 측정 오류, 데이터 보안, UI/UX 오류, 성능 저하, 규제 미준수
