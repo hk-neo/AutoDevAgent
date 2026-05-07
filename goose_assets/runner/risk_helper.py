@@ -29,6 +29,28 @@ RISK_AUTH_TOKEN = os.getenv('RISK_PLUGIN_AUTH_TOKEN')
 CONFIG_PATH = "config/project-mapping.json"
 
 
+def activate_risk_panel(issue_key):
+    """Risk Management Plugin 패널을 Hazard 티켓에 활성화"""
+    import time as _time
+    app_id = "306e01a8-5530-427d-b93a-f91f4898ff16"
+    config_id = "2a1d023a-d4a5-42c7-91e2-51a05b9eb9be"
+    property_key = f"ari:cloud:ecosystem::extension/{app_id}/{config_id}/static/rmp-risk-value-issue-panel"
+
+    url = f"{JIRA_URL}/rest/api/2/issue/{issue_key}/properties/{property_key}"
+    payload = [{"added": int(_time.time() * 1000), "id": "44c53f7b", "collapsed": False}]
+
+    auth = (JIRA_EMAIL, JIRA_API_TOKEN)
+    headers = {'Content-Type': 'application/json', 'Accept': 'application/json'}
+
+    resp = requests.put(url, json=payload, auth=auth, headers=headers)
+    if resp.status_code in (200, 201, 204):
+        print(f"  Risk panel activated: OK")
+        return True
+    else:
+        print(f"  Risk panel activation failed: {resp.status_code}")
+        return False
+
+
 def load_risk_config(project_key):
     """project-mapping.json에서 Risk Management 설정 로드"""
     config = json.loads(pathlib.Path(CONFIG_PATH).read_text(encoding='utf-8'))
@@ -39,7 +61,7 @@ def load_risk_config(project_key):
 
 
 def create_hazard(fields_json_path):
-    """Jira API로 Hazard 티켓 생성"""
+    """Jira API로 Hazard 티켓 생성 + Risk Plugin 활성화"""
     fields = json.loads(pathlib.Path(fields_json_path).read_text(encoding='utf-8'))
 
     url = f"{JIRA_URL}/rest/api/2/issue"
@@ -51,8 +73,14 @@ def create_hazard(fields_json_path):
     resp = requests.post(url, json=payload, auth=auth, headers=headers)
     if resp.status_code == 201:
         data = resp.json()
-        print(f"Created: {data['key']} - {fields.get('summary', '')}")
-        return data['key']
+        issue_key = data['key']
+        print(f"Created: {issue_key} - {fields.get('summary', '')}")
+
+        # Risk Plugin 패널 활성화
+        time.sleep(0.5)
+        activate_risk_panel(issue_key)
+
+        return issue_key
     else:
         print(f"Failed to create: {resp.status_code} {resp.text}")
         return None

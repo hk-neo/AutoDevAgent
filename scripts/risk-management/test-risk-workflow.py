@@ -111,12 +111,43 @@ def get_ticket_info(issue_key):
 def activate_risk_plugin(issue_key):
     """Risk Management Plugin 활성화
 
-    Plugin이 티켓에 연결되려면 초기화가 필요합니다.
-    첫 번째 Risk 값을 설정하면 자동으로 활성화됩니다.
+    Jira Issue Property API를 사용하여 Risk Management Plugin 패널을 활성화합니다.
+    브라우저에서 Hazard 티켓을 열 때 Plugin이 렌더링되도록 설정합니다.
     """
     print(f"\n{'='*60}")
     print(f"ACTIVATING RISK PLUGIN ON {issue_key}")
     print(f"{'='*60}")
+
+    # Step 1: Issue Property로 Plugin 패널 활성화
+    app_id = "306e01a8-5530-427d-b93a-f91f4898ff16"
+    config_id = "2a1d023a-d4a5-42c7-91e2-51a05b9eb9be"
+    property_key = f"ari:cloud:ecosystem::extension/{app_id}/{config_id}/static/rmp-risk-value-issue-panel"
+
+    url = f"{JIRA_URL}/rest/api/2/issue/{issue_key}/properties/{property_key}"
+
+    import time as _time
+    payload = [{"added": int(_time.time() * 1000), "id": "44c53f7b", "collapsed": False}]
+
+    auth = (JIRA_EMAIL, JIRA_API_TOKEN)
+    headers = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+    }
+
+    print(f"  Setting issue property...")
+    print(f"  Property: rmp-risk-value-issue-panel")
+    resp = requests.put(url, json=payload, auth=auth, headers=headers)
+
+    if resp.status_code in (200, 201, 204):
+        print(f"  Plugin panel activated: OK")
+    else:
+        print(f"  Panel activation: {resp.status_code}")
+        print(f"  Response: {resp.text[:200]}")
+
+    time.sleep(1)
+
+    # Step 2: 초기 Risk 값 설정으로 Risk Assessment 생성
+    print(f"\n  Initializing risk assessment values...")
 
     # 초기화를 위해 모든 classifier에 대해 첫 값을 설정
     # 이렇게 하면 Risk assessment가 생성됨
