@@ -249,6 +249,13 @@ python3 goose_assets/runner/sad_create_architectures.py temp_architectures.json 
 
 ## Case H: Document [SW Detailed Design Document] — Module 티켓 생성
 
+### ⚠️ 반드시 지켜야 할 규칙 (위반 시 작업 전체 무효)
+
+1. **jira_toolkit.py create 절대 사용 금지** — "공통" 섹션의 방법은 Case A(Dgate→Document) 전용입니다
+2. **직접 curl로 링크 금지** — 스크립트가 모든 링크를 생성합니다
+3. **Architecture 1:1 매핑 금지** — "[SDS] ARCH-001 상세 설계" 같은 티켓은 만들지 마세요
+4. **반드시 sds_create_modules.py 스크립트만 사용** — 아래 "수행 단계"를 그대로 따르세요
+
 **프로젝트 전체**의 통합된 상세 설계를 모듈 단위로 생성합니다.
 
 ### 핵심 원칙 (반드시 읽으세요)
@@ -343,7 +350,10 @@ python3 goose_assets/runner/sds_create_modules.py temp_modules.json --sds {SDS_�
 
 ---
 
-## 공통: 티켓 생성 방법
+## 공통: 티켓 생성 방법 (Case A 전용)
+
+**주의: 이 섹션은 Case A (Gate → Document) 에만 적용됩니다.**
+**Case C, F, G, H는 각자 전용 스크립트를 사용합니다. 이 섹션의 방법을 사용하지 마세요.**
 
 ### JSON 파일 생성 후 jira_toolkit.py 사용
 ```bash
