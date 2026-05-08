@@ -249,20 +249,34 @@ python3 goose_assets/runner/sad_create_architectures.py temp_architectures.json 
 
 ## Case H: Document [SW Detailed Design Document] — Module 티켓 생성
 
-SAD의 Architecture를 모듈/컴포넌트 수준으로 분해하여 상세 설계 Module 티켓을 생성합니다.
+**프로젝트 전체**의 통합된 상세 설계를 모듈 단위로 생성합니다.
 
-**아키텍처 패턴이 아니라 실제 구현 단위의 모듈이어야 합니다.**
-- 올바른 예: "[MOD-001] DICOM 파일 파서", "[MOD-002] Volume 데이터 로더"
-- 잘못된 예: "[MOD-001] Rendering Pipeline Architecture" → 이건 SAD 수준
+### 핵심 원칙 (반드시 읽으세요)
+
+**SDS는 Architecture의 1:1 복사가 아닙니다.** 전체 프로젝트를 종합적으로 분석하여 실제 구현 단위로 분해해야 합니다.
+
+| ❌ 잘못된 접근 (Architecture 1:1 매핑) | ✅ 올바른 접근 (전체 프로젝트 통합 분석) |
+|---|---|
+| "[SDS] ARCH-001 렌더링 파이프라인 상세 설계" | "[MOD-001] DICOM 파일 파서" |
+| "[SDS] ARCH-002 카메라 상세 설계" | "[MOD-002] Volume 데이터 빌더" |
+| Architecture당 1개씩 생성 | 아키텍처 경계를 넘나드는 실제 구현 모듈 |
+| SAD 내용을 그대로 반복 | 클래스/함수 수준의 실제 설계 |
+
+**생각 방식:**
+1. 전체 SRS Requirements + 전체 SAD Architectures를 동시에 분석
+2. "이 시스템을 실제로 코딩하려면 어떤 모듈이 필요한가?" 관점
+3. 한 모듈이 여러 Architecture에 걸쳐 있을 수 있음
+4. 한 Architecture가 여러 모듈로 나뉠 수 있음
 
 ### 절대 금지
+- **Architecture당 1개씩 1:1 매핑하지 마세요** (이건 SAD 복사입니다)
 - **jira_toolkit.py create로 직접 티켓을 만들지 마세요** (스크립트가 대신 생성합니다)
 - **직접 curl로 링크를 만들지 마세요** (스크립트가 대신 연결합니다)
 
 ### 수행 단계
-1. `docs/` 폴더의 기존 문서(SRS, SAD)를 읽어서 컨텍스트 파악
-2. SRS의 Requirement 티켓들과 SAD의 Architecture 티켓들을 분석하여 **각 아키텍처를 구성하는 모듈/컴포넌트 식별**
-3. 모듈 단위 분해 (보통 5~15개)
+1. `docs/` 폴더의 기존 문서(SRS, SAD)를 읽어서 **프로젝트 전체 컨텍스트** 파악
+2. SRS의 **모든** Requirement 티켓들과 SAD의 **모든** Architecture 티켓을 **종합적으로** 분석
+3. 실제 구현 관점에서 모듈 단위 분해 (보통 8~15개)
 4. **temp_modules.json 파일 작성** (아래 형식 참고)
 5. **sds_create_modules.py 실행**
 6. 스크립트 출력의 코멘트용 요약을 jira_toolkit.py comment로 게시
@@ -275,17 +289,25 @@ data = {
     'modules': [
         {
             'summary': '[MOD-001] DICOM 파일 파서',
-            'description': 'DICOM 파일 헤더 파싱 및 데이터 추출 모듈\n- 매직 바이트 검증\n- 필수 태그 추출 (Patient ID, Study Instance UID)\n- 전송 구문(Transfer Syntax) 처리',
-            'implements': ['PLAYG-2299'],              # 구현할 Architecture 키
-            'implements_req': ['PLAYG-2239', 'PLAYG-2240']  # 근거가 되는 Requirement 키
+            'description': 'DICOM 파일 헤더 파싱 및 데이터 추출\n\n## 클래스 설계\n- DicomFile: 파일 헤더, 메타데이터 관리\n- DicomTagReader: 태그 읽기, 전송 구문 처리\n- PixelDataDecoder: 픽셀 데이터 디코딩\n\n## 주요 메서드\n- validateMagicBytes(buffer): 매직 바이트 검증\n- extractPatientInfo(tags): 환자 정보 추출\n- decodePixelData(buffer, syntax): 픽셀 디코딩',
+            'implements': ['PLAYG-2299', 'PLAYG-2302'],  # 관련 Architecture 키들
+            'implements_req': ['PLAYG-2239', 'PLAYG-2240']  # 근거가 되는 Requirement 키들
         },
         {
             'summary': '[MOD-002] Volume 데이터 빌더',
-            'description': 'DICOM 슬라이스를 3D Volume으로 구성\n- ArrayBuffer 기반 데이터 구조\n- 보간 처리 (이중선형/삼중선형)\n- 메모리 최적화',
+            'description': 'DICOM 슬라이스를 3D Volume으로 구성\n\n## 클래스 설계\n- VolumeBuilder: 슬라이스 → 볼륨 변환\n- InterpolationEngine: 이중선형/삼중선형 보간\n- MemoryPool: ArrayBuffer 메모리 관리\n\n## 주요 메서드\n- buildVolume(slices, dimension): 볼륨 구성\n- interpolate(source, target): 보간 처리\n- allocateBuffer(size): 메모리 할당',
             'implements': ['PLAYG-2299', 'PLAYG-2302'],
             'implements_req': ['PLAYG-2239', 'PLAYG-2248']
         },
-        # ... 추가 Module
+        {
+            'summary': '[MOD-003] MPR 렌더러',
+            'description': 'MPR 단면 렌더링 (Axial, Sagittal, Coronal)\n\n## 클래스 설계\n- MprRenderer: 단면 생성 및 렌더링\n- SliceCalculator: 단면 위치 계산\n- WlwwMapper: Window Level/Width 매핑\n\n## 주요 메서드\n- renderSlice(volume, plane, position): 단면 렌더링\n- applyWlww(pixel, center, width): WL/WW 적용',
+            'implements': ['PLAYG-2299', 'PLAYG-2300'],
+            'implements_req': ['PLAYG-2239', 'PLAYG-2245']
+        },
+        # ... 실제 구현 관점에서 모듈을 계속 식별
+        # 한 모듈이 여러 Architecture에 걸쳐 있을 수 있음
+        # 클래스/함수 수준까지 설계
     ]
 }
 pathlib.Path('temp_modules.json').write_text(json.dumps(data, ensure_ascii=False, indent=2))
