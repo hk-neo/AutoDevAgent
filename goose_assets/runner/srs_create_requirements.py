@@ -211,9 +211,9 @@ def main():
 
         # Implements 링크 (Requirement implements System Requirement)
         # Implements: inward="is implemented by", outward="implements"
-        # inwardIssue=SyRS, outwardIssue=Requirement
+        # inwardIssue=Requirement, outwardIssue=SyRS
         for syrs_key in req.get('implements', []):
-            create_link('Implements', syrs_key, issue_key)
+            create_link('Implements', issue_key, syrs_key)
             time.sleep(0.3)
 
         # Relates 링크 (Requirement → SRS Document)
