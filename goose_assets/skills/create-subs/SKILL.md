@@ -124,6 +124,61 @@ System Requirement 티켓(이슈 타입: "System Requirement")들을 생성합�
 
 ---
 
+## Case F: Document [SW Requirements Specification] — Requirement 티켓 생성
+
+Hazard를 완화하는 SW Requirement 티켓을 생성하고, 연결된 Hazard의 Current Risk(P2) 값을 업데이트합니다.
+
+### 절대 금지
+- **jira_toolkit.py create로 직접 티켓을 만들지 마세요** (스크립트가 대신 생성합니다)
+- **직접 curl로 링크를 만들지 마세요** (스크립트가 대신 연결합니다)
+- **Hazard의 Initial Risk를 변경하지 마세요** (Current P2만 낮춥니다)
+
+### 수행 단계
+1. 같은 Gate의 Hazard 티켓들과 IU/SyRS 조회
+2. 각 Hazard를 완화할 SW Requirement 식별
+3. **temp_requirements.json 파일 작성** (아래 형식 참고)
+4. **srs_create_requirements.py 실행**
+5. 스크립트 출력의 코멘트용 요약을 jira_toolkit.py comment로 게시
+
+### temp_requirements.json 작성
+```python
+python3 -c "
+import pathlib, json
+data = {
+    'requirements': [
+        {
+            'summary': '[REQ-001] DICOM 파싱 유효성 검증',
+            'description': '모든 DICOM 파일 로드 시 무결성 검증 구현...',
+            'mitigates': ['PLAYG-2195', 'PLAYG-2196']  # 완화할 Hazard 키
+        },
+        # ... 추가 Requirement
+    ],
+    'hazard_risk_updates': {
+        'PLAYG-2195': {'p2': 'remote'},  # 완화 후 Current P2
+        'PLAYG-2196': {'p2': 'remote'}
+    }
+}
+pathlib.Path('temp_requirements.json').write_text(json.dumps(data, ensure_ascii=False, indent=2))
+"
+```
+
+### Risk 값 옵션
+- **P2 (Current)**: remote, occasional, probable, frequent
+- 완화 조치 후이므로 Initial P1보다 낮아야 함
+
+### 스크립트 실행 (이 명령어 하나로 끝)
+```bash
+python3 goose_assets/runner/srs_create_requirements.py temp_requirements.json --srs {SRS_키} --project {PROJECT_KEY}
+```
+
+스크립트가 자동으로 처리하는 작업:
+- Requirement 티켓 생성 (issuetype: Requirement)
+- Mitigates 링크 (Requirement → Hazard)
+- Relates 링크 (Requirement → SRS Document)
+- Hazard Current P2 값 업데이트 (Initial Risk는 유지)
+
+---
+
 ## 공통: 티켓 생성 방법
 
 ### JSON 파일 생성 후 jira_toolkit.py 사용
