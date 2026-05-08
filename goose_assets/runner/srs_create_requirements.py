@@ -204,9 +204,9 @@ def main():
 
         # Mitigates 링크 (Requirement mitigates Hazard)
         # Mitigates: inward="is mitigated by", outward="mitigates"
-        # inwardIssue=Hazard, outwardIssue=Requirement
+        # inwardIssue=Requirement(shows "mitigates"), outwardIssue=Hazard(shows "is mitigated by")
         for haz_key in req.get('mitigates', []):
-            create_link('Mitigates', haz_key, issue_key)
+            create_link('Mitigates', issue_key, haz_key)
             time.sleep(0.3)
 
         # Implements 링크 (Requirement implements System Requirement)
