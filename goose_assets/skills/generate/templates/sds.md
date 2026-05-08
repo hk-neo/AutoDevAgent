@@ -11,7 +11,13 @@
 1. GitHub에서 SRS 문서 조회 (docs/srs.md)
 2. GitHub에서 SAD 문서 조회 (docs/sad.md)
 3. 두 문서를 바탕으로 SDS 작성
-4. docs/sds.md 로 저장
+4. **[필수] 작성한 문서 내용을 현재 Document 티켓의 description에 업데이트:**
+   ```bash
+   python3 -c "import pathlib, json; pathlib.Path('temp_desc.json').write_text(json.dumps({'description': '문서내용'}, ensure_ascii=False))"
+   python3 goose_assets/runner/jira_toolkit.py update {TICKET_KEY} temp_desc.json
+   ```
+   이 단계를 건너뛰지 마세요. Jira 티켓에 문서가 보여야 합니다.
+5. docs/sds.md 로도 저장
 5. Git 커밋
 6. Jira 코멘트로 결과 보고
 

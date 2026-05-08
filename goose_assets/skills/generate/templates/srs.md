@@ -16,7 +16,13 @@
 2. 각 SyRS 티켓의 필드값 수집
 3. IU 티켓 조회 (제품 컨텍스트용)
 4. 수집된 데이터로 SRS 문서 통합 작성
-5. docs/srs.md 로 저장
+5. **[필수] 작성한 문서 내용을 현재 Document 티켓의 description에 업데이트:**
+   ```bash
+   python3 -c "import pathlib, json; pathlib.Path('temp_desc.json').write_text(json.dumps({'description': '문서내용'}, ensure_ascii=False))"
+   python3 goose_assets/runner/jira_toolkit.py update {TICKET_KEY} temp_desc.json
+   ```
+   이 단계를 건너뛰지 마세요. Jira 티켓에 문서가 보여야 합니다.
+6. docs/srs.md 로도 저장
 6. Git 커밋
 7. Jira 코멘트로 결과 보고
 
