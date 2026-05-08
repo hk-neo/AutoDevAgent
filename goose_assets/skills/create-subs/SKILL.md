@@ -282,37 +282,53 @@ python3 goose_assets/runner/sad_create_architectures.py temp_architectures.json 
 6. 스크립트 출력의 코멘트용 요약을 jira_toolkit.py comment로 게시
 
 ### temp_modules.json 작성
+
+**[필수] 긴 JSON은 반드시 Python 스크립트로 작성하세요:**
+description이 길기 때문에 heredoc이나 python3 -c로는 작성이 실패합니다.
+반드시 아래 방식으로 **여러 번 나누어** append 하세요:
+
 ```python
-python3 -c "
+# 첫 번째 명령: 빈 리스트로 시작
+python3 << 'PYEOF'
 import pathlib, json
-data = {
-    'modules': [
-        {
-            'summary': '[MOD-001] DICOM 파일 파서',
-            'description': 'DICOM 파일 헤더 파싱 및 데이터 추출\n\n## 클래스 설계\n- DicomFile: 파일 헤더, 메타데이터 관리\n- DicomTagReader: 태그 읽기, 전송 구문 처리\n- PixelDataDecoder: 픽셀 데이터 디코딩\n\n## 주요 메서드\n- validateMagicBytes(buffer): 매직 바이트 검증\n- extractPatientInfo(tags): 환자 정보 추출\n- decodePixelData(buffer, syntax): 픽셀 디코딩',
-            'implements': ['PLAYG-2299', 'PLAYG-2302'],  # 관련 Architecture 키들
-            'implements_req': ['PLAYG-2239', 'PLAYG-2240']  # 근거가 되는 Requirement 키들
-        },
-        {
-            'summary': '[MOD-002] Volume 데이터 빌더',
-            'description': 'DICOM 슬라이스를 3D Volume으로 구성\n\n## 클래스 설계\n- VolumeBuilder: 슬라이스 → 볼륨 변환\n- InterpolationEngine: 이중선형/삼중선형 보간\n- MemoryPool: ArrayBuffer 메모리 관리\n\n## 주요 메서드\n- buildVolume(slices, dimension): 볼륨 구성\n- interpolate(source, target): 보간 처리\n- allocateBuffer(size): 메모리 할당',
-            'implements': ['PLAYG-2299', 'PLAYG-2302'],
-            'implements_req': ['PLAYG-2239', 'PLAYG-2248']
-        },
-        {
-            'summary': '[MOD-003] MPR 렌더러',
-            'description': 'MPR 단면 렌더링 (Axial, Sagittal, Coronal)\n\n## 클래스 설계\n- MprRenderer: 단면 생성 및 렌더링\n- SliceCalculator: 단면 위치 계산\n- WlwwMapper: Window Level/Width 매핑\n\n## 주요 메서드\n- renderSlice(volume, plane, position): 단면 렌더링\n- applyWlww(pixel, center, width): WL/WW 적용',
-            'implements': ['PLAYG-2299', 'PLAYG-2300'],
-            'implements_req': ['PLAYG-2239', 'PLAYG-2245']
-        },
-        # ... 실제 구현 관점에서 모듈을 계속 식별
-        # 한 모듈이 여러 Architecture에 걸쳐 있을 수 있음
-        # 클래스/함수 수준까지 설계
-    ]
-}
+modules = []
+pathlib.Path('temp_modules.json').write_text(json.dumps({"modules": modules}, ensure_ascii=False, indent=2))
+print("Initialized temp_modules.json")
+PYEOF
+
+# 두 번째 명령부터: 모듈 하나씩 추가
+python3 << 'PYEOF'
+import pathlib, json
+data = json.loads(pathlib.Path('temp_modules.json').read_text(encoding='utf-8'))
+data['modules'].append({
+    "summary": "[MOD-001] DICOM 파일 파서",
+    "description": "DICOM 파일 로드, 파싱, 무결성 검증\n\n## 클래스\n- DicomFileLoader\n- DicomTagReader\n- PixelDataDecoder",
+    "implements": ["PLAYG-2299", "PLAYG-2302"],
+    "implements_req": ["PLAYG-2267"]
+})
 pathlib.Path('temp_modules.json').write_text(json.dumps(data, ensure_ascii=False, indent=2))
-"
+print(f"Added module {len(data['modules'])}")
+PYEOF
+
+# 세 번째 명령: 다음 모듈 추가
+python3 << 'PYEOF'
+import pathlib, json
+data = json.loads(pathlib.Path('temp_modules.json').read_text(encoding='utf-8'))
+data['modules'].append({
+    "summary": "[MOD-002] Volume 데이터 빌더",
+    "description": "DICOM 슬라이스를 3D Volume으로 구성\n\n## 클래스\n- VolumeBuilder\n- InterpolationEngine\n- MemoryPool",
+    "implements": ["PLAYG-2299", "PLAYG-2302"],
+    "implements_req": ["PLAYG-2267", "PLAYG-2276"]
+})
+pathlib.Path('temp_modules.json').write_text(json.dumps(data, ensure_ascii=False, indent=2))
+print(f"Added module {len(data['modules'])}")
+PYEOF
+
+# ... 모든 모듈을 추가할 때까지 계속
+# 각 명령은 모듈 1개씩만 추가
 ```
+
+**주의**: 한 번에 모든 모듈을 넣지 말고 **모듈당 1개 명령**으로 나누어 실행하세요.
 
 ### 스크립트 실행 (이 명령어 하나로 끝)
 ```bash
