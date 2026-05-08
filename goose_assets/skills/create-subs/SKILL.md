@@ -181,6 +181,51 @@ python3 goose_assets/runner/srs_create_requirements.py temp_requirements.json --
 
 ---
 
+## Case G: Document [SW Architecture Document] — Architecture 티켓 생성
+
+SRS의 Requirement들을 구현하는 아키텍처 컴포넌트 티켓을 생성합니다.
+
+### 절대 금지
+- **jira_toolkit.py create로 직접 티켓을 만들지 마세요** (스크립트가 대신 생성합니다)
+- **직접 curl로 링크를 만들지 마세요** (스크립트가 대신 연결합니다)
+
+### 수행 단계
+1. `docs/` 폴더의 기존 문서(IU, SyRS, SRS 등)를 읽어서 컨텍스트 파악
+2. SRS의 Requirement들을 분석하여 아키텍처 모듈/컴포넌트 식별
+3. **temp_architectures.json 파일 작성** (아래 형식 참고)
+4. **sad_create_architectures.py 실행**
+5. 스크립트 출력의 코멘트용 요약을 jira_toolkit.py comment로 게시
+
+### temp_architectures.json 작성
+```python
+python3 -c "
+import pathlib, json
+data = {
+    'architectures': [
+        {
+            'summary': '[ARCH-001] DICOM 파서 모듈',
+            'description': 'DICOM 파일 파싱, 검증, 볼륨 데이터 추출을 담당하는 모듈...',
+            'implements': ['PLAYG-2239']  # 구현할 Requirement 키
+        },
+        # ... 추가 Architecture
+    ]
+}
+pathlib.Path('temp_architectures.json').write_text(json.dumps(data, ensure_ascii=False, indent=2))
+"
+```
+
+### 스크립트 실행 (이 명령어 하나로 끝)
+```bash
+python3 goose_assets/runner/sad_create_architectures.py temp_architectures.json --sad {SAD_키} --project {PROJECT_KEY}
+```
+
+스크립트가 자동으로 처리하는 작업:
+- Architecture 티켓 생성 (issuetype: Architecture)
+- Implements 링크 (Architecture → Requirement): "implements" / "is implemented by"
+- Relates 링크 (Architecture → SAD Document)
+
+---
+
 ## 공통: 티켓 생성 방법
 
 ### JSON 파일 생성 후 jira_toolkit.py 사용
