@@ -31,7 +31,6 @@ import sys
 import time
 import pathlib
 import requests
-import subprocess
 import functools
 
 print = functools.partial(print, flush=True)
@@ -56,40 +55,40 @@ def load_input(json_path):
     return data
 
 
+def text_to_adf(text):
+    """일반 텍스트를 Atlassian Document Format으로 변환"""
+    paragraphs = []
+    for line in text.split('\n'):
+        content = [{"type": "text", "text": line}] if line.strip() else []
+        paragraphs.append({"type": "paragraph", "content": content})
+    return {"type": "doc", "version": 1, "content": paragraphs}
+
+
 def create_architecture_ticket(project_key, arch):
-    fields = {
-        'project': {'key': project_key},
-        'summary': arch['summary'],
-        'issuetype': {'name': 'Architecture'},
-        'description': arch['description']
+    """Jira API v3로 직접 Architecture 티켓 생성 (ADF description)"""
+    payload = {
+        'fields': {
+            'project': {'key': project_key},
+            'summary': arch['summary'],
+            'issuetype': {'name': 'Architecture'},
+            'description': text_to_adf(arch['description'])
+        }
     }
 
-    tmp_path = pathlib.Path('temp_arch_auto.json')
-    tmp_path.write_text(json.dumps(fields, ensure_ascii=False), encoding='utf-8')
+    auth = (JIRA_EMAIL, JIRA_API_TOKEN)
+    headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
 
-    result = subprocess.run(
-        [sys.executable, 'goose_assets/runner/jira_toolkit.py', 'create', str(tmp_path)],
-        capture_output=True, text=True
+    resp = requests.post(
+        f"{JIRA_URL}/rest/api/3/issue",
+        json=payload, auth=auth, headers=headers
     )
 
-    issue_key = None
-    for line in result.stdout.strip().split('\n'):
-        if 'Created:' in line:
-            parts = line.strip().split()
-            for p in parts:
-                if '-' in p and any(c.isdigit() for c in p):
-                    issue_key = p.rstrip(',')
-                    break
-
-    if not issue_key and result.stdout.strip():
-        last_line = result.stdout.strip().split('\n')[-1].strip()
-        if '-' in last_line and any(c.isdigit() for c in last_line):
-            issue_key = last_line
-
-    if result.stderr:
-        print(f"  stderr: {result.stderr[:100]}")
-
-    return issue_key
+    if resp.status_code == 201:
+        issue_key = resp.json()['key']
+        return issue_key
+    else:
+        print(f"  Error: {resp.status_code} - {resp.text[:200]}")
+        return None
 
 
 def create_link(link_type, inward_key, outward_key):
