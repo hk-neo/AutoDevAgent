@@ -20,7 +20,8 @@ temp_requirements.json 형식:
     {
       "summary": "[REQ-001] DICOM 파싱 유효성 검증",
       "description": "설명...",
-      "mitigates": ["PLAYG-2195", "PLAYG-2196"]
+      "mitigates": ["PLAYG-2195", "PLAYG-2196"],
+      "implements": ["PLAYG-1970"]
     }
   ],
   "hazard_risk_updates": {
@@ -208,14 +209,22 @@ def main():
             create_link('Mitigates', haz_key, issue_key)
             time.sleep(0.3)
 
-        # Relates 링크 (Requirement → SRS)
+        # Implements 링크 (Requirement implements System Requirement)
+        # Implements: inward="is implemented by", outward="implements"
+        # inwardIssue=SyRS, outwardIssue=Requirement
+        for syrs_key in req.get('implements', []):
+            create_link('Implements', syrs_key, issue_key)
+            time.sleep(0.3)
+
+        # Relates 링크 (Requirement → SRS Document)
         create_link('Relates', issue_key, srs_key)
         time.sleep(0.3)
 
         results.append({
             'key': issue_key,
             'summary': req['summary'],
-            'mitigates': req.get('mitigates', [])
+            'mitigates': req.get('mitigates', []),
+            'implements': req.get('implements', [])
         })
 
     # 2. Hazard Current Risk P2 업데이트

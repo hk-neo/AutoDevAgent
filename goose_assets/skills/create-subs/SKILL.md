@@ -149,7 +149,8 @@ data = {
         {
             'summary': '[REQ-001] DICOM 파싱 유효성 검증',
             'description': '모든 DICOM 파일 로드 시 무결성 검증 구현...',
-            'mitigates': ['PLAYG-2195', 'PLAYG-2196']  # 완화할 Hazard 키
+            'mitigates': ['PLAYG-2195'],         # 완화할 Hazard 키
+            'implements': ['PLAYG-1970']          # 구현하는 System Requirement 키
         },
         # ... 추가 Requirement
     ],
@@ -173,7 +174,8 @@ python3 goose_assets/runner/srs_create_requirements.py temp_requirements.json --
 
 스크립트가 자동으로 처리하는 작업:
 - Requirement 티켓 생성 (issuetype: Requirement)
-- Mitigates 링크 (Requirement → Hazard)
+- Mitigates 링크 (Requirement → Hazard): "mitigates" / "is mitigated by"
+- Implements 링크 (Requirement → System Requirement): "implements" / "is implemented by"
 - Relates 링크 (Requirement → SRS Document)
 - Hazard Current P2 값 업데이트 (Initial Risk는 유지)
 
