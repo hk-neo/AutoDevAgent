@@ -19,7 +19,8 @@ temp_modules.json 형식:
     {
       "summary": "[MOD-001] DICOM 파일 파서",
       "description": "상세 설계 내용...",
-      "implements": ["PLAYG-2299"]
+      "implements": ["PLAYG-2299"],
+      "implements_req": ["PLAYG-2239", "PLAYG-2240"]
     }
   ]
 }
@@ -153,6 +154,7 @@ def main():
         for i, mod in enumerate(modules):
             print(f"  [{i+1}/{len(modules)}] {mod['summary']}")
             print(f"    implements: {mod.get('implements', [])}")
+            print(f"    implements_req: {mod.get('implements_req', [])}")
         print(f"\nDry run complete.")
         return
 
@@ -174,14 +176,20 @@ def main():
             create_link('Implements', issue_key, arch_key)
             time.sleep(0.3)
 
-        # 3. Relates 링크 (Module → SDS Document)
+        # 3. Implements 링크 (Module implements Requirement — 근거 추적)
+        for req_key in mod.get('implements_req', []):
+            create_link('Implements', issue_key, req_key)
+            time.sleep(0.3)
+
+        # 4. Relates 링크 (Module → SDS Document)
         create_link('Relates', issue_key, sds_key)
         time.sleep(0.3)
 
         results.append({
             'key': issue_key,
             'summary': mod['summary'],
-            'implements': mod.get('implements', [])
+            'implements': mod.get('implements', []),
+            'implements_req': mod.get('implements_req', [])
         })
 
     # 결과 요약
@@ -194,7 +202,8 @@ def main():
         print(f"SDS({sds_key}) - {len(results)} Module tickets created:")
         for r in results:
             impl_str = ', '.join(r['implements'][:3]) + ('...' if len(r['implements']) > 3 else '')
-            print(f"- {r['key']}: {r['summary']} (implements: {impl_str})")
+            req_str = ', '.join(r['implements_req'][:3]) + ('...' if len(r['implements_req']) > 3 else '')
+            print(f"- {r['key']}: {r['summary']} (arch: {impl_str}, req: {req_str})")
 
     result_path = pathlib.Path('temp_mod_results.json')
     result_path.write_text(json.dumps(results, ensure_ascii=False, indent=2), encoding='utf-8')

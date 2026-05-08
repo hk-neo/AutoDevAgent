@@ -261,7 +261,7 @@ SAD의 Architecture를 모듈/컴포넌트 수준으로 분해하여 상세 설�
 
 ### 수행 단계
 1. `docs/` 폴더의 기존 문서(SRS, SAD)를 읽어서 컨텍스트 파악
-2. SAD의 Architecture 티켓들을 분석하여 **각 아키텍처를 구성하는 모듈/컴포넌트 식별**
+2. SRS의 Requirement 티켓들과 SAD의 Architecture 티켓들을 분석하여 **각 아키텍처를 구성하는 모듈/컴포넌트 식별**
 3. 모듈 단위 분해 (보통 5~15개)
 4. **temp_modules.json 파일 작성** (아래 형식 참고)
 5. **sds_create_modules.py 실행**
@@ -276,12 +276,14 @@ data = {
         {
             'summary': '[MOD-001] DICOM 파일 파서',
             'description': 'DICOM 파일 헤더 파싱 및 데이터 추출 모듈\n- 매직 바이트 검증\n- 필수 태그 추출 (Patient ID, Study Instance UID)\n- 전송 구문(Transfer Syntax) 처리',
-            'implements': ['PLAYG-2299']  # 구현할 Architecture 키
+            'implements': ['PLAYG-2299'],              # 구현할 Architecture 키
+            'implements_req': ['PLAYG-2239', 'PLAYG-2240']  # 근거가 되는 Requirement 키
         },
         {
             'summary': '[MOD-002] Volume 데이터 빌더',
             'description': 'DICOM 슬라이스를 3D Volume으로 구성\n- ArrayBuffer 기반 데이터 구조\n- 보간 처리 (이중선형/삼중선형)\n- 메모리 최적화',
-            'implements': ['PLAYG-2299', 'PLAYG-2302']
+            'implements': ['PLAYG-2299', 'PLAYG-2302'],
+            'implements_req': ['PLAYG-2239', 'PLAYG-2248']
         },
         # ... 추가 Module
     ]
@@ -298,6 +300,7 @@ python3 goose_assets/runner/sds_create_modules.py temp_modules.json --sds {SDS_�
 스크립트가 자동으로 처리하는 작업:
 - Module 티켓 생성 (issuetype: Task)
 - Implements 링크 (Module → Architecture)
+- Implements 링크 (Module → Requirement, 근거 추적)
 - Relates 링크 (Module → SDS Document)
 
 ---
