@@ -183,18 +183,34 @@ python3 goose_assets/runner/srs_create_requirements.py temp_requirements.json --
 
 ## Case G: Document [SW Architecture Document] — Architecture 티켓 생성
 
-SRS의 Requirement들을 구현하는 아키텍처 컴포넌트 티켓을 생성합니다.
+SRS의 Requirement들을 만족시키기 위한 **아키텍처 구조 결정** 티켓을 생성합니다.
+
+**중요: 모듈 단위 분해가 아니라 아키텍처 패턴/구조 수준의 설계여야 합니다.**
+- 잘못된 예: "[ARCH-001] DICOM 파서 모듈" → 이건 SDS 수준
+- 올바른 예: "[ARCH-001] Rendering Pipeline Architecture" → 아키텍처 패턴/구조
+
+### 올바른 아키텍처 티켓 예시
+
+| 티켓 | 내용 |
+|------|------|
+| Frontend Architecture | 프레임워크, 컴포넌트 계층, 상태 관리 전략 |
+| Rendering Pipeline Architecture | 데이터 흐름 구조 (Parse → Volume → Render), WebGL 활용 |
+| Data Layer Architecture | DICOM → Volume 데이터 변환 파이프라인, 캐싱 전략 |
+| Security Architecture | 로컬 전용 아키텍처, 네트워크 통신 차단 |
+| UI/UX Architecture | Viewport 동기화 패턴, 이벤트 버스, 반응형 레이아웃 |
 
 ### 절대 금지
 - **jira_toolkit.py create로 직접 티켓을 만들지 마세요** (스크립트가 대신 생성합니다)
 - **직접 curl로 링크를 만들지 마세요** (스크립트가 대신 연결합니다)
+- **요구사항별로 1:1 매핑되는 모듈을 만들지 마세요** (그건 SDS에서 합니다)
 
 ### 수행 단계
 1. `docs/` 폴더의 기존 문서(IU, SyRS, SRS 등)를 읽어서 컨텍스트 파악
-2. SRS의 Requirement들을 분석하여 아키텍처 모듈/컴포넌트 식별
-3. **temp_architectures.json 파일 작성** (아래 형식 참고)
-4. **sad_create_architectures.py 실행**
-5. 스크립트 출력의 코멘트용 요약을 jira_toolkit.py comment로 게시
+2. SRS의 Requirement들을 분석하여 **어떤 아키텍처 패턴/구조로 만족시킬지** 설계
+3. 아키텍처 구조 결정사항을 식별 (보통 3~7개)
+4. **temp_architectures.json 파일 작성** (아래 형식 참고)
+5. **sad_create_architectures.py 실행**
+6. 스크립트 출력의 코멘트용 요약을 jira_toolkit.py comment로 게시
 
 ### temp_architectures.json 작성
 ```python
@@ -203,11 +219,16 @@ import pathlib, json
 data = {
     'architectures': [
         {
-            'summary': '[ARCH-001] DICOM 파서 모듈',
-            'description': 'DICOM 파일 파싱, 검증, 볼륨 데이터 추출을 담당하는 모듈...',
-            'implements': ['PLAYG-2239']  # 구현할 Requirement 키
+            'summary': '[ARCH-001] Rendering Pipeline Architecture',
+            'description': 'WebGL 기반 3-tier 렌더링 파이프라인 아키텍처...\n- DICOM 파싱 → Volume 데이터 구성 → GPU 렌더링\n- MPR/3D 볼륨 렌더링을 위한 셰이더 아키텍처\n- 점진적 로딩(Progressive Loading) 전략',
+            'implements': ['PLAYG-2239', 'PLAYG-2240', 'PLAYG-2241']  # 관련 Requirement 키
         },
-        # ... 추가 Architecture
+        {
+            'summary': '[ARCH-002] Data Layer Architecture',
+            'description': '로컬 파일 시스템 기반 데이터 아키텍처...\n- ArrayBuffer 기반 DICOM 파싱\n- Volume 데이터 캐싱 전략\n- 메모리 관리 정책',
+            'implements': ['PLAYG-2239', 'PLAYG-2248']
+        },
+        # ... 추가 Architecture (3~7개)
     ]
 }
 pathlib.Path('temp_architectures.json').write_text(json.dumps(data, ensure_ascii=False, indent=2))
