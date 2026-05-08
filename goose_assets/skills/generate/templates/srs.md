@@ -16,13 +16,35 @@
 2. 각 SyRS 티켓의 필드값 수집
 3. IU 티켓 조회 (제품 컨텍스트용)
 4. 수집된 데이터로 SRS 문서 통합 작성
+
+**[필수] 긴 문서는 반드시 write_file.py로 저장:**
+문서 내용이 길기 때문에 절대 직접 write tool이나 heredoc을 사용하지 마세요.
+반드시 아래 2단계로 저장하세요:
+```bash
+# 1단계: Python으로 임시 파일에 내용 작성
+python3 << 'PYEOF'
+import pathlib
+content = """# Software Requirements Specification
+... 전체 문서 내용 ...
+"""
+pathlib.Path("/tmp/srs_content.md").write_text(content, encoding="utf-8")
+PYEOF
+
+# 2단계: write_file.py로 최종 위치에 저장
+python3 goose_assets/runner/write_file.py docs/srs.md < /tmp/srs_content.md
+```
+
 5. **[필수] 작성한 문서 내용을 현재 Document 티켓의 description에 업데이트:**
    ```bash
-   python3 -c "import pathlib, json; pathlib.Path('temp_desc.json').write_text(json.dumps({'description': '문서내용'}, ensure_ascii=False))"
+   # 임시 파일에서 읽어서 description 업데이트
+   python3 << 'PYEOF'
+   import pathlib, json
+   content = pathlib.Path("/tmp/srs_content.md").read_text(encoding="utf-8")
+   pathlib.Path('temp_desc.json').write_text(json.dumps({'description': content}, ensure_ascii=False))
+   PYEOF
    python3 goose_assets/runner/jira_toolkit.py update {TICKET_KEY} temp_desc.json
    ```
    이 단계를 건너뛰지 마세요. Jira 티켓에 문서가 보여야 합니다.
-6. docs/srs.md 로도 저장
 6. Git 커밋
 7. Jira 코멘트로 결과 보고
 
