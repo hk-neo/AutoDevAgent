@@ -69,7 +69,7 @@ def create_module_ticket(project_key, mod):
         'fields': {
             'project': {'key': project_key},
             'summary': mod['summary'],
-            'issuetype': {'name': 'Task'},
+            'issuetype': {'name': 'Detailed Design'},
             'description': text_to_adf(mod['description'])
         }
     }

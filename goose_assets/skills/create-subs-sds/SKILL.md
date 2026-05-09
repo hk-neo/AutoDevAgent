@@ -152,7 +152,7 @@ python3 goose_assets/runner/sds_create_modules.py temp_modules.json --sds {SDS_�
 ```
 
 스크립트가 자동으로 처리하는 작업:
-- Module 티켓 생성 (issuetype: Task)
+- Module 티켓 생성 (issuetype: Detailed Design)
 - Implements 링크 (Module → Architecture)
 - Implements 링크 (Module → Requirement, 근거 추적)
 - Relates 링크 (Module → SDS Document)
