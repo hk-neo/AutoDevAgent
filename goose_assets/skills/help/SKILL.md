@@ -10,7 +10,8 @@ description: 사용 가능한 명령어 목록과 사용법을 표시합니다.
 | 명령어 | 설명 | 대상 티켓 |
 |--------|------|-----------|
 | !generate | 다음 단계 문서 생성 | Document |
-| !create-subs | 하위 티켓 생성 | Gate, Document |
+| !create-subs | 하위 티켓 생성 | Gate, Document (SDS 제외) |
+| !create-subs-sds | SDS 모듈 티켓 생성 | SDS Document |
 | !create-tasks | 구현 태스크 생성 | SDS Document |
 | !traceability | 추적성 검증 | 모든 티켓 |
 | !update | 내용 수정 | 모든 티켓 |
@@ -29,6 +30,11 @@ description: 사용 가능한 명령어 목록과 사용법을 표시합니다.
 ```jira
 !create-subs
 !create-subs CBCT 웹 뷰어 - 로컬 데이터만 지원
+```
+
+### !create-subs-sds
+```jira
+!create-subs-sds
 ```
 
 ### !create-tasks
