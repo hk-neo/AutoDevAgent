@@ -6,64 +6,68 @@
 - SRS 문서 (GitHub docs/ 경로에서 조회)
 - 같은 Gate에 속한 IU, SyRS 티켓들
 
-**절대 참조하지 마세요:**
-- SDS 문서 (아직 생성 전)
+## ⚠️ 절대 규칙
+
+- **한 번에 전체 문서를 쓰지 마세요** — 파싱 에러로 실패합니다
+- **write tool, heredoc으로 긴 내용 금지** — 반드시 아래 generate_doc.py만 사용
+- **섹션당 명령 1개** — 내용은 파일로 전달
 
 ## 수행 단계
 
 1. GitHub에서 SRS 문서 조회 (docs/srs.md)
 2. IU, SyRS 티켓의 필드값 참조
-3. SAD 문서 작성
 
-**[필수] 긴 문서는 반드시 write_file.py로 저장:**
-문서 내용이 길기 때문에 절대 직접 write tool이나 heredoc을 사용하지 마세요.
-반드시 아래 2단계로 저장하세요:
+3. **문서 초기화:**
 ```bash
-# 1단계: Python으로 임시 파일에 내용 작성
-python3 << 'PYEOF'
-import pathlib
-content = """# Software Architecture Document
-... 전체 문서 내용 ...
-"""
-pathlib.Path("/tmp/sad_content.md").write_text(content, encoding="utf-8")
-PYEOF
-
-# 2단계: write_file.py로 최종 위치에 저장
-python3 goose_assets/runner/write_file.py docs/sad.md < /tmp/sad_content.md
+python3 goose_assets/runner/generate_doc.py init \
+  --title "Software Architecture Document" \
+  --product "로컬 CBCT 웹 뷰어" \
+  --project {PROJECT_KEY} --phase EA \
+  --output docs/sad.md
 ```
 
-4. **[필수] 작성한 문서 내용을 현재 Document 티켓의 description에 업데이트:**
-   ```bash
-   # 임시 파일에서 읽어서 description 업데이트
-   python3 << 'PYEOF'
-   import pathlib, json
-   content = pathlib.Path("/tmp/sad_content.md").read_text(encoding="utf-8")
-   pathlib.Path('temp_desc.json').write_text(json.dumps({'description': content}, ensure_ascii=False))
-   PYEOF
-   python3 goose_assets/runner/jira_toolkit.py update {TICKET_KEY} temp_desc.json
-   ```
-   이 단계를 건너뛰지 마세요. Jira 티켓에 문서가 보여야 합니다.
-5. Git 커밋
-6. Jira 코멘트로 결과 보고
+4. **섹션별로 내용 작성** (각 섹션마다 2단계):
+```bash
+# 섹션 내용 작성 후 추가
+python3 << 'PYEOF'
+import pathlib
+pathlib.Path('/tmp/sad_intro.txt').write_text("""
+## 1. 소개
+
+### 1.1 목적
+본 문서는...
+
+### 1.2 범위
+...
+
+### 1.3 참조 문서
+- SRS: docs/srs.md
+""", encoding='utf-8')
+PYEOF
+python3 goose_assets/runner/generate_doc.py section --file /tmp/sad_intro.txt
+```
+
+5. **문서 완성:**
+```bash
+python3 goose_assets/runner/generate_doc.py finish \
+  --ticket {TICKET_KEY} --output docs/sad.md
+```
+
+6. **Jira description 업데이트:**
+```bash
+python3 goose_assets/runner/jira_toolkit.py update {TICKET_KEY} temp_desc.json
+```
+
+7. Git 커밋
+8. Jira 코멘트로 결과 보고
 
 ## 문서 구조
 
 ```markdown
-# Software Architecture Document
-## {제품명}
-
-### 문서 정보
-- 프로젝트: {project_key}
-- Phase: EA
-- 버전: 1.0
-
----
-
 ## 1. 소개
 ### 1.1 목적
 ### 1.2 범위
 ### 1.3 참조 문서
-- SRS: {SRS 문서 경로}
 
 ## 2. 아키텍처 개요
 ### 2.1 아키텍처 스타일
@@ -71,26 +75,14 @@ python3 goose_assets/runner/write_file.py docs/sad.md < /tmp/sad_content.md
 
 ## 3. 모듈 설계
 ### 3.N {모듈명}
-- 책임
-- 인터페이스
-- 의존성
 
 ## 4. 데이터 아키텍처
-### 4.1 데이터 모델
-### 4.2 데이터 흐름
-
 ## 5. 인터페이스 설계
-### 5.1 외부 인터페이스
-### 5.2 내부 인터페이스
-
 ## 6. 요구사항 추적성
-| SyRS ID | 아키텍처 컴포넌트 |
-|---------|-------------------|
 ```
 
 ## 작성 규칙
 
 - SRS의 요구사항을 아키텍처 컴포넌트로 매핑
-- 각 요구사항이 어느 모듈에서 구현되는지 추적 가능하게 작성
 - IEC 62304에 부합하는 SAD 구조
 - 한국어로 작성
