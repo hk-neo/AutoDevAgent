@@ -217,7 +217,9 @@ def cmd_link(args):
         for block_summary in task['blocks']:
             blocked_by_key = summary_to_key.get(block_summary)
             if blocked_by_key:
-                create_link('Blocks', task['key'], blocked_by_key)
+                # Blocks: 선행Task blocks 후행Task
+                # inwardIssue=선행(shows "blocks"), outwardIssue=후행(shows "is blocked by")
+                create_link('Blocks', blocked_by_key, task['key'])
                 time.sleep(0.3)
             else:
                 print(f"  Warning: '{block_summary}' not found in registry")
