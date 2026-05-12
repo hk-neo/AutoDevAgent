@@ -54,6 +54,24 @@ EA Gate
 └── [SW Detailed Design Document]        ── Blocks ──→ Gate
 ```
 
+### 구현 단계 추적성 (3-tier)
+
+```
+SyRS (System Requirement)  ── Implements ──→  MOD (Module Design)
+MOD (Module Design)        ── Implements ──→  TASK (Implementation)
+SyRS (System Requirement)  ── Implements ──→  TASK (Implementation)
+TASK                       ── Relates ──→     SDS Document
+TASK                       ── Blocks ──→      선행 TASK들
+```
+
+| 출처 | 링크 타입 | 대상 | 설명 |
+|------|-----------|------|------|
+| SyRS 티켓 | Implements | MOD 설계 티켓 | 요구사항을 설계가 구현 |
+| MOD 설계 티켓 | Implements | TASK 구현 티켓 | 설계를 구현 태스크가 구현 |
+| SyRS 티켓 | Implements | TASK 구현 티켓 | 요구사항 직접 추적 (양방향) |
+| TASK 티켓 | Relates | SDS Document | 설계 문서 참조 |
+| TASK 티켓 | Blocks | 선행 TASK | 의존성 표시 |
+
 ---
 
 ## 수행 단계
