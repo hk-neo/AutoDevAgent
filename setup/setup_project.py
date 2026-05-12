@@ -155,7 +155,88 @@ python3 AutoDevAgent/goose_assets/runner/jira_toolkit.py comment {{arg1}} "{{arg
 ```
 """, encoding='utf-8')
 
-    print(f"Created .claude/commands/ (implement, jira-read, jira-comment)")
+    # generate-tests.md
+    (commands_dir / 'generate-tests.md').write_text(f"""---
+project_key: {{project_key}}
+---
+
+Xray Cucumber 시나리오를 기반으로 Puppeteer 테스트 코드를 생성합니다.
+
+## 사용법
+/generate-tests PLAYG-2475
+
+## 수행 단계
+
+1. **Xray 인증 및 Test 키 조회**
+```bash
+source .env 2>/dev/null; export $(grep -v '^#' .env | xargs) 2>/dev/null
+python3 AutoDevAgent/goose_assets/runner/xray_toolkit.py get_test_keys $ARGUMENTS
+```
+
+2. **Cucumber Feature Export**
+```bash
+python3 AutoDevAgent/goose_assets/runner/xray_toolkit.py export_cucumber "PLAYG-XXXX;PLAYG-YYYY;..." --output tests/xray
+```
+
+3. **Feature 파일 분석**
+   - 각 `.feature` 파일 읽기
+   - `@TEST_PLAYG-XXXX` 태그에서 테스트 키 추출
+   - Given/When/Then 시나리오 분석
+
+4. **테스트 코드 생성**
+   - `tests/xray/` 디렉토리 생성
+   - 이미 존재하는 파일은 건너뛰기 (수동 수정 보호)
+   - 각 Test 키별 `tests/xray/PLAYG-XXXX.mjs` 생성
+   - `tests/xray/helper.mjs` 공통 유틸리티 생성
+
+5. **커밋**
+```bash
+git add tests/xray/
+git commit -m "[$ARGUMENTS] Generate: Xray test scripts"
+```
+""", encoding='utf-8')
+
+    # run-execution.md
+    (commands_dir / 'run-execution.md').write_text(f"""---
+project_key: {{project_key}}
+---
+
+Test Execution에 연결된 테스트 스크립트를 실행하고 결과를 Xray에 등록합니다.
+
+## 사용법
+/run-execution PLAYG-2475
+
+## 수행 단계
+
+1. **Xray 인증 및 Test 키 조회**
+```bash
+source .env 2>/dev/null; export $(grep -v '^#' .env | xargs) 2>/dev/null
+python3 AutoDevAgent/goose_assets/runner/xray_toolkit.py get_test_keys $ARGUMENTS
+```
+
+2. **Vite Dev Server 확인**
+```bash
+curl -s http://localhost:5175 > /dev/null 2>&1 && echo "running" || echo "not running"
+```
+   - 실행 중이 아니면 `npx vite --port 5175 &` 로 시작
+
+3. **테스트 스크립트 실행**
+   - 조회된 Test 키별로 `tests/xray/PLAYG-XXXX.mjs` 실행
+   - 스크립트가 없으면 SKIPPED 처리
+   - 각 결과에서 PASSED/FAILED/SKIPPED 수집
+
+4. **Xray 결과 등록**
+```bash
+python3 AutoDevAgent/goose_assets/runner/xray_toolkit.py import_results --results-json '{{"testExecutionKey":"$ARGUMENTS","tests":[...]}}'
+```
+
+5. **Jira 코멘트 등록**
+```bash
+python3 AutoDevAgent/goose_assets/runner/jira_toolkit.py comment $ARGUMENTS "테스트 실행 완료: PASSED X건, FAILED X건, SKIPPED X건 (총 X건)"
+```
+""", encoding='utf-8')
+
+    print(f"Created .claude/commands/ (implement, jira-read, jira-comment, generate-tests, run-execution)")
 
 
 def setup_env(repo_dir, project_key):
@@ -172,6 +253,10 @@ JIRA_URL=https://your-domain.atlassian.net
 JIRA_EMAIL=your-email@example.com
 JIRA_API_TOKEN=your-api-token
 JIRA_PROJECT={project_key}
+
+# Xray Configuration
+XRAY_CLIENT_ID=your-xray-client-id
+XRAY_CLIENT_SECRET=your-xray-client-secret
 
 # GitHub Configuration
 GITHUB_TOKEN=your-github-token
@@ -243,9 +328,11 @@ def main():
     print(f"\n{'='*40}")
     print("Setup complete!")
     print(f"\nNext steps:")
-    print(f"1. Edit .env with your Jira credentials")
+    print(f"1. Edit .env with your Jira and Xray credentials")
     print(f"2. Open this repo in Claude Code")
     print(f"3. Use /implement PLAYG-XXXX to implement a task")
+    print(f"4. Use /generate-tests PLAYG-XXXX to generate test scripts")
+    print(f"5. Use /run-execution PLAYG-XXXX to run tests and report to Xray")
 
 
 if __name__ == '__main__':
