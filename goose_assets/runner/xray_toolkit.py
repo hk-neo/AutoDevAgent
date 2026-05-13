@@ -129,7 +129,7 @@ def cmd_import_results(args):
 
 
 def cmd_get_test_keys(args):
-    """Test Execution에 연결된 Test 키 목록 조회"""
+    """Test Execution에 연결된 Test 키 목록 조회 (페이지네이션 지원)"""
     te_key = args.test_execution_key
     token = get_token()
 
@@ -144,51 +144,136 @@ def cmd_get_test_keys(args):
         sys.exit(1)
     issue_id = resp.json()["id"]
 
-    # Get tests via GraphQL
-    query = """
-    query($issueId: String!) {
-        getTestExecution(issueId: $issueId) {
-            issueId
-            tests(limit: 100) {
-                total
-                results {
-                    issueId
-                    status { name color }
-                    jira(fields: ["key", "summary"])
+    # Paginated GraphQL fetch
+    all_results = []
+    total = None
+    start = 0
+    limit = 100
+
+    while total is None or start <= total:
+        query = """
+        query($issueId: String!, $start: Int!, $limit: Int!) {
+            getTestExecution(issueId: $issueId) {
+                issueId
+                tests(start: $start, limit: $limit) {
+                    total
+                    results {
+                        issueId
+                        status { name color }
+                        jira(fields: ["key", "summary"])
+                    }
                 }
             }
         }
-    }
-    """
-    resp = requests.post(
-        XRAY_GRAPHQL_URL,
-        json={"query": query, "variables": {"issueId": issue_id}},
-        headers={
-            "Content-Type": "application/json",
-            "Authorization": f"Bearer {token}",
-        },
-    )
+        """
+        resp = requests.post(
+            XRAY_GRAPHQL_URL,
+            json={"query": query, "variables": {"issueId": issue_id, "start": start, "limit": limit}},
+            headers={
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {token}",
+            },
+        )
 
-    if resp.status_code == 200:
+        if resp.status_code != 200:
+            print(f"Error: {resp.status_code} - {resp.text}", file=sys.stderr)
+            sys.exit(1)
+
         data = resp.json()
         tests = data.get("data", {}).get("getTestExecution", {}).get("tests", {})
-        results = tests.get("results", [])
-        print(json.dumps({
-            "test_execution": te_key,
-            "total": tests.get("total", 0),
-            "tests": [
-                {
-                    "key": t.get("jira", {}).get("key", ""),
-                    "summary": t.get("jira", {}).get("summary", ""),
-                    "status": t.get("status", {}).get("name", ""),
-                    "issue_id": t.get("issueId", ""),
-                }
-                for t in results
-            ],
-        }, indent=2, ensure_ascii=False))
-    else:
-        print(f"Error: {resp.status_code} - {resp.text}", file=sys.stderr)
+        if total is None:
+            total = tests.get("total", 0)
+        batch = tests.get("results", [])
+        all_results.extend(batch)
+        if not batch:
+            break
+        start += limit
+
+    print(json.dumps({
+        "test_execution": te_key,
+        "total": total or 0,
+        "tests": [
+            {
+                "key": t.get("jira", {}).get("key", ""),
+                "summary": t.get("jira", {}).get("summary", ""),
+                "status": t.get("status", {}).get("name", ""),
+                "issue_id": t.get("issueId", ""),
+            }
+            for t in all_results
+        ],
+    }, indent=2, ensure_ascii=False))
+
+
+def cmd_get_failed_tests(args):
+    """Test Execution에서 FAILED 테스트만 필터링하여 반환"""
+    te_key = args.test_execution_key
+    token = get_token()
+
+    resp = requests.get(
+        f"{JIRA_URL}/rest/api/3/issue/{te_key}?fields=summary",
+        headers=jira_headers(),
+        auth=jira_auth(),
+    )
+    if resp.status_code != 200:
+        print(f"Error fetching issue: {resp.status_code}", file=sys.stderr)
         sys.exit(1)
+    issue_id = resp.json()["id"]
+
+    all_results = []
+    total = None
+    start = 0
+    limit = 100
+
+    while total is None or start <= total:
+        query = """
+        query($issueId: String!, $start: Int!, $limit: Int!) {
+            getTestExecution(issueId: $issueId) {
+                tests(start: $start, limit: $limit) {
+                    total
+                    results {
+                        issueId
+                        status { name color }
+                        jira(fields: ["key", "summary"])
+                    }
+                }
+            }
+        }
+        """
+        resp = requests.post(
+            XRAY_GRAPHQL_URL,
+            json={"query": query, "variables": {"issueId": issue_id, "start": start, "limit": limit}},
+            headers={"Content-Type": "application/json", "Authorization": f"Bearer {token}"},
+        )
+        if resp.status_code != 200:
+            print(f"Error: {resp.status_code} - {resp.text}", file=sys.stderr)
+            sys.exit(1)
+
+        data = resp.json()
+        tests = data.get("data", {}).get("getTestExecution", {}).get("tests", {})
+        if total is None:
+            total = tests.get("total", 0)
+        batch = tests.get("results", [])
+        all_results.extend(batch)
+        if not batch:
+            break
+        start += limit
+
+    failed = [
+        {
+            "key": t.get("jira", {}).get("key", ""),
+            "summary": t.get("jira", {}).get("summary", ""),
+            "status": t.get("status", {}).get("name", ""),
+        }
+        for t in all_results
+        if t.get("status", {}).get("name", "").upper() == "FAILED"
+    ]
+
+    print(json.dumps({
+        "test_execution": te_key,
+        "total_tests": total or 0,
+        "failed_count": len(failed),
+        "failed_tests": failed,
+    }, indent=2, ensure_ascii=False))
 
 
 def main():
@@ -208,6 +293,9 @@ def main():
     p_keys = sub.add_parser("get_test_keys", help="Get test keys from Test Execution")
     p_keys.add_argument("test_execution_key", help="Test Execution key (e.g. PLAYG-2475)")
 
+    p_failed = sub.add_parser("get_failed_tests", help="Get failed tests from Test Execution")
+    p_failed.add_argument("test_execution_key", help="Test Execution key (e.g. PLAYG-2530)")
+
     args = parser.parse_args()
     if not args.command:
         parser.print_help()
@@ -218,6 +306,7 @@ def main():
         "export_cucumber": cmd_export_cucumber,
         "import_results": cmd_import_results,
         "get_test_keys": cmd_get_test_keys,
+        "get_failed_tests": cmd_get_failed_tests,
     }
     commands[args.command](args)
 
