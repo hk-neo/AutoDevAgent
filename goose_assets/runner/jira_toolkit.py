@@ -181,6 +181,26 @@ def cmd_delete(args):
         sys.exit(1)
 
 
+def cmd_link(args):
+    """두 이슈 간 링크 생성"""
+    payload = {
+        "type": {"name": args.link_type},
+        "inwardIssue": {"key": args.inward_key},
+        "outwardIssue": {"key": args.outward_key},
+    }
+    resp = requests.post(
+        f"{JIRA_URL}/rest/api/3/issueLink",
+        json=payload,
+        headers=get_headers(),
+        auth=get_auth(),
+    )
+    if resp.status_code in (200, 201):
+        print(f"Linked: {args.inward_key} —[{args.link_type}]— {args.outward_key}")
+    else:
+        print(f"Error: {resp.status_code} - {resp.text}", file=sys.stderr)
+        sys.exit(1)
+
+
 def main():
     parser = argparse.ArgumentParser(description="Jira Toolkit")
     subparsers = parser.add_subparsers(dest="command", help="Command")
@@ -210,6 +230,12 @@ def main():
     delete_parser = subparsers.add_parser("delete", help="Delete ticket")
     delete_parser.add_argument("ticket_key", help="Ticket key")
 
+    # link
+    link_parser = subparsers.add_parser("link", help="Link two issues")
+    link_parser.add_argument("inward_key", help="Inward issue key")
+    link_parser.add_argument("outward_key", help="Outward issue key")
+    link_parser.add_argument("link_type", help="Link type (e.g. Relates, Blocks, Implements)")
+
     args = parser.parse_args()
 
     if not args.command:
@@ -228,6 +254,8 @@ def main():
         cmd_comment(args)
     elif args.command == "delete":
         cmd_delete(args)
+    elif args.command == "link":
+        cmd_link(args)
 
 
 if __name__ == "__main__":

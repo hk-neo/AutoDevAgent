@@ -236,7 +236,43 @@ python3 AutoDevAgent/goose_assets/runner/jira_toolkit.py comment $ARGUMENTS "테
 ```
 """, encoding='utf-8')
 
-    print(f"Created .claude/commands/ (implement, jira-read, jira-comment, generate-tests, run-execution)")
+    # create-bug-tasks.md
+    (commands_dir / 'create-bug-tasks.md').write_text(f"""---
+project_key: {{project_key}}
+---
+
+Test Execution에서 실패한 테스트 목록을 조회하여 Jira에 Task 티켓을 생성합니다.
+
+## 사용법
+/create-bug-tasks PLAYG-2530
+
+## 수행 단계
+
+1. **FAILED 테스트 목록 조회**
+```bash
+source .env 2>/dev/null; export $(grep -v '^#' .env | xargs) 2>/dev/null
+python3 AutoDevAgent/goose_assets/runner/xray_toolkit.py get_failed_tests $ARGUMENTS
+```
+   - `failed_count`가 0이면 "실패한 테스트가 없습니다" 출력 후 종료
+
+2. **Jira Task 티켓 생성** (FAILED 테스트 전체를 1개 티켓에 목록화)
+   - summary: `[TEST-FAIL] $ARGUMENTS: N개 테스트 실패`
+   - issuetype: Task
+   - labels: ["test-failure"]
+   - description: FAILED 테스트 테이블 + 원인 분석 체크리스트 + 재현 방법
+
+3. **Test Execution과 Task 연결**
+```bash
+python3 AutoDevAgent/goose_assets/runner/jira_toolkit.py link $ARGUMENTS {{생성된Task키}} Relates
+```
+
+4. **Test Execution에 코멘트 등록**
+```bash
+python3 AutoDevAgent/goose_assets/runner/jira_toolkit.py comment $ARGUMENTS "N개 실패 테스트에 대해 Task 티켓 생성: {{Task키}}"
+```
+""", encoding='utf-8')
+
+    print(f"Created .claude/commands/ (implement, jira-read, jira-comment, generate-tests, run-execution, create-bug-tasks)")
 
 
 def setup_env(repo_dir, project_key):
@@ -333,6 +369,7 @@ def main():
     print(f"3. Use /implement PLAYG-XXXX to implement a task")
     print(f"4. Use /generate-tests PLAYG-XXXX to generate test scripts")
     print(f"5. Use /run-execution PLAYG-XXXX to run tests and report to Xray")
+    print(f"6. Use /create-bug-tasks PLAYG-XXXX to create task tickets for failed tests")
 
 
 if __name__ == '__main__':
